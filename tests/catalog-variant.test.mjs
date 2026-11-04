@@ -24,8 +24,10 @@ test("catalog build leaves out everything that touches the app's own markup", ()
   assert.match(code, /Whole window only/);
 });
 
-test("the full build keeps both placements", () => {
+test("the full build keeps both placements", (t) => {
   const full = readFileSync(path.join(root, "desktop/plugin.js"), "utf8");
+  // On the generated `catalog` branch the committed bundle is the catalog build.
+  if (full.includes("build:catalog")) return t.skip("this checkout holds the catalog build");
   assert.match(full, /const CHAT_AREA = true;/);
   assert.ok(full.includes("name=\"bgPlacement\"") && full.includes("data-chat-surface"));
 });

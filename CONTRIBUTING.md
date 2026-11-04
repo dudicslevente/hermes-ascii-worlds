@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for taking a look. Small, focused changes are the easiest to review.
+Thanks for taking a look. New designs, bug fixes, docs and testing on other systems are all welcome, and small, focused changes are the easiest to review. If you plan something bigger, such as a new habitat, open an issue first so we can talk it through and avoid overlap.
 
 ## Set up
 
@@ -22,6 +22,8 @@ The browser, timing and motion-capture checks in `tests/` also need Playwright a
 - Never hard-code chrome colours in the settings page; use the app's theme variables. Colours inside the canvas art are fine.
 - Keep source, comments and UI text plain and human. No emojis.
 - Keep every claim honest: if something was only checked against a mock page, say so.
+
+- Code that restyles Hermes Desktop's own markup (only the Chat area placement does) must stay between the `@chat-area:begin` and `@chat-area:end` markers, so the catalog build can leave it out. New features should not need it. `npm run build:catalog` and `tests/catalog-variant.test.mjs` check this.
 
 ## Adding a habitat
 
