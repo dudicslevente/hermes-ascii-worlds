@@ -15,7 +15,10 @@ Nothing is downloaded and nothing is pre-rendered. Every fish is built from shap
 - **Pick a habitat.** A koi pond or a jellyfish drift. Choose anywhere from 0 to 10 creatures.
 - **Colour them your way.** Start from the original koi patterns or one of the Jewel, Sunset, Pastel and Forest palettes, or give every single fish and jellyfish its own colour. Koi get a multi-tone pattern built around the colour you choose, not a flat tint.
 - **Make it fit your setup.** It follows your Hermes theme on its own, light or dark. Speed, glyph density, pause, and a battery saver that draws 12 frames a second instead of 30 if you want your laptop to stay cool.
-- **See it across the whole window.** The animation sits over everything, sidebars included, at a strength you choose.
+<!-- chat-area:begin -->
+- **Put it where you like.** Show it through the chat area only, or across the whole window, sidebars included.
+<!-- chat-area:end -->
+<!-- catalog: - **See it across the whole window.** The animation sits over everything, sidebars included, at a strength you choose. -->
 - **Stay in control.** It respects your reduced-motion setting, pauses when the window is hidden, and removes everything it added the moment you turn it off.
 
 Everything lives in one place, **Settings -> Plugins -> ASCII Worlds**, with a quick on/off button in the title bar.
@@ -42,7 +45,9 @@ Desktop plugins live on the computer that runs the Desktop app, not on a remote 
 3. Open the command palette and run **Reload desktop plugins**. If ASCII Worlds does not show up, go to **Capabilities -> Plugins** and make sure it is switched on.
 4. Replacing an older copy? Quit and reopen Hermes Desktop once, so a stale copy cannot keep running.
 
+<!-- catalog:
 Installing from the Hermes plugin catalog? Run `hermes plugins install ascii-worlds`, then run **Reload desktop plugins** in Hermes Desktop (or reopen it). The steps above are for installing from a GitHub release instead.
+-->
 
 Prefer the command line? From a clone of this repository:
 
@@ -65,11 +70,27 @@ You can also toggle the animation any time with the **Background** button in the
 
 The **Strength** slider controls how bold it is. 28 percent is a good place to start.
 
+<!-- chat-area:begin -->
+### Chat area or whole window?
+
+| | Chat area | Whole window |
+|---|---|---|
+| Where it shows | Through the chat area only | Over the whole window, sidebars and panels included |
+| Sidebars and title bar | Keep their own backgrounds, so the animation stops at their edges | The animation is drawn across them |
+| Text and controls | Never covered | Because it sits on top, glyphs can drift faintly over text and controls; clicks pass straight through |
+| How it works | Makes the chat's background layers transparent while it is on | Adds one extra layer above the app and changes nothing else |
+| Risk | Relies on how Hermes Desktop lays out its window, so an app update may need a switch to Whole window | None; it does not depend on the window layout |
+<!-- chat-area:end -->
+<!-- catalog:
 The animation is drawn over the whole window, sidebars included. Because it sits on top, glyphs can drift faintly over text and controls, and clicks pass straight through. It adds one extra layer above the app and changes nothing else, so it does not depend on how Hermes Desktop lays out its window.
+-->
 
 ## If something looks off
 
-- **I turned it on and see nothing.** Open Settings -> Plugins -> ASCII Worlds, press **Check background** and read the report. It shows the running version and whether the animation layer exists, is on top and has painted anything. Then open an issue with that text.
+<!-- chat-area:begin -->
+- **I turned it on and see nothing in my chat.** Open Settings -> Plugins -> ASCII Worlds, press **Check background** and read the report. The first lines show the running version and the placement, and any line saying an element is still painting a colour tells you what is hiding the animation. The quick fix is to switch **Placement** to **Whole window**.
+<!-- chat-area:end -->
+<!-- catalog: - **I turned it on and see nothing.** Open Settings -> Plugins -> ASCII Worlds, press **Check background** and read the report. It shows the running version and whether the animation layer exists, is on top and has painted anything. Then open an issue with that text. -->
 - **It looks too busy.** Lower **Strength**, pick the Monochrome colour, or use fewer creatures.
 - **My computer feels warm.** Switch on **Battery saver**, choose a bolder glyph density, pause motion, or use fewer creatures. Jellyfish cost far more than koi. The animation in Hermes uses the same settings as the preview, so fine glyphs at full speed cost the most.
 - **The plugin is not in Settings.** Check that it is enabled in Capabilities -> Plugins, then run **Reload desktop plugins**. On a Desktop version without plugin settings pages, the title-bar button and the command palette entries still work.
@@ -85,6 +106,12 @@ If you report a bug, please include the text from **Check background** and your 
 
 ## Good to know
 
+<!-- chat-area:begin -->
+- **Chat area does not show behind sidebars.** Sidebars and side panels paint their own backgrounds, and the plugin only clears the chat area. Use Whole window if you want the animation across everything, at the price of it floating over text.
+<!-- chat-area:end -->
+<!-- chat-area:begin -->
+- **Chat area relies on how Hermes Desktop is built.** It uses the documented chat hook and a few app theme colour variables to keep the chat colour unchanged. A Desktop update could change them. Whole window does not depend on them.
+<!-- chat-area:end -->
 - I have only checked it by hand on one Hermes Desktop version on macOS. Windows and Linux are untested.
 - Lots of large, finely detailed creatures cost real CPU, jellyfish far more than koi. Your hardware matters, so the maximum is 10 of each, and Battery saver and the glyph density setting are there to turn the cost down.
 - The art is original and procedural. It is an independent take on the glyph-aquarium look, not a copy of any product.

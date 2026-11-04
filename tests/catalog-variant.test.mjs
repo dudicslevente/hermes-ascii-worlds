@@ -31,3 +31,27 @@ test("the full build keeps both placements", (t) => {
   assert.match(full, /const CHAT_AREA = true;/);
   assert.ok(full.includes("name=\"bgPlacement\"") && full.includes("data-chat-surface"));
 });
+
+test("the full README keeps its chat-area and catalog markers", (t) => {
+  // scripts/catalog-readme.mjs rewrites README.md in place, so running it on
+  // main by accident would silently delete the Chat area documentation.
+  const full = readFileSync(path.join(root, "desktop/plugin.js"), "utf8");
+  if (full.split("\n")[0].includes("Whole window only"))
+    return t.skip("this checkout holds the catalog build");
+  const readme = readFileSync(path.join(root, "README.md"), "utf8");
+  const begins = (readme.match(/<!-- chat-area:begin -->/g) || []).length;
+  const ends = (readme.match(/<!-- chat-area:end -->/g) || []).length;
+  assert.ok(begins >= 4 && begins === ends, `chat-area markers: ${begins} begin, ${ends} end`);
+  assert.ok(/<!-- catalog:/.test(readme), "catalog-only text is present");
+});
+
+test("the catalog README has no chat-area text and shows the catalog install line", () => {
+  const source = readFileSync(path.join(root, "README.md"), "utf8");
+  // Apply the same two rewrites as scripts/catalog-readme.mjs, on a copy.
+  let text = source.replace(/<!-- chat-area:begin -->.*?<!-- chat-area:end -->\n/gs, "");
+  text = text.replace(/<!-- catalog:\s*(.*?)\s*-->/gs, "$1");
+  if (!source.includes("<!-- catalog:")) return; // already the catalog README
+  assert.ok(!/Chat area/.test(text), "no Chat area text remains");
+  assert.ok(text.includes("hermes plugins install ascii-worlds"));
+  assert.ok(!text.includes("<!--"));
+});
