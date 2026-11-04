@@ -132,11 +132,14 @@ function normalizeSettings(value) {
     eco: typeof v.eco === "boolean" ? v.eco : DEFAULTS.eco,
   };
 }
+// Appearance is not a setting any more: the artwork always follows the Hermes
+// theme. A "light" or "dark" saved by an older version is ignored.
+const followTheme = (settings) => ({ ...settings, palette: "auto" });
 function readSettings(storage) {
   try {
     const current = storage.get(STORAGE_KEY, null);
     if (current && typeof current === "object" && !Array.isArray(current))
-      return normalizeSettings(current);
+      return followTheme(normalizeSettings(current));
   } catch {
     /* Try legacy storage independently, including malformed JSON. */
   }
@@ -145,13 +148,13 @@ function readSettings(storage) {
     if (old && typeof old === "object" && !Array.isArray(old)) {
       // The old shared tint has no reliable habitat ownership. Keep it for
       // jellyfish and restore the original koi patches rather than leak it.
-      return normalizeSettings({
+      return followTheme(normalizeSettings({
         ...old,
         koiColour: "natural",
         koiTint: DEFAULTS.koiTint,
         jellyColour: old.colour,
         jellyTint: old.tint,
-      });
+      }));
     }
   } catch {
     /* Local preferences must never prevent the artwork from starting. */
@@ -302,7 +305,7 @@ function shape(ctx, points) {
 // Swimming rhythm. A wave travels from the head to the tail: the head hardly
 // moves, the tail swings widest, and the whole body bends a little the other
 // way so the fish looks like it pushes against the water.
-const KOI_BEAT = 6.4; // radians per second of animation time
+const KOI_BEAT = 3.8; // radians per second of animation time
 const KOI_WAVELENGTH = 4.6; // radians along the body (about one wave per body)
 function fishSpine(s, length, t, phase, bend = 0) {
   const swing = 0.06 * Math.pow(s, 1.7);
@@ -414,7 +417,7 @@ function koi(
   ctx.lineWidth = length * 0.003;
   for (const side of [-1, 1]) {
     // The paired fins row slowly, out of step with each other.
-    const row = 1 + 0.18 * Math.sin(t * 2.6 + phase + (side > 0 ? 0 : 1.6));
+    const row = 1 + 0.18 * Math.sin(t * 1.8 + phase + (side > 0 ? 0 : 1.6));
     ctx.save();
     ctx.translate(length * 0.12, side * length * 0.075);
     ctx.scale(1, row);
@@ -1519,7 +1522,7 @@ function mountWorld(root, storage = browserStorage(), hub = null) {
       </fieldset>
       <p class="aw-help">Chat area relies on how Hermes Desktop lays out its window. If it stops showing after an app update, switch to Whole window.</p>
       <!-- @chat-area:end -->
-      <p class="aw-help">The animation in Hermes uses the same habitat, colours, appearance, glyph density, speed and battery-saver choices as the preview below. In the animation, Follow system matches your Hermes theme; Light and Dark choose ink for a light or dark Hermes.</p>
+      <p class="aw-help">The animation in Hermes uses the same habitat, colours, glyph density, speed and battery-saver choices as the preview below, and it always matches your Hermes theme, light or dark.</p>
       <label class="aw-field aw-strength"><span>Strength</span><span class="aw-speed"><input type="range" name="bgStrength" min="8" max="60" step="1" aria-label="Strength"><output class="aw-bg-out"></output></span><small>Lower is calmer; 28% is a good start</small></label>
       <div class="aw-bg-status" role="status" aria-live="polite"></div>
     </section>
@@ -1529,7 +1532,6 @@ function mountWorld(root, storage = browserStorage(), hub = null) {
       <div class="aw-caption"><span class="aw-specimen">NISHIKIGOI / ORNAMENTAL CARP</span><span>SHAPES INTO SYMBOLS</span></div>
       <div class="aw-controls">
         <label class="aw-field"><span>Habitat</span><select name="scene"><option value="koi">Koi pond</option><option value="jellyfish">Jellyfish drift</option></select></label>
-        <label class="aw-field"><span>Appearance</span><select name="palette"><option value="auto">Follow system</option><option value="light">Paper / light</option><option value="dark">Midnight / dark</option></select></label>
         <label class="aw-field"><span>Colour</span><select name="colour"><option value="natural">Natural</option><option value="cyan">Cyan / lilac</option><option value="ember">Warm / ember</option><option value="mono">Monochrome</option><option value="custom">Custom tint</option></select></label>
         <label class="aw-field"><span>Tint</span><input type="color" name="tint" aria-label="Custom artwork tint"></label>
         <label class="aw-field aw-koi-population"><span>Koi count</span><select name="koiCount" aria-label="Koi count"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></label>
@@ -1604,7 +1606,6 @@ function mountWorld(root, storage = browserStorage(), hub = null) {
     }
     for (const name of [
       "scene",
-      "palette",
       "density",
       "speed",
       "colour",
@@ -1678,11 +1679,12 @@ function mountWorld(root, storage = browserStorage(), hub = null) {
     listeners.push(hub.bg.subscribe(reflectBg), hub.status.subscribe(reflectBg));
   }
   try {
-    engine = createEngine(canvas, settings, fail);
+    const theme = makeThemeReader(world, document.defaultView);
+    engine = createEngine(canvas, settings, fail, { isDark: theme.isDark });
   } catch (error) {
     fail(error);
   }
-  for (const name of ["scene", "palette", "density", "colour", "tint"])
+  for (const name of ["scene", "density", "colour", "tint"])
     listen(find(`[name="${name}"]`), "change", (e) =>
       update(
         name === "tint"
@@ -1907,6 +1909,31 @@ function themeIsDark(probe, view) {
   }
 }
 
+// Reads the Hermes theme about once a second from a hidden element placed
+// inside `parent`, so switching Hermes between light and dark is picked up
+// without a reload. Falls back to the operating system colour scheme when the
+// theme variable cannot be read (for example on the offline demo page).
+function makeThemeReader(parent, view) {
+  const probe = parent.ownerDocument.createElement("span");
+  probe.setAttribute("aria-hidden", "true");
+  probe.style.cssText = "position:absolute;width:0;height:0;overflow:hidden;visibility:hidden";
+  parent.appendChild(probe);
+  const os = view.matchMedia("(prefers-color-scheme: dark)");
+  let checked = -Infinity,
+    themed = null;
+  return {
+    isDark() {
+      const now = performance.now();
+      if (now - checked > 1000) {
+        checked = now;
+        themed = themeIsDark(probe, view);
+      }
+      // Only the theme reading is cached; the operating system value is live.
+      return themed ?? os.matches;
+    },
+  };
+}
+
 function createBackgroundHost({ hub, doc = document }) {
   let attached = false,
     active = null,
@@ -1957,10 +1984,7 @@ function createBackgroundHost({ hub, doc = document }) {
     layer.setAttribute(BG_VERSION_ATTR, PLUGIN_VERSION);
     layer.setAttribute("data-ascii-worlds-placement", bg.placement);
     layer.setAttribute("aria-hidden", "true");
-    // A hidden element that only exists so the theme's text colour can be read.
-    const probe = doc.createElement("span");
-    probe.style.cssText = "position:absolute;width:0;height:0;overflow:hidden;visibility:hidden";
-    layer.appendChild(probe);
+
     const common =
       "position:fixed;inset:0;pointer-events:none;user-select:none;overflow:hidden;contain:strict;";
     // Behind: z-index -1 puts the layer behind every in-flow and positioned box
@@ -1991,22 +2015,11 @@ function createBackgroundHost({ hub, doc = document }) {
       (doc.head || root()).appendChild(style);
       doc.body.appendChild(layer);
       root().setAttribute(BG_ATTR, "on");
-      const osDark = matchMedia("(prefers-color-scheme: dark)");
-      let checked = -Infinity,
-        dark = osDark.matches;
+      const theme = makeThemeReader(layer, doc.defaultView);
       active.engine = createEngine(canvas, engineSettings(), failSafe, {
         hosted: true,
         transparent: true,
-        // Re-read the theme about once a second, so switching Hermes between
-        // light and dark is picked up without a reload.
-        isDark: () => {
-          const now = performance.now();
-          if (now - checked > 1000) {
-            checked = now;
-            dark = themeIsDark(probe, doc.defaultView) ?? osDark.matches;
-          }
-          return dark;
-        },
+        isDark: theme.isDark,
       });
     } catch (error) {
       failSafe(error);

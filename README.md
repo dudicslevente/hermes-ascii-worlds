@@ -14,7 +14,7 @@ Nothing is downloaded and nothing is pre-rendered. Every fish is built from shap
 
 - **Pick a habitat.** A koi pond or a jellyfish drift. Choose anywhere from 0 to 10 creatures.
 - **Colour them your way.** Start from the original koi patterns or one of the Jewel, Sunset, Pastel and Forest palettes, or give every single fish and jellyfish its own colour. Koi get a multi-tone pattern built around the colour you choose, not a flat tint.
-- **Make it fit your setup.** Light, dark or follow-the-system, speed, glyph density, pause, and a battery saver that draws 12 frames a second instead of 30 if you want your laptop to stay cool.
+- **Make it fit your setup.** It follows your Hermes theme on its own, light or dark. Speed, glyph density, pause, and a battery saver that draws 12 frames a second instead of 30 if you want your laptop to stay cool.
 <!-- chat-area:begin -->
 - **Put it where you like.** Show it through the chat area only, or across the whole window, sidebars included.
 <!-- chat-area:end -->

@@ -157,7 +157,7 @@ test("this release keeps reading preferences and background keys stored by earli
   assert.equal(bg.strength, 0.4);
   const s = readSettings(storage);
   assert.equal(s.scene, "jellyfish");
-  assert.equal(s.palette, "dark");
+  assert.equal(s.palette, "auto", "a saved light or dark appearance is ignored: the artwork follows the Hermes theme");
   assert.equal(s.eco, true);
   assert.equal(s.speed, 1.2);
 });

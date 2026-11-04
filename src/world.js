@@ -41,7 +41,7 @@ export function mountWorld(root, storage = browserStorage(), hub = null) {
       </fieldset>
       <p class="aw-help">Chat area relies on how Hermes Desktop lays out its window. If it stops showing after an app update, switch to Whole window.</p>
       <!-- @chat-area:end -->
-      <p class="aw-help">The animation in Hermes uses the same habitat, colours, appearance, glyph density, speed and battery-saver choices as the preview below. In the animation, Follow system matches your Hermes theme; Light and Dark choose ink for a light or dark Hermes.</p>
+      <p class="aw-help">The animation in Hermes uses the same habitat, colours, glyph density, speed and battery-saver choices as the preview below, and it always matches your Hermes theme, light or dark.</p>
       <label class="aw-field aw-strength"><span>Strength</span><span class="aw-speed"><input type="range" name="bgStrength" min="8" max="60" step="1" aria-label="Strength"><output class="aw-bg-out"></output></span><small>Lower is calmer; 28% is a good start</small></label>
       <div class="aw-bg-status" role="status" aria-live="polite"></div>
     </section>
@@ -51,7 +51,6 @@ export function mountWorld(root, storage = browserStorage(), hub = null) {
       <div class="aw-caption"><span class="aw-specimen">NISHIKIGOI / ORNAMENTAL CARP</span><span>SHAPES INTO SYMBOLS</span></div>
       <div class="aw-controls">
         <label class="aw-field"><span>Habitat</span><select name="scene"><option value="koi">Koi pond</option><option value="jellyfish">Jellyfish drift</option></select></label>
-        <label class="aw-field"><span>Appearance</span><select name="palette"><option value="auto">Follow system</option><option value="light">Paper / light</option><option value="dark">Midnight / dark</option></select></label>
         <label class="aw-field"><span>Colour</span><select name="colour"><option value="natural">Natural</option><option value="cyan">Cyan / lilac</option><option value="ember">Warm / ember</option><option value="mono">Monochrome</option><option value="custom">Custom tint</option></select></label>
         <label class="aw-field"><span>Tint</span><input type="color" name="tint" aria-label="Custom artwork tint"></label>
         <label class="aw-field aw-koi-population"><span>Koi count</span><select name="koiCount" aria-label="Koi count"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></label>
@@ -126,7 +125,6 @@ export function mountWorld(root, storage = browserStorage(), hub = null) {
     }
     for (const name of [
       "scene",
-      "palette",
       "density",
       "speed",
       "colour",
@@ -200,11 +198,12 @@ export function mountWorld(root, storage = browserStorage(), hub = null) {
     listeners.push(hub.bg.subscribe(reflectBg), hub.status.subscribe(reflectBg));
   }
   try {
-    engine = createEngine(canvas, settings, fail);
+    const theme = makeThemeReader(world, document.defaultView);
+    engine = createEngine(canvas, settings, fail, { isDark: theme.isDark });
   } catch (error) {
     fail(error);
   }
-  for (const name of ["scene", "palette", "density", "colour", "tint"])
+  for (const name of ["scene", "density", "colour", "tint"])
     listen(find(`[name="${name}"]`), "change", (e) =>
       update(
         name === "tint"

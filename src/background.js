@@ -130,6 +130,31 @@ export function themeIsDark(probe, view) {
   }
 }
 
+// Reads the Hermes theme about once a second from a hidden element placed
+// inside `parent`, so switching Hermes between light and dark is picked up
+// without a reload. Falls back to the operating system colour scheme when the
+// theme variable cannot be read (for example on the offline demo page).
+export function makeThemeReader(parent, view) {
+  const probe = parent.ownerDocument.createElement("span");
+  probe.setAttribute("aria-hidden", "true");
+  probe.style.cssText = "position:absolute;width:0;height:0;overflow:hidden;visibility:hidden";
+  parent.appendChild(probe);
+  const os = view.matchMedia("(prefers-color-scheme: dark)");
+  let checked = -Infinity,
+    themed = null;
+  return {
+    isDark() {
+      const now = performance.now();
+      if (now - checked > 1000) {
+        checked = now;
+        themed = themeIsDark(probe, view);
+      }
+      // Only the theme reading is cached; the operating system value is live.
+      return themed ?? os.matches;
+    },
+  };
+}
+
 export function createBackgroundHost({ hub, doc = document }) {
   let attached = false,
     active = null,
@@ -180,10 +205,7 @@ export function createBackgroundHost({ hub, doc = document }) {
     layer.setAttribute(BG_VERSION_ATTR, PLUGIN_VERSION);
     layer.setAttribute("data-ascii-worlds-placement", bg.placement);
     layer.setAttribute("aria-hidden", "true");
-    // A hidden element that only exists so the theme's text colour can be read.
-    const probe = doc.createElement("span");
-    probe.style.cssText = "position:absolute;width:0;height:0;overflow:hidden;visibility:hidden";
-    layer.appendChild(probe);
+
     const common =
       "position:fixed;inset:0;pointer-events:none;user-select:none;overflow:hidden;contain:strict;";
     // Behind: z-index -1 puts the layer behind every in-flow and positioned box
@@ -214,22 +236,11 @@ export function createBackgroundHost({ hub, doc = document }) {
       (doc.head || root()).appendChild(style);
       doc.body.appendChild(layer);
       root().setAttribute(BG_ATTR, "on");
-      const osDark = matchMedia("(prefers-color-scheme: dark)");
-      let checked = -Infinity,
-        dark = osDark.matches;
+      const theme = makeThemeReader(layer, doc.defaultView);
       active.engine = createEngine(canvas, engineSettings(), failSafe, {
         hosted: true,
         transparent: true,
-        // Re-read the theme about once a second, so switching Hermes between
-        // light and dark is picked up without a reload.
-        isDark: () => {
-          const now = performance.now();
-          if (now - checked > 1000) {
-            checked = now;
-            dark = themeIsDark(probe, doc.defaultView) ?? osDark.matches;
-          }
-          return dark;
-        },
+        isDark: theme.isDark,
       });
     } catch (error) {
       failSafe(error);

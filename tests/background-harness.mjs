@@ -160,21 +160,31 @@ try {
   await page.locator('[name=density]').selectOption('fine');
   ok('density from the settings page reaches the background layer (fine and bold paint different amounts)');
 
-  await page.locator('[name=palette]').selectOption('dark'); await page.waitForTimeout(500);
-  const inkDark = await canvasStats(page);
-  await page.locator('[name=palette]').selectOption('light'); await page.waitForTimeout(500);
-  const inkLight = await canvasStats(page);
-  assert.ok(inkLight.lum < inkDark.lum * 0.92, `light appearance gives darker ink in the background: ${inkLight.lum} vs ${inkDark.lum}`);
-  // Follow system tracks the Hermes theme, not the operating system: the page is
-  // told its theme is light (dark text colour) while the OS stays dark.
-  await page.locator('[name=palette]').selectOption('auto'); await page.waitForTimeout(1300);
-  const autoDarkTheme = await canvasStats(page);
-  const themeStyle = await page.addStyleTag({ content: ':root{--ui-text-primary:#1d2a2e !important}' }); await page.waitForTimeout(1600);
-  const autoLightTheme = await canvasStats(page);
-  assert.ok(autoLightTheme.lum < autoDarkTheme.lum * 0.92, `Follow system follows the Hermes theme: ${autoLightTheme.lum} vs ${autoDarkTheme.lum}`);
+  // There is no Appearance control. Both the preview and the animation follow the
+  // Hermes theme on their own: the page is told its theme is light (dark text
+  // colour) while the operating system stays dark.
+  assert.equal(await page.locator('[name=palette]').count(), 0, 'there is no Appearance control');
+  assert.equal(await page.getByText('Appearance', { exact: true }).count(), 0);
+  const previewStats = (pg) => pg.evaluate(() => {
+    const c = document.querySelector('.aw-canvas');
+    const t = document.createElement('canvas'); t.width = 120; t.height = 80;
+    const x = t.getContext('2d', { willReadFrequently: true }); x.drawImage(c, 0, 0, 120, 80);
+    const d = x.getImageData(0, 0, 120, 80).data; let lum = 0;
+    for (let i = 0; i < d.length; i += 4) lum += d[i] * 0.2126 + d[i + 1] * 0.7152 + d[i + 2] * 0.0722;
+    return lum / (d.length / 4);
+  });
+  // The preview only paints while it is on screen.
+  await page.locator('.aw-canvas').scrollIntoViewIfNeeded();
+  await page.waitForTimeout(1300);
+  const bgDarkTheme = await canvasStats(page), previewDarkTheme = await previewStats(page);
+  const themeStyle = await page.addStyleTag({ content: ':root{--ui-text-primary:#1d2a2e !important}' });
+  await page.waitForTimeout(1800);
+  const bgLightTheme = await canvasStats(page), previewLightTheme = await previewStats(page);
+  assert.ok(bgLightTheme.lum < bgDarkTheme.lum * 0.92, `the background follows the Hermes theme: ${bgLightTheme.lum} vs ${bgDarkTheme.lum}`);
+  assert.ok(previewLightTheme > previewDarkTheme * 1.5, `the preview follows the Hermes theme: ${previewLightTheme} vs ${previewDarkTheme}`);
   await themeStyle.evaluate((e) => e.remove());
-  await page.locator('[name=palette]').selectOption('dark');
-  ok('appearance from the settings page reaches the background layer; Follow system tracks the Hermes theme, not the OS');
+  await page.waitForTimeout(1300);
+  ok('no Appearance control; the preview and the background both follow the Hermes theme, not the OS');
 
   // Battery saver caps the frame rate (12) and its absence allows more.
   const rate = (pg) => pg.evaluate(() => new Promise((resolve) => {

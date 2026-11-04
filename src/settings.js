@@ -128,11 +128,14 @@ export function normalizeSettings(value) {
     eco: typeof v.eco === "boolean" ? v.eco : DEFAULTS.eco,
   };
 }
+// Appearance is not a setting any more: the artwork always follows the Hermes
+// theme. A "light" or "dark" saved by an older version is ignored.
+const followTheme = (settings) => ({ ...settings, palette: "auto" });
 export function readSettings(storage) {
   try {
     const current = storage.get(STORAGE_KEY, null);
     if (current && typeof current === "object" && !Array.isArray(current))
-      return normalizeSettings(current);
+      return followTheme(normalizeSettings(current));
   } catch {
     /* Try legacy storage independently, including malformed JSON. */
   }
@@ -141,13 +144,13 @@ export function readSettings(storage) {
     if (old && typeof old === "object" && !Array.isArray(old)) {
       // The old shared tint has no reliable habitat ownership. Keep it for
       // jellyfish and restore the original koi patches rather than leak it.
-      return normalizeSettings({
+      return followTheme(normalizeSettings({
         ...old,
         koiColour: "natural",
         koiTint: DEFAULTS.koiTint,
         jellyColour: old.colour,
         jellyTint: old.tint,
-      });
+      }));
     }
   } catch {
     /* Local preferences must never prevent the artwork from starting. */

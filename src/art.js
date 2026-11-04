@@ -9,7 +9,7 @@ function shape(ctx, points) {
 // Swimming rhythm. A wave travels from the head to the tail: the head hardly
 // moves, the tail swings widest, and the whole body bends a little the other
 // way so the fish looks like it pushes against the water.
-const KOI_BEAT = 6.4; // radians per second of animation time
+const KOI_BEAT = 3.8; // radians per second of animation time
 const KOI_WAVELENGTH = 4.6; // radians along the body (about one wave per body)
 function fishSpine(s, length, t, phase, bend = 0) {
   const swing = 0.06 * Math.pow(s, 1.7);
@@ -121,7 +121,7 @@ function koi(
   ctx.lineWidth = length * 0.003;
   for (const side of [-1, 1]) {
     // The paired fins row slowly, out of step with each other.
-    const row = 1 + 0.18 * Math.sin(t * 2.6 + phase + (side > 0 ? 0 : 1.6));
+    const row = 1 + 0.18 * Math.sin(t * 1.8 + phase + (side > 0 ? 0 : 1.6));
     ctx.save();
     ctx.translate(length * 0.12, side * length * 0.075);
     ctx.scale(1, row);
