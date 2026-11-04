@@ -109,6 +109,27 @@ export function createHub(storage) {
   };
 }
 
+// Is the Hermes theme dark? The documented --ui-text-primary variable is the
+// theme's main text colour, which is light in a dark theme and dark in a light
+// one, so its brightness tells us. Returns null when it cannot be read and the
+// caller falls back to the operating system setting.
+export function themeIsDark(probe, view) {
+  try {
+    probe.style.color = "var(--ui-text-primary, transparent)";
+    const text = view.getComputedStyle(probe).color;
+    let m = text.match(/rgba?\(([\d.]+)[ ,]+([\d.]+)[ ,]+([\d.]+)(?:[ ,/]+([\d.]+))?/);
+    let rgb;
+    if (m) rgb = [m[1], m[2], m[3]].map(Number);
+    else if ((m = text.match(/color\(srgb ([\d.]+) ([\d.]+) ([\d.]+)(?: \/ ([\d.]+))?/)))
+      rgb = [m[1], m[2], m[3]].map((n) => Number(n) * 255);
+    else return null;
+    if (m[4] !== undefined && Number(m[4]) === 0) return null;
+    return (rgb[0] * 0.2126 + rgb[1] * 0.7152 + rgb[2] * 0.0722) / 255 > 0.5;
+  } catch {
+    return null;
+  }
+}
+
 export function createBackgroundHost({ hub, doc = document }) {
   let attached = false,
     active = null,
@@ -118,9 +139,10 @@ export function createBackgroundHost({ hub, doc = document }) {
   const reduced = () => Boolean(reducedMedia?.matches);
   const engineSettings = () => {
     const s = hub.settings.get();
-    // Coarse glyphs and the eco cap keep a full-window layer cheap. Paused
-    // follows the settings page's pause switch or the reduced-motion preference.
-    return { ...s, density: "bold", eco: true, paused: s.paused || reduced() };
+    // The background uses the same habitat, colours, appearance, density,
+    // speed and battery-saver choices as the preview. Only pause also follows
+    // the reduced-motion preference.
+    return { ...s, paused: s.paused || reduced() };
   };
   function sweepStrays() {
     // A previous load of the plugin that never ran cleanup must not stack.
@@ -158,6 +180,10 @@ export function createBackgroundHost({ hub, doc = document }) {
     layer.setAttribute(BG_VERSION_ATTR, PLUGIN_VERSION);
     layer.setAttribute("data-ascii-worlds-placement", bg.placement);
     layer.setAttribute("aria-hidden", "true");
+    // A hidden element that only exists so the theme's text colour can be read.
+    const probe = doc.createElement("span");
+    probe.style.cssText = "position:absolute;width:0;height:0;overflow:hidden;visibility:hidden";
+    layer.appendChild(probe);
     const common =
       "position:fixed;inset:0;pointer-events:none;user-select:none;overflow:hidden;contain:strict;";
     // Behind: z-index -1 puts the layer behind every in-flow and positioned box
@@ -188,9 +214,22 @@ export function createBackgroundHost({ hub, doc = document }) {
       (doc.head || root()).appendChild(style);
       doc.body.appendChild(layer);
       root().setAttribute(BG_ATTR, "on");
+      const osDark = matchMedia("(prefers-color-scheme: dark)");
+      let checked = -Infinity,
+        dark = osDark.matches;
       active.engine = createEngine(canvas, engineSettings(), failSafe, {
         hosted: true,
         transparent: true,
+        // Re-read the theme about once a second, so switching Hermes between
+        // light and dark is picked up without a reload.
+        isDark: () => {
+          const now = performance.now();
+          if (now - checked > 1000) {
+            checked = now;
+            dark = themeIsDark(probe, doc.defaultView) ?? osDark.matches;
+          }
+          return dark;
+        },
       });
     } catch (error) {
       failSafe(error);

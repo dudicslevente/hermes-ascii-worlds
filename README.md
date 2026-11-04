@@ -14,7 +14,7 @@ Nothing is downloaded and nothing is pre-rendered. Every fish is built from shap
 
 - **Pick a habitat.** A koi pond or a jellyfish drift. Choose anywhere from 0 to 10 creatures.
 - **Colour them your way.** Start from the original koi patterns or one of the Jewel, Sunset, Pastel and Forest palettes, or give every single fish and jellyfish its own colour. Koi get a multi-tone pattern built around the colour you choose, not a flat tint.
-- **Make it fit your setup.** Light, dark or follow-the-system, speed, glyph density, pause, and an eco mode that caps the frame rate if you want your laptop to stay cool.
+- **Make it fit your setup.** Light, dark or follow-the-system, speed, glyph density, pause, and a battery saver that draws 12 frames a second instead of 30 if you want your laptop to stay cool.
 <!-- chat-area:begin -->
 - **Put it where you like.** Show it through the chat area only, or across the whole window, sidebars included.
 <!-- chat-area:end -->
@@ -88,7 +88,7 @@ The animation is drawn over the whole window, sidebars included. Because it sits
 <!-- chat-area:end -->
 <!-- catalog: - **I turned it on and see nothing.** Open Settings -> Plugins -> ASCII Worlds, press **Check background** and read the report. It shows the running version and whether the animation layer exists, is on top and has painted anything. Then open an issue with that text. -->
 - **It looks too busy.** Lower **Strength**, pick the Monochrome colour, or use fewer creatures.
-- **My computer feels warm.** Switch on **Eco**, pause motion, or use fewer jellyfish. They cost far more than koi. The background draws at a capped 12 frames per second with coarse glyphs, while the preview in the settings page is more detailed and heavier.
+- **My computer feels warm.** Switch on **Battery saver**, choose a bolder glyph density, pause motion, or use fewer creatures. Jellyfish cost far more than koi. The animation in Hermes uses the same settings as the preview, so fine glyphs at full speed cost the most.
 - **The plugin is not in Settings.** Check that it is enabled in Capabilities -> Plugins, then run **Reload desktop plugins**. On a Desktop version without plugin settings pages, the title-bar button and the command palette entries still work.
 
 If you report a bug, please include the text from **Check background** and your Hermes Desktop version. It saves a lot of guessing.
@@ -109,7 +109,7 @@ If you report a bug, please include the text from **Check background** and your 
 - **Chat area relies on how Hermes Desktop is built.** It uses the documented chat hook and a few app theme colour variables to keep the chat colour unchanged. A Desktop update could change them. Whole window does not depend on them.
 <!-- chat-area:end -->
 - I have only checked it by hand on one Hermes Desktop version on macOS. Windows and Linux are untested.
-- Lots of large, finely detailed creatures cost real CPU, jellyfish far more than koi. The background layer is deliberately coarse and capped, but your hardware still matters. That is why the maximum is 10 of each.
+- Lots of large, finely detailed creatures cost real CPU, jellyfish far more than koi. Your hardware matters, so the maximum is 10 of each, and Battery saver and the glyph density setting are there to turn the cost down.
 - The art is original and procedural. It is an independent take on the glyph-aquarium look, not a copy of any product.
 
 ## More designs are coming, and you can help

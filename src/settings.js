@@ -199,7 +199,7 @@ export function frameCap(eco) {
 // Shown on the Background layer and in the Check background report so a console or a bug
 // report can tell exactly which build is running. Kept equal to package.json
 // by a unit test.
-export const PLUGIN_VERSION = "1.0.1";
+export const PLUGIN_VERSION = "1.1.0";
 export const BACKGROUND_KEY = "background.v1";
 export const BACKGROUND_MIN = 0.08;
 // The catalog build (npm run build:catalog) rewrites this to false and removes

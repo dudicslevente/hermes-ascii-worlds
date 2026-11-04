@@ -6,10 +6,16 @@ function shape(ctx, points) {
   points.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
   ctx.closePath();
 }
+// Swimming rhythm. A wave travels from the head to the tail: the head hardly
+// moves, the tail swings widest, and the whole body bends a little the other
+// way so the fish looks like it pushes against the water.
+const KOI_BEAT = 6.4; // radians per second of animation time
+const KOI_WAVELENGTH = 4.6; // radians along the body (about one wave per body)
 function fishSpine(s, length, t, phase, bend = 0) {
+  const swing = 0.06 * Math.pow(s, 1.7);
   return [
     (0.47 - s) * length,
-    Math.sin(s * 4.1 - t * 1.1 + phase) * length * 0.046 * s * s +
+    Math.sin(s * KOI_WAVELENGTH - t * KOI_BEAT + phase) * length * swing +
       length * bend * s * s,
   ];
 }
@@ -105,12 +111,21 @@ function koi(
   ctx.translate(x, y);
   ctx.rotate(angle);
   const tail = fishSpine(1, length, t, phase, bend);
-  const sway = Math.sin(t * 1.1 + phase - 4) * length * 0.035;
+  // The tail fin is a trailing part: it lags the spine and flicks wider.
+  const sway = Math.sin(t * KOI_BEAT - 1.3 - phase * 0) * length * 0.06;
+  const before = fishSpine(0.94, length, t, phase, bend);
+  const finTurn = -Math.atan2(tail[1] - before[1], length * 0.06) * 1.1;
   // Paired pectoral fins and a split, ribbed caudal fin.
   ctx.fillStyle = "rgba(223,201,159,.38)";
   ctx.strokeStyle = "rgba(247,223,180,.42)";
   ctx.lineWidth = length * 0.003;
   for (const side of [-1, 1]) {
+    // The paired fins row slowly, out of step with each other.
+    const row = 1 + 0.18 * Math.sin(t * 2.6 + phase + (side > 0 ? 0 : 1.6));
+    ctx.save();
+    ctx.translate(length * 0.12, side * length * 0.075);
+    ctx.scale(1, row);
+    ctx.translate(-length * 0.12, -side * length * 0.075);
     ctx.beginPath();
     ctx.moveTo(length * 0.12, side * length * 0.075);
     ctx.bezierCurveTo(
@@ -140,6 +155,11 @@ function koi(
       );
       ctx.stroke();
     }
+    ctx.restore();
+    ctx.save();
+    ctx.translate(tail[0], tail[1]);
+    ctx.rotate(finTurn);
+    ctx.translate(-tail[0], -tail[1]);
     ctx.beginPath();
     ctx.moveTo(...tail);
     ctx.bezierCurveTo(
@@ -170,6 +190,7 @@ function koi(
       );
       ctx.stroke();
     }
+    ctx.restore();
   }
   const outline = [];
   for (let i = 0; i <= 40; i++) {
@@ -320,7 +341,14 @@ function jelly(ctx, pose, radius, t, lilac, tint) {
   ctx.translate(pose.x, pose.y);
   ctx.rotate(pose.angle + Math.PI / 2);
   const phase = pose.phase;
-  const r = radius * (1 + Math.sin(t * 1.8 + phase) * 0.09);
+  const r = radius;
+  // A jellyfish swims in pulses: the bell snaps shut quickly, then relaxes
+  // slowly while the tentacles trail behind and straighten out.
+  const stroke = Math.sin(t * 3.4 + phase);
+  const squeeze = stroke > 0 ? Math.pow(stroke, 0.75) : stroke * 0.55;
+  const drag = Math.sin(t * 3.4 + phase - 1.2);
+  const bellX = 1 - 0.14 * squeeze;
+  const bellY = 1 + 0.1 * squeeze;
   const rgb = tint
     ? [1, 3, 5].map((n) => parseInt(tint.slice(n, n + 2), 16))
     : lilac
@@ -336,10 +364,13 @@ function jelly(ctx, pose, radius, t, lilac, tint) {
     ctx.beginPath();
     for (let j = 0; j <= 90; j++) {
       const s = j / 90;
-      const wave = Math.sin(s * 9 - t * 1.5 + i * 0.54) * (0.025 + s * 0.2);
-      const curl = Math.sin(s * 19 - t * 0.85 + i) * s * s * 0.1;
-      const x = q * r * 1.8 + r * (wave + curl + turn * s * s),
-        y = r * 0.12 + s * length;
+      const wave =
+        Math.sin(s * 9 - t * 2.6 + i * 0.54) *
+        (0.025 + s * 0.2) *
+        (1 + 0.28 * drag);
+      const curl = Math.sin(s * 19 - t * 1.8 + i) * s * s * 0.1;
+      const x = q * r * 1.8 * bellX + r * (wave + curl + turn * s * s),
+        y = r * 0.12 + s * length * (1 + 0.07 * drag);
       j ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
     }
     ctx.strokeStyle = color(0.45 + (i % 4) * 0.12);
@@ -350,11 +381,18 @@ function jelly(ctx, pose, radius, t, lilac, tint) {
     ctx.beginPath();
     for (let j = 0; j <= 120; j++) {
       const s = j / 120;
-      const winding = s * (10 + i * 0.6) - t * 1.1 + i * 0.9;
+      const winding = s * (10 + i * 0.6) - t * 2 + i * 0.9;
       const spread = (i - 3) * 0.25;
-      const x = r * (spread + Math.sin(winding) * s * 0.42 + turn * s * s);
+      const x =
+        r *
+        (spread * bellX +
+          Math.sin(winding) * s * 0.42 * (1 + 0.25 * drag) +
+          turn * s * s);
       const y =
-        r * (0.13 + s * (3.1 + i * 0.12) + Math.cos(winding) * s * 0.16);
+        r *
+        (0.13 +
+          s * (3.1 + i * 0.12) * (1 + 0.07 * drag) +
+          Math.cos(winding) * s * 0.16);
       j ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
     }
     ctx.lineWidth = Math.max(1.6, r * 0.021);
@@ -367,11 +405,11 @@ function jelly(ctx, pose, radius, t, lilac, tint) {
       ctx.beginPath();
       for (let j = 0; j <= 100; j++) {
         const s = j / 100,
-          fold = Math.sin(s * 32 + arm * 1.7 - t * 1.4);
+          fold = Math.sin(s * 32 + arm * 1.7 - t * 3);
         const x =
           r *
-          ((arm - 2) * 0.18 +
-            Math.sin(s * 8 - t + arm) * s * 0.24 +
+          ((arm - 2) * 0.18 * bellX +
+            Math.sin(s * 8 - t * 2.2 + arm) * s * 0.24 * (1 + 0.4 * drag) +
             turn * s * s +
             edge * (0.035 + 0.045 * fold));
         const y = r * (0.12 + s * (1.65 + arm * 0.12));
@@ -381,6 +419,8 @@ function jelly(ctx, pose, radius, t, lilac, tint) {
       ctx.strokeStyle = color(edge === 0 ? 0.3 : 0.82, edge === 0 ? 0.8 : 1.12);
       ctx.stroke();
     }
+  ctx.save();
+  ctx.scale(bellX, bellY);
   // Project a shaded hemispherical mesh. Changing yaw reveals dimensional ribs.
   const yaw = Math.sin(pose.u * 1.3 + phase) * 0.48;
   const point = (v, a) => {
@@ -453,6 +493,7 @@ function jelly(ctx, pose, radius, t, lilac, tint) {
     ctx.fillStyle = color(0.9, 1.3);
     ctx.fill();
   }
+  ctx.restore();
   ctx.restore();
 }
 // Relative koi lengths. The first three are the original sizes; the seven

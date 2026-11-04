@@ -72,3 +72,11 @@ scripts/make-catalog-branch.sh    # builds it on a `catalog` branch (add --push 
 ```
 
 `main` always holds the full plugin. The `catalog` branch is `main` plus one generated commit. Never edit it by hand; rerun the script after changing `main`. The browser suites that exercise Chat area (`background-harness`, `background-realshape`, and the placement cards in `settings-layout`) run against `main` only; `tests/catalog-variant.test.mjs` checks the catalog bundle.
+
+## Regenerating the koi golden hashes
+
+`tests/fixtures/koi-golden.json` holds a hash of every canvas call for the default koi. It exists so that drawing changes are never accidental. If you change how koi are drawn on purpose, regenerate it and explain why in the changelog:
+
+```sh
+node -e "import('./tests/koi-golden.helper.mjs').then(async ({GOLDEN_CASES, recordField, hashCalls}) => { const fs = await import('node:fs'); const out = {}; for (const c of GOLDEN_CASES) out[`${c.w}x${c.h}@${c.t}/${c.colour}`] = hashCalls(recordField(c.w, c.h, 'koi', c.t, {colour: c.colour})); fs.writeFileSync('tests/fixtures/koi-golden.json', JSON.stringify(out, null, 2) + '\\n'); })"
+```

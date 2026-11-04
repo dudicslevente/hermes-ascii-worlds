@@ -132,7 +132,8 @@ test("zero through ten jellyfish produce bounded finite independent geometry and
         jellyColour: "individual",
       }),
     );
-    assert.equal(saves, count);
+    // Each jellyfish saves twice: once for the whole animal and once for the pulsing bell.
+    assert.equal(saves, count * 2);
     for (let i = 0; i < count; i++)
       assert.deepEqual(
         scenePose("jellyfish", i, 12),

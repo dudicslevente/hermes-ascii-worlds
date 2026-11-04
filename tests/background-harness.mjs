@@ -138,6 +138,62 @@ try {
   await page.locator('[name=scene]').selectOption('koi');
   ok('live sync: pane scene changes keep the background drawing');
 
+  // The animation in Hermes follows the settings page: density, appearance and
+  // battery saver are no longer forced to fixed values (they used to apply to
+  // the preview only).
+  const canvasStats = (pg) => pg.evaluate(() => {
+    const c = document.querySelector('[data-ascii-worlds-bg="layer"] canvas');
+    // Read through a scratch canvas so the layer's own context is never read back.
+    const t = document.createElement('canvas'); t.width = c.width; t.height = c.height;
+    const tx = t.getContext('2d', { willReadFrequently: true }); tx.drawImage(c, 0, 0);
+    const d = tx.getImageData(0, 0, c.width, c.height).data;
+    let n = 0, lum = 0;
+    for (let i = 0; i < d.length; i += 4) if (d[i + 3] > 40) { n++; lum += d[i] * 0.2126 + d[i + 1] * 0.7152 + d[i + 2] * 0.0722; }
+    return { painted: n, lum: n ? lum / n : 0 };
+  });
+  await page.locator('[name=density]').selectOption('fine'); await page.waitForTimeout(500);
+  const fine = await canvasStats(page);
+  await page.locator('[name=density]').selectOption('bold'); await page.waitForTimeout(500);
+  const bold = await canvasStats(page);
+  assert.ok(Math.abs(fine.painted - bold.painted) / Math.max(fine.painted, bold.painted) > 0.08,
+    `density changes the background drawing: fine ${fine.painted} vs bold ${bold.painted}`);
+  await page.locator('[name=density]').selectOption('fine');
+  ok('density from the settings page reaches the background layer (fine and bold paint different amounts)');
+
+  await page.locator('[name=palette]').selectOption('dark'); await page.waitForTimeout(500);
+  const inkDark = await canvasStats(page);
+  await page.locator('[name=palette]').selectOption('light'); await page.waitForTimeout(500);
+  const inkLight = await canvasStats(page);
+  assert.ok(inkLight.lum < inkDark.lum * 0.92, `light appearance gives darker ink in the background: ${inkLight.lum} vs ${inkDark.lum}`);
+  // Follow system tracks the Hermes theme, not the operating system: the page is
+  // told its theme is light (dark text colour) while the OS stays dark.
+  await page.locator('[name=palette]').selectOption('auto'); await page.waitForTimeout(1300);
+  const autoDarkTheme = await canvasStats(page);
+  const themeStyle = await page.addStyleTag({ content: ':root{--ui-text-primary:#1d2a2e !important}' }); await page.waitForTimeout(1600);
+  const autoLightTheme = await canvasStats(page);
+  assert.ok(autoLightTheme.lum < autoDarkTheme.lum * 0.92, `Follow system follows the Hermes theme: ${autoLightTheme.lum} vs ${autoDarkTheme.lum}`);
+  await themeStyle.evaluate((e) => e.remove());
+  await page.locator('[name=palette]').selectOption('dark');
+  ok('appearance from the settings page reaches the background layer; Follow system tracks the Hermes theme, not the OS');
+
+  // Battery saver caps the frame rate (12) and its absence allows more.
+  const rate = (pg) => pg.evaluate(() => new Promise((resolve) => {
+    const c = document.querySelector('[data-ascii-worlds-bg="layer"] canvas');
+    const t = document.createElement('canvas'); t.width = 160; t.height = 100;
+    const x = t.getContext('2d', { willReadFrequently: true });
+    const sig = () => { x.clearRect(0, 0, 160, 100); x.drawImage(c, 0, 0, 160, 100); const d = x.getImageData(0, 0, 160, 100).data; let h = 0; for (let i = 0; i < d.length; i += 3) h = (h * 31 + d[i]) | 0; return h; };
+    let last = sig(), changes = 0; const t0 = performance.now();
+    const id = setInterval(() => { const h = sig(); if (h !== last) { changes++; last = h; } if (performance.now() - t0 > 1500) { clearInterval(id); resolve(changes / ((performance.now() - t0) / 1000)); } }, 8);
+  }));
+  await page.locator('[name=eco]').check(); await page.waitForTimeout(300);
+  const ecoRate = await rate(page);
+  await page.locator('[name=eco]').uncheck(); await page.waitForTimeout(300);
+  const fullRate = await rate(page);
+  assert.ok(ecoRate <= 14, `battery saver keeps the background at about 12 fps: ${ecoRate}`);
+  assert.ok(fullRate > ecoRate * 1.3, `without battery saver the background updates more often: ${fullRate} vs ${ecoRate}`);
+  result.notes.push(`background frame rate: battery saver ${ecoRate.toFixed(1)}/s, off ${fullRate.toFixed(1)}/s (headless Linux)`);
+  ok('battery saver from the settings page reaches the background layer');
+
   // title-bar toggle off -> byte-identical page
   await page.locator('#tb-right button').click(); await page.waitForTimeout(150);
   assert.equal(await page.locator('#tb-right button').innerText(), 'Background off');
@@ -235,11 +291,11 @@ try {
   await page.evaluate(() => { delete document.hidden; document.dispatchEvent(new Event('visibilitychange')); });
   await page.waitForTimeout(250);
   assert.ok(await page.evaluate(() => instrument.activeFrames.size) > 0);
-  // background rate: eco cap 12 fps
+  // background rate: by default (battery saver off) it follows the 30 fps cap, not a forced 12
   const fps = await page.evaluate(() => new Promise((res) => { const c = document.querySelector('[data-ascii-worlds-bg="layer"] canvas'); const draw = CanvasRenderingContext2D.prototype.clearRect; let n = 0; CanvasRenderingContext2D.prototype.clearRect = function (...a) { if (this.canvas === c) n++; return draw.apply(this, a); }; setTimeout(() => { CanvasRenderingContext2D.prototype.clearRect = draw; res(n / 2); }, 2000); }));
   result.notes.push(`measured background draw rate (headless, with pane also animating): ${fps} fps`);
-  assert.ok(fps <= 13.5 && fps >= 6, 'bg near the 12 fps eco cap: ' + fps);
-  ok('(g) reduced motion starts static (zero RAF, still one frame drawn); document.hidden pauses and visible resumes; background draws near the 12 fps eco cap');
+  assert.ok(fps > 14 && fps <= 32, 'bg runs at the normal cap when battery saver is off: ' + fps);
+  ok('(g) reduced motion starts static (zero RAF, still one frame drawn); document.hidden pauses and visible resumes; background draws at the normal frame cap when battery saver is off');
   await page.context().close();
 
   // light scheme screenshot

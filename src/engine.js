@@ -210,6 +210,10 @@ export function createEngine(
 ) {
   const renderer = createRenderer(canvas, options),
     media = matchMedia("(prefers-color-scheme: dark)");
+  // options.isDark lets a host say whether the surface behind the canvas is
+  // dark (the background layer follows the Hermes theme). Without it the
+  // operating system's colour scheme decides, as before.
+  const isDark = () => (options.isDark ? options.isDark() : media.matches);
   let settings = normalizeSettings(initialSettings),
     disposed = false,
     visible = Boolean(options.hosted);
@@ -235,7 +239,7 @@ export function createEngine(
   function paint() {
     if (!allowed()) return;
     renderer.resize(size.width, size.height, devicePixelRatio);
-    renderer.render(time, settings, media.matches);
+    renderer.render(time, settings, isDark());
     dirty = false;
     lastDraw = performance.now();
   }
@@ -253,7 +257,7 @@ export function createEngine(
             size.width * size.height < 1000000)
         )
           renderer.resize(size.width, size.height, devicePixelRatio);
-        renderer.render(time, settings, media.matches);
+        renderer.render(time, settings, isDark());
         dirty = false;
         // Retain the frame phase. Resetting it to every RAF timestamp drops
         // a nominal 30 fps cap toward 20 fps when timestamps have small jitter.

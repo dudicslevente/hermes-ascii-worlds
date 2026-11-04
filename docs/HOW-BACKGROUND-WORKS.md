@@ -39,7 +39,7 @@ The layer sits at the highest `z-index`, has no base colour and its stylesheet i
 
 ## Resource use
 
-Background draws at the 12 frames-per-second eco cap with coarse glyphs and is limited to one engine for the whole window. It pauses when the document is hidden and starts paused if your system asks for reduced motion. Pausing motion in the settings page also pauses the background. The preview in the settings page is a second engine and animates only while it is on screen.
+The animation uses the same settings as the preview (habitat, colours, appearance, glyph density, speed and battery saver) and is limited to one engine for the whole window. Follow system tracks the Hermes theme, read from the documented text colour variable, and falls back to the operating system setting. Fine glyphs at full speed are the most expensive combination, jellyfish especially; battery saver and a bolder density turn the cost down. It pauses when the document is hidden and starts paused if your system asks for reduced motion. Pausing motion in the settings page also pauses the background. The preview in the settings page is a second engine and animates only while it is on screen.
 
 ## Troubleshooting report
 

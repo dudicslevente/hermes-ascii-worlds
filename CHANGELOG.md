@@ -2,6 +2,14 @@
 
 All notable changes to ASCII Worlds. This project follows semantic versioning.
 
+## 1.1.0
+
+- Koi and jellyfish now swim instead of rotating. Koi have a travelling body wave, a tail fin that follows the spine and gently rowing pectoral fins. Jellyfish pulse their bell (squash and stretch) with tentacles that trail and straighten between pulses.
+- The animation in Hermes now follows the settings page. Glyph density, appearance, speed and battery saver used to apply only to the preview; the background had its own fixed values.
+- In the background, Follow system now follows your Hermes theme instead of the operating system setting.
+- Renamed "Eco / 12 fps" to "Battery saver", with a sentence explaining what it does.
+- The default koi are drawn differently now, so the koi golden test fixture was regenerated on purpose.
+
 ## 1.0.1
 
 - README rewritten in a friendlier voice, with real Hermes Desktop screenshots, install steps that use the release zip (which already contains the `ascii-worlds` folder), and a section inviting contributions and new designs.

@@ -28,13 +28,13 @@ const memory = (seed = {}) => {
   };
 };
 
-test("default koi output is unchanged from v1.0.1 (golden hashes of every canvas call)", () => {
-  // The fixture was recorded from the v1.0.1 build before koi count and
-  // per-fish colours existed. Three koi in every pre-existing colour mode must
-  // draw exactly the same calls.
+test("default koi drawing is pinned (golden hashes of every canvas call)", () => {
+  // Recorded from the 1.1.0 build. Any change to how the default three koi are
+  // drawn changes these hashes, so it has to be deliberate: regenerate the
+  // fixture (see docs/DEVELOPMENT.md) and say why in the changelog.
   const golden = JSON.parse(
     readFileSync(
-      new URL("./fixtures/koi-golden-v1.0.1.json", import.meta.url),
+      new URL("./fixtures/koi-golden.json", import.meta.url),
       "utf8",
     ),
   );
