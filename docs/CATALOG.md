@@ -66,7 +66,7 @@ maintainer: dudicslevente
 tier: community
 category: desktop
 requires_hermes: ">=0.21.6"
-version: "1.0.1"
+version: "1.1.0"
 docs_url: https://github.com/dudicslevente/hermes-ascii-worlds
 image: https://raw.githubusercontent.com/dudicslevente/hermes-ascii-worlds/<sha>/docs/images/banner.png
 screenshots:
