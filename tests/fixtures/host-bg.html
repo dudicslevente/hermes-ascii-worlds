@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>FAKE host page for ASCII Worlds background tests (not Hermes Desktop)</title><link rel="icon" href="data:,">
+<style>
+:root { color-scheme: dark; --ui-text-primary:#e1e6e9; --ui-text-secondary:#b6c3c7; --ui-text-tertiary:#8b999f; --ui-stroke-secondary:#344248; --ui-accent:#81bbb4; --ui-bg-primary:#141c20; --ui-bg-secondary:#1c272c; --ui-bg-editor:#141c20; --foreground:#e1e6e9; --background:#141c20; }
+@media (prefers-color-scheme: light) { :root { color-scheme: light; --ui-text-primary:#1d2a2e; --ui-text-secondary:#3f5156; --ui-text-tertiary:#5d6f74; --ui-stroke-secondary:#c9d3d6; --ui-accent:#2e7a70; --ui-bg-primary:#f6f8f8; --ui-bg-secondary:#e9eeef; --ui-bg-editor:#f6f8f8; --foreground:#1d2a2e; --background:#f6f8f8; } }
+html { height:100%; }
+body { margin:0; height:100%; background:var(--background); color:var(--foreground); font:14px/1.5 system-ui; }
+/* Fake structure: root (no paint) > titlebar + app > main (opaque) > chatwrap (opaque) > surface (opaque) > viewport (opaque). */
+#shell { height:100%; display:flex; flex-direction:column; }
+#titlebar { height:32px; display:flex; align-items:center; justify-content:flex-end; gap:8px; padding:0 10px; border-bottom:1px solid var(--ui-stroke-secondary); flex:none; }
+#app { flex:1; min-height:0; display:flex; }
+.main { flex:1; min-width:0; background:var(--background); display:flex; }
+.chatwrap { flex:1; min-width:0; background:var(--background); display:flex; }
+[data-chat-surface] { flex:1; min-width:0; background:var(--background); display:flex; }
+[data-slot="aui_thread-viewport"] { flex:1; overflow:auto; padding:28px 36px; background:var(--background); }
+.msg { max-width:560px; margin:0 0 16px; }
+.msg b { display:block; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ui-text-tertiary); }
+#side { width:420px; flex:none; background:var(--ui-bg-primary); border-left:1px solid var(--ui-stroke-secondary); min-height:0; }
+/* Like the real Settings page: the host scrolls and gives plugin pages NO fixed height. */
+#side { overflow:auto; }
+#root { display:block; }
+body.only .main, body.only #titlebar { display:none; } body.only #side { width:100%; border:0; }
+.sdk-button {border:1px solid var(--ui-stroke-secondary);border-radius:6px;padding:6px 10px;background:transparent;color:inherit;}
+</style>
+<script>
+const q=new URLSearchParams(location.search);
+const map={"react":"/browser-deps/react.mjs","react/jsx-runtime":"/browser-deps/jsx-runtime.mjs","react-dom/client":"/browser-deps/react-dom.mjs","@hermes/plugin-sdk":q.has('bare')?"/fixtures/sdk-bare.mjs":"/fixtures/sdk-titlebar.mjs"};
+const s=document.createElement('script');s.type='importmap';s.textContent=JSON.stringify({imports:map});document.head.appendChild(s);
+</script>
+</head><body>
+<div id="shell"><div id="titlebar"><span style="margin-right:auto;color:var(--ui-text-tertiary)">fake title bar</span><span id="tb-right"></span></div>
+<div id="app"><div id="main" class="main"><div id="chatwrap" class="chatwrap"><div data-chat-surface data-composer-target="main"><div data-slot="aui_thread-viewport">
+<div class="msg"><b>You</b>Can you summarise the plan for the garden pond?</div>
+<div class="msg"><b>Assistant</b>Three koi, slow water, and a stone edge. Text in this fake transcript must stay readable while glyphs drift behind it. This page is a mock, not the real app.</div>
+<div class="msg"><b>You</b>Great. Add the filtration notes and a short maintenance checklist for spring.</div>
+<div class="msg"><b>Assistant</b>Clean the skimmer weekly, test the water monthly, and trim the marginal plants before the first warm week. <button id="chat-btn" type="button" onclick="window.__clicks=(window.__clicks||0)+1">Copy checklist</button></div>
+</div></div></div></div><div id="side"><div id="root"></div></div></div></div>
+<script>
+// Real-shape mode (?real): mirrors the structure measured on a live Desktop
+// window with a console check. The page colour is a bluer dark than the chat
+// colour; wrappers ABOVE the chat paint the bluer chrome colour and a grey, and
+// one wrapper between the chat surface and the message list paints the chat
+// colour through a single utility class that reads a theme variable.
+if(q.has('real')){
+  const st=document.createElement('style');
+  st.textContent=':root{--ui-chat-surface-background:rgb(21,21,21)} html{background:rgb(13,16,21)} .u-chrome{background:rgb(13,16,21)} .u-base{background:rgb(21,21,21)} [data-chat-surface]{background:var(--ui-chat-surface-background)} .bg-chat{background:var(--ui-chat-surface-background);flex:1;min-width:0;overflow:hidden}';
+  document.head.appendChild(st);
+  // ?inline also paints one wrapper with an inline style, which only an !important rule can override.
+  if(q.has('inline'))document.getElementById('main').style.background='rgb(13,16,21)';
+  // Utility classes, as the real app uses (single-class specificity), never ids.
+  document.body.classList.add('u-base');
+  for(const [id,cls] of [['shell','u-chrome'],['app','u-base'],['main','u-chrome'],['chatwrap','u-chrome']])document.getElementById(id).classList.add(cls);
+  const v=document.querySelector('[data-slot="aui_thread-viewport"]');
+  const w=document.createElement('div');w.className='bg-chat';w.id='real-panel';
+  v.parentNode.insertBefore(w,v);w.appendChild(v);
+}
+</script>
+<script type="module">
+import React from 'react';
+import {createRoot} from 'react-dom/client';
+import plugin from '/plugin.js';
+if(q.has('only'))document.body.classList.add('only');
+const contributions=[],disposers=[],panes=[],pages=[],settingsContribs=[];
+const api=q.get('api')||'page';
+const raw={get(k){return localStorage.getItem('mock-ascii:'+k)},set(k,v){localStorage.setItem('mock-ascii:'+k,v)}};
+const storage={get(key,fallback){const r=raw.get(key);return r===null?fallback:JSON.parse(r)},set(key,value){raw.set(key,JSON.stringify(value))}};
+const roots=[];
+window.hostTest={pluginId:plugin.id,contributions,disposers,storage,raw,panes,pages,settingsContribs,api};
+// Mock host: ?api=page offers ctx.registerSettingsPage; ?api=fallback offers only the settings.plugins area;
+// ?api=none offers neither (register throws for the settings area). 'panes' registrations are only counted.
+const ctx={register(item){if(item.area==='settings.plugins'&&api==='none')throw Error('unsupported area');if(item.area==='panes')panes.push(item);if(item.area==='settings.plugins')settingsContribs.push(item);contributions.push(item);return()=>{}},storage,onDispose(fn){disposers.push(fn)},i18n:{register(){}}};
+if(api==='page')ctx.registerSettingsPage=(p)=>{pages.push(p);return()=>{}};
+plugin.register(ctx);
+const settingsPage=()=>pages[0]||settingsContribs[0]||null;
+const mountInto=(sel,render)=>{const r=createRoot(document.querySelector(sel));r.render(React.createElement(React.StrictMode,null,render()));roots.push(r)};
+hostTest.mount=()=>{const pg=settingsPage();if(pg)mountInto('#root',()=>pg.render());for(const c of contributions.filter(c=>c.area==='titlebar.right'))mountInto('#tb-right',()=>c.render())};
+hostTest.unmount=()=>{while(roots.length)roots.pop().unmount()};
+hostTest.dispose=()=>{hostTest.unmount();for(const fn of disposers)fn()};
+hostTest.runPalette=(label='ASCII Worlds: toggle background')=>{const c=contributions.find(c=>c.area==='palette'&&c.data.label===label);if(!c)return false;c.data.run();return true};
+hostTest.mount();
+</script></body></html>

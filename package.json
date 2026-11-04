@@ -1,0 +1,33 @@
+{
+  "name": "ascii-worlds",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Quiet, procedural glyph aquariums for Hermes Desktop.",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "verify": "npm test && npm run build",
+    "demo": "node scripts/serve.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/dudicslevente/hermes-ascii-worlds#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dudicslevente/hermes-ascii-worlds.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dudicslevente/hermes-ascii-worlds/issues"
+  },
+  "author": "dudicslevente",
+  "keywords": [
+    "hermes",
+    "hermes-desktop",
+    "plugin",
+    "ascii",
+    "aquarium"
+  ]
+}

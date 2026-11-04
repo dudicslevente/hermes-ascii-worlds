@@ -1,0 +1,34 @@
+name: CI
+on:
+  push:
+  pull_request:
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Unit tests and build
+        run: npm run verify
+      - name: Built files are committed and up to date
+        run: git diff --exit-code -- desktop/plugin.js demo.html
+      - name: Plugin imports only the three allowed modules
+        run: |
+          imports=$(grep -E '^import ' desktop/plugin.js | sed -E 's/.*from "([^"]+)".*/\1/' | sort -u | tr '\n' ' ')
+          echo "imports: $imports"
+          [ "$imports" = "@hermes/plugin-sdk react react/jsx-runtime " ]
+  desktop-compat:
+    # Informational: does the plugin still match the current Hermes Desktop source?
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check against Hermes main
+        run: |
+          git clone --depth 1 https://github.com/NousResearch/hermes-agent.git /tmp/hermes-agent
+          node scripts/check-desktop-compat.mjs /tmp/hermes-agent
