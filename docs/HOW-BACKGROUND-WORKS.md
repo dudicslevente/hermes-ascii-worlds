@@ -1,5 +1,7 @@
 # How Background mode works
 
+> The catalog version of the plugin (the `catalog` branch) has only the Whole window placement, so everything below about Chat area applies to the full plugin on `main` and its GitHub releases.
+
 Background mode draws the current scene on one full-window canvas. This page lists exactly what it adds to the page, how the two placements differ, and what to check if it stops working. It is written for people who want to verify the plugin or fix it after a Hermes Desktop update.
 
 ## What it adds to the page (only while Background is on)

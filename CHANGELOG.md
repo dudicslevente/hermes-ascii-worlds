@@ -2,6 +2,12 @@
 
 All notable changes to ASCII Worlds. This project follows semantic versioning.
 
+## 1.0.1
+
+- README now uses real Hermes Desktop screenshots and installs from the release zip, which already contains the `ascii-worlds` folder.
+- New catalog build (`npm run build:catalog`, `scripts/make-catalog-branch.sh`): the same plugin with only the Whole window placement, so it never touches the app's own markup. The full plugin on `main` is unchanged.
+- No change to how the plugin behaves.
+
 ## 1.0.0
 
 First public release.

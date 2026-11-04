@@ -11,9 +11,12 @@ jobs:
         with:
           node-version: 20
       - name: Unit tests and build
-        run: npm run verify
+        run: |
+          if [ "$GITHUB_REF_NAME" = "catalog" ]; then npm test; else npm run verify; fi
       - name: Built files are committed and up to date
-        run: git diff --exit-code -- desktop/plugin.js demo.html
+        run: |
+          if [ "$GITHUB_REF_NAME" = "catalog" ]; then npm run build:catalog; else npm run build; fi
+          git diff --exit-code -- desktop/plugin.js demo.html
       - name: Plugin imports only the three allowed modules
         run: |
           imports=$(grep -E '^import ' desktop/plugin.js | sed -E 's/.*from "([^"]+)".*/\1/' | sort -u | tr '\n' ' ')

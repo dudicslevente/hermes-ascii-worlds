@@ -203,9 +203,12 @@ function frameCap(eco) {
 // Shown on the Background layer and in the Check background report so a console or a bug
 // report can tell exactly which build is running. Kept equal to package.json
 // by a unit test.
-const PLUGIN_VERSION = "1.0.0";
+const PLUGIN_VERSION = "1.0.1";
 const BACKGROUND_KEY = "background.v1";
 const BACKGROUND_MIN = 0.08;
+// The catalog build (npm run build:catalog) rewrites this to false and removes
+// the code between @chat-area markers, leaving only the Whole window placement.
+const CHAT_AREA = true;
 const BACKGROUND_MAX = 0.6;
 const BACKGROUND_DEFAULTS = Object.freeze({
   schemaVersion: 1,
@@ -213,7 +216,7 @@ const BACKGROUND_DEFAULTS = Object.freeze({
   strength: 0.28,
   // "behind" draws under the chat and needs the host's opaque wrappers cleared;
   // "front" draws over everything at low strength and never depends on them.
-  placement: "behind",
+  placement: CHAT_AREA ? "behind" : "front",
   // Deprecated since 1.3.0 and ignored. Clearing every wrapper above the chat
   // is now part of Background mode itself, because the old two-level toggle
   // never reached the wrappers a live Desktop paints. The field is still read
@@ -231,7 +234,7 @@ function normalizeBackground(value) {
       typeof v.strength === "number" && Number.isFinite(v.strength)
         ? Math.max(BACKGROUND_MIN, Math.min(BACKGROUND_MAX, v.strength))
         : BACKGROUND_DEFAULTS.strength,
-    placement: v.placement === "front" ? "front" : "behind",
+    placement: CHAT_AREA && v.placement !== "front" ? "behind" : "front",
     extraTransparency: v.extraTransparency === true,
   };
 }
@@ -1462,6 +1465,7 @@ function mountWorld(root, storage = browserStorage(), hub = null) {
   world.innerHTML = `<section class="aw-section aw-bg" aria-labelledby="aw-h-bg" hidden>
       <h3 class="aw-h" id="aw-h-bg">Background</h3>
       <label class="aw-switch"><input type="checkbox" role="switch" name="bgEnabled"><span class="aw-switch-track" aria-hidden="true"></span><span>Show the animation in Hermes</span></label>
+      <!-- @chat-area:begin -->
       <fieldset class="aw-placement"><legend>Placement</legend>
         <div class="aw-cards">
           <label class="aw-card"><input type="radio" name="bgPlacement" value="behind"><span class="aw-card-title">Chat area</span><span class="aw-card-text">The animation shows through the chat area only. Sidebars, side panels and the title bar keep their own backgrounds, so it stops at their edges and never covers text.</span></label>
@@ -1469,6 +1473,7 @@ function mountWorld(root, storage = browserStorage(), hub = null) {
         </div>
       </fieldset>
       <p class="aw-help">Chat area relies on how Hermes Desktop lays out its window. If it stops showing after an app update, switch to Whole window.</p>
+      <!-- @chat-area:end -->
       <label class="aw-field aw-strength"><span>Strength</span><span class="aw-speed"><input type="range" name="bgStrength" min="8" max="60" step="1" aria-label="Strength"><output class="aw-bg-out"></output></span><small>Lower is calmer; 28% is a good start</small></label>
       <div class="aw-bg-status" role="status" aria-live="polite"></div>
     </section>
@@ -1736,24 +1741,23 @@ const BG_ATTR = "data-ascii-worlds-bg";
 const BG_STYLE_ATTR = "data-ascii-worlds-bg-style";
 const BG_VERSION_ATTR = "data-ascii-worlds-version";
 
-// Every rule is scoped under html[data-ascii-worlds-bg="on"], uses only the
-// documented [data-chat-surface] / [data-slot="aui_thread-viewport"] hooks and
-// avoids !important so a host rule that insists on a background still wins
-// (the failure is then visible and diagnosable instead of fighting the host).
+// The Chat area rules are scoped under this plugin's own html attribute. They
+// sit between @chat-area markers because the catalog build
+// (npm run build:catalog) removes them, so the catalog version never touches
+// the app's own markup.
 function backgroundCss(placement = "behind") {
-  // In front: the layer sits above the app and does not need anything cleared.
-  if (placement === "front") return "";
+  // Whole window: the layer sits above the app and does not need anything cleared.
+  if (placement !== "behind") return "";
+  // @chat-area:begin
   const on = `html[${BG_ATTR}="on"]`;
-  // Behind the chat. A live Desktop window needed every colour-painting wrapper
+  // Chat area. A live Desktop window needed every colour-painting wrapper
   // between the page and the message list cleared: the body itself, wrappers
-  // 8 to 16 levels above the chat, and the ones inside the chat surface. These are exactly the two rules that were first
-  // proven by hand in the console (a wrapper-clearing rule plus the inner rule),
-  // joined into one sheet. They are pure CSS on the documented
-  // [data-chat-surface] hook; nothing walks or observes the DOM, they apply only
-  // while the layer is on, and they vanish with it. !important is used on this
-  // single property, only inside our own attribute scope, because the hand-made
-  // rules that worked used it and the host paints colours with its own utility
-  // classes and inline styles that a plain rule cannot always beat.
+  // 8 to 16 levels above the chat, and the ones inside the chat surface. This
+  // is pure CSS on the [data-chat-surface] hook; nothing walks or observes the
+  // DOM, it applies only while the layer is on, and it vanishes with it.
+  // !important is used on this single property, only inside our own attribute
+  // scope, because the host paints colours with its own utility classes and
+  // inline styles that a plain rule cannot always beat.
   return [
     // The body itself paints an opaque colour on a live Desktop window and sits
     // above a z-index -1 layer, so it is cleared on its own line.
@@ -1766,6 +1770,8 @@ function backgroundCss(placement = "behind") {
     "}",
     "",
   ].join("\n");
+  // @chat-area:end
+  return "";
 }
 
 // A read-only report for the settings page's "Check background" button. It reads styles
@@ -1800,6 +1806,7 @@ function diagnose(doc = document) {
     }
     out.push(`canvas ${canvas.width}x${canvas.height} | opacity ${view.getComputedStyle(canvas).opacity} | painted pixels ${painted}`);
   } else out.push("canvas: missing");
+  // @chat-area:begin
   const surface = doc.querySelector("[data-chat-surface]");
   if (!surface) {
     out.push("chat surface: not found on this page");
@@ -1818,6 +1825,7 @@ function diagnose(doc = document) {
       rows.push(`  INSIDE-chat element still painting ${c.backgroundColor}${c.backgroundImage !== "none" ? " + image" : ""}: ${String(e.className).slice(0, 110)}`);
   }
   out.push(rows.length ? `still painting over the layer (${rows.length}):\n${rows.join("\n")}` : "nothing in the chat chain is painting a colour");
+  // @chat-area:end
   return out.join("\n");
 }
 
@@ -1891,11 +1899,13 @@ function createBackgroundHost({ hub, doc = document }) {
     // then to nothing.
     // In front: the highest z-index, no base colour, so only the glyphs are
     // drawn over the app, at the chosen strength. Pointer events pass through.
-    layer.style.cssText =
-      bg.placement === "front"
-        ? common + "z-index:2147483646"
-        : common +
-          "z-index:-1;background:var(--ui-chat-surface-background, var(--ui-bg-chrome, transparent))";
+    layer.style.cssText = common + "z-index:2147483646";
+    // @chat-area:begin
+    if (bg.placement !== "front")
+      layer.style.cssText =
+        common +
+        "z-index:-1;background:var(--ui-chat-surface-background, var(--ui-bg-chrome, transparent))";
+    // @chat-area:end
     const canvas = doc.createElement("canvas");
     canvas.style.cssText = `display:block;width:100%;height:100%;pointer-events:none;opacity:${bg.strength}`;
     layer.appendChild(canvas);

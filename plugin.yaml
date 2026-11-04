@@ -1,5 +1,5 @@
 name: ascii-worlds
-version: "1.0.0"
+version: "1.0.1"
 description: Koi and jellyfish drawn live in text glyphs, in a Settings page, with an optional animated background for Hermes Desktop chats.
 author: dudicslevente
 requires_hermes: ">=0.21.6"

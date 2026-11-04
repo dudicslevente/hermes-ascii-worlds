@@ -11,24 +11,23 @@ export const BG_ATTR = "data-ascii-worlds-bg";
 export const BG_STYLE_ATTR = "data-ascii-worlds-bg-style";
 export const BG_VERSION_ATTR = "data-ascii-worlds-version";
 
-// Every rule is scoped under html[data-ascii-worlds-bg="on"], uses only the
-// documented [data-chat-surface] / [data-slot="aui_thread-viewport"] hooks and
-// avoids !important so a host rule that insists on a background still wins
-// (the failure is then visible and diagnosable instead of fighting the host).
+// The Chat area rules are scoped under this plugin's own html attribute. They
+// sit between @chat-area markers because the catalog build
+// (npm run build:catalog) removes them, so the catalog version never touches
+// the app's own markup.
 export function backgroundCss(placement = "behind") {
-  // In front: the layer sits above the app and does not need anything cleared.
-  if (placement === "front") return "";
+  // Whole window: the layer sits above the app and does not need anything cleared.
+  if (placement !== "behind") return "";
+  // @chat-area:begin
   const on = `html[${BG_ATTR}="on"]`;
-  // Behind the chat. A live Desktop window needed every colour-painting wrapper
+  // Chat area. A live Desktop window needed every colour-painting wrapper
   // between the page and the message list cleared: the body itself, wrappers
-  // 8 to 16 levels above the chat, and the ones inside the chat surface. These are exactly the two rules that were first
-  // proven by hand in the console (a wrapper-clearing rule plus the inner rule),
-  // joined into one sheet. They are pure CSS on the documented
-  // [data-chat-surface] hook; nothing walks or observes the DOM, they apply only
-  // while the layer is on, and they vanish with it. !important is used on this
-  // single property, only inside our own attribute scope, because the hand-made
-  // rules that worked used it and the host paints colours with its own utility
-  // classes and inline styles that a plain rule cannot always beat.
+  // 8 to 16 levels above the chat, and the ones inside the chat surface. This
+  // is pure CSS on the [data-chat-surface] hook; nothing walks or observes the
+  // DOM, it applies only while the layer is on, and it vanishes with it.
+  // !important is used on this single property, only inside our own attribute
+  // scope, because the host paints colours with its own utility classes and
+  // inline styles that a plain rule cannot always beat.
   return [
     // The body itself paints an opaque colour on a live Desktop window and sits
     // above a z-index -1 layer, so it is cleared on its own line.
@@ -41,6 +40,8 @@ export function backgroundCss(placement = "behind") {
     "}",
     "",
   ].join("\n");
+  // @chat-area:end
+  return "";
 }
 
 // A read-only report for the settings page's "Check background" button. It reads styles
@@ -75,6 +76,7 @@ export function diagnose(doc = document) {
     }
     out.push(`canvas ${canvas.width}x${canvas.height} | opacity ${view.getComputedStyle(canvas).opacity} | painted pixels ${painted}`);
   } else out.push("canvas: missing");
+  // @chat-area:begin
   const surface = doc.querySelector("[data-chat-surface]");
   if (!surface) {
     out.push("chat surface: not found on this page");
@@ -93,6 +95,7 @@ export function diagnose(doc = document) {
       rows.push(`  INSIDE-chat element still painting ${c.backgroundColor}${c.backgroundImage !== "none" ? " + image" : ""}: ${String(e.className).slice(0, 110)}`);
   }
   out.push(rows.length ? `still painting over the layer (${rows.length}):\n${rows.join("\n")}` : "nothing in the chat chain is painting a colour");
+  // @chat-area:end
   return out.join("\n");
 }
 
@@ -166,11 +169,13 @@ export function createBackgroundHost({ hub, doc = document }) {
     // then to nothing.
     // In front: the highest z-index, no base colour, so only the glyphs are
     // drawn over the app, at the chosen strength. Pointer events pass through.
-    layer.style.cssText =
-      bg.placement === "front"
-        ? common + "z-index:2147483646"
-        : common +
-          "z-index:-1;background:var(--ui-chat-surface-background, var(--ui-bg-chrome, transparent))";
+    layer.style.cssText = common + "z-index:2147483646";
+    // @chat-area:begin
+    if (bg.placement !== "front")
+      layer.style.cssText =
+        common +
+        "z-index:-1;background:var(--ui-chat-surface-background, var(--ui-bg-chrome, transparent))";
+    // @chat-area:end
     const canvas = doc.createElement("canvas");
     canvas.style.cssText = `display:block;width:100%;height:100%;pointer-events:none;opacity:${bg.strength}`;
     layer.appendChild(canvas);

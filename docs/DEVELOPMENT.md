@@ -61,3 +61,14 @@ For a screenshot URL use `?scene=koi&palette=light&density=fine&paused=true&time
 ## Saved preferences
 
 Two keys in the plugin's storage: `settings.v2` (scene settings, `schemaVersion: 2`, with an older `settings.v1` still read) and `background.v1` (enabled, strength, placement: `behind` is shown as Chat area, `front` as Whole window). Both are validated field by field on every read, and a corrupt value falls back to a safe default instead of breaking the page. The demo uses `ascii-worlds.settings.v2` in the browser's local storage. See [ARCHITECTURE.md](ARCHITECTURE.md) for the migration rules.
+
+## Catalog build
+
+The plugin catalog does not allow a plugin to restyle the app's own markup (rule 8), and the Chat area placement does exactly that. Every piece of code that does it sits between `@chat-area:begin` and `@chat-area:end` markers (and `<!-- chat-area:begin -->` markers in the settings markup and the README).
+
+```sh
+npm run build:catalog             # writes the Whole-window-only desktop/plugin.js
+scripts/make-catalog-branch.sh    # builds it on a `catalog` branch (add --push to publish the branch)
+```
+
+`main` always holds the full plugin. The `catalog` branch is `main` plus one generated commit. Never edit it by hand; rerun the script after changing `main`. The browser suites that exercise Chat area (`background-harness`, `background-realshape`, and the placement cards in `settings-layout`) run against `main` only; `tests/catalog-variant.test.mjs` checks the catalog bundle.

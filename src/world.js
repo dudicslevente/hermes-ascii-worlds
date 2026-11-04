@@ -32,6 +32,7 @@ export function mountWorld(root, storage = browserStorage(), hub = null) {
   world.innerHTML = `<section class="aw-section aw-bg" aria-labelledby="aw-h-bg" hidden>
       <h3 class="aw-h" id="aw-h-bg">Background</h3>
       <label class="aw-switch"><input type="checkbox" role="switch" name="bgEnabled"><span class="aw-switch-track" aria-hidden="true"></span><span>Show the animation in Hermes</span></label>
+      <!-- @chat-area:begin -->
       <fieldset class="aw-placement"><legend>Placement</legend>
         <div class="aw-cards">
           <label class="aw-card"><input type="radio" name="bgPlacement" value="behind"><span class="aw-card-title">Chat area</span><span class="aw-card-text">The animation shows through the chat area only. Sidebars, side panels and the title bar keep their own backgrounds, so it stops at their edges and never covers text.</span></label>
@@ -39,6 +40,7 @@ export function mountWorld(root, storage = browserStorage(), hub = null) {
         </div>
       </fieldset>
       <p class="aw-help">Chat area relies on how Hermes Desktop lays out its window. If it stops showing after an app update, switch to Whole window.</p>
+      <!-- @chat-area:end -->
       <label class="aw-field aw-strength"><span>Strength</span><span class="aw-speed"><input type="range" name="bgStrength" min="8" max="60" step="1" aria-label="Strength"><output class="aw-bg-out"></output></span><small>Lower is calmer; 28% is a good start</small></label>
       <div class="aw-bg-status" role="status" aria-live="polite"></div>
     </section>

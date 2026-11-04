@@ -1,6 +1,6 @@
 # Will a Hermes update break this?
 
-Short answer: the plugin cannot take Hermes down, the settings and the title-bar button rest on documented SDK surface, and the one part that depends on how the app is laid out (the Chat area placement) fails safe. This page says exactly what each part relies on, how that was checked, and what to do after an update.
+Short answer for the catalog version (Whole window only): it relies only on documented SDK surface and draws one layer, so there is almost nothing an update can break. The rest of this page covers the full version on `main`, whose Chat area placement is the one part that depends on the app's layout. In both versions the plugin cannot take Hermes down, the settings and the title-bar button rest on documented SDK surface, and the one part that depends on how the app is laid out (the Chat area placement) fails safe. This page says exactly what each part relies on, how that was checked, and what to do after an update.
 
 ## What it relies on
 
@@ -23,7 +23,7 @@ The plugin imports only `react`, `react/jsx-runtime` and `@hermes/plugin-sdk`, w
 
 ## What was verified, and what was not
 
-Checked against the Hermes source (v0.22.6, 2026-11):
+Checked against the Hermes source (v0.22.6, 2026-11), and confirmed in use on a real Hermes Desktop 0.22.6 on macOS (settings page, title-bar toggle, Whole window animation; see the screenshots in the README):
 
 - Settings pages (`registerSettingsPage`, `pluginSettingsHref`, `SETTINGS_PLUGINS_AREA`) and the title-bar area exist in the Desktop source. They first appear in release v0.21.6, which is why `plugin.yaml` sets `requires_hermes: ">=0.21.6"`.
 - The palette contribution shape, `host.navigate`, the `Button` UI kit export and plugin storage exist as the plugin uses them.

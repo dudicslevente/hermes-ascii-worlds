@@ -199,9 +199,12 @@ export function frameCap(eco) {
 // Shown on the Background layer and in the Check background report so a console or a bug
 // report can tell exactly which build is running. Kept equal to package.json
 // by a unit test.
-export const PLUGIN_VERSION = "1.0.0";
+export const PLUGIN_VERSION = "1.0.1";
 export const BACKGROUND_KEY = "background.v1";
 export const BACKGROUND_MIN = 0.08;
+// The catalog build (npm run build:catalog) rewrites this to false and removes
+// the code between @chat-area markers, leaving only the Whole window placement.
+const CHAT_AREA = true;
 export const BACKGROUND_MAX = 0.6;
 export const BACKGROUND_DEFAULTS = Object.freeze({
   schemaVersion: 1,
@@ -209,7 +212,7 @@ export const BACKGROUND_DEFAULTS = Object.freeze({
   strength: 0.28,
   // "behind" draws under the chat and needs the host's opaque wrappers cleared;
   // "front" draws over everything at low strength and never depends on them.
-  placement: "behind",
+  placement: CHAT_AREA ? "behind" : "front",
   // Deprecated since 1.3.0 and ignored. Clearing every wrapper above the chat
   // is now part of Background mode itself, because the old two-level toggle
   // never reached the wrappers a live Desktop paints. The field is still read
@@ -227,7 +230,7 @@ export function normalizeBackground(value) {
       typeof v.strength === "number" && Number.isFinite(v.strength)
         ? Math.max(BACKGROUND_MIN, Math.min(BACKGROUND_MAX, v.strength))
         : BACKGROUND_DEFAULTS.strength,
-    placement: v.placement === "front" ? "front" : "behind",
+    placement: CHAT_AREA && v.placement !== "front" ? "behind" : "front",
     extraTransparency: v.extraTransparency === true,
   };
 }
