@@ -30,7 +30,7 @@ docs = [p for p in sorted((root / "docs").rglob("*")) if p.is_file()]
 common = ["README.md", "LICENSE", "CHANGELOG.md", "THIRD_PARTY_NOTICES.md"]
 install = {f"ascii-worlds/plugin.js": plugin, "demo.html": demo}
 install.update({n: root / n for n in common})
-install.update({str(p.relative_to(root)): p for p in docs if p.suffix == ".png" or "HOW-BACKGROUND" in p.name})
+install.update({str(p.relative_to(root)): p for p in docs if p.suffix in {".png", ".jpg"} or "HOW-BACKGROUND" in p.name})
 
 source = {}
 skip_dirs = {"node_modules", ".git", "__pycache__", "evidence", ".harness", "release"}
