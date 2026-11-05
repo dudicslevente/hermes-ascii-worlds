@@ -2,9 +2,10 @@
 
 This version has twenty habitats. This page covers the manual install; a GitHub
 release asset or the Hermes catalog are other routes and can carry an earlier
-version. The author hand-tested 1.2.0 on a Mac with Hermes Desktop and reports that
-everything worked (a general test, no recorded checklist results). The browser
-gallery is not proof of a live installation.
+version. The author hand-tested the full 1.2.0 plugin on a Mac with Hermes Desktop and
+reports that everything worked (a general test, no recorded checklist results; the
+catalog build was not hand-tested). The browser gallery is not proof of a live
+installation.
 
 ## Scope and verified official contract
 

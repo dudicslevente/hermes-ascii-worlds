@@ -24,8 +24,9 @@ source update does not by itself create a GitHub release or catalog approval.
 - Catalog documentation generation now transforms linked feature docs as well
   as README, and selects the separately captured Whole-window-only form.
 - No new runtime dependency, network call or self-updater. The author hand-tested
-  1.2.0 on a Mac with Hermes Desktop (a general test, no recorded checklist
-  results); screenshots are explicitly browser/mock evidence.
+  the full 1.2.0 plugin on a Mac with Hermes Desktop (a general test, no recorded
+  checklist results; the catalog build was not hand-tested); screenshots are
+  explicitly browser/mock evidence.
 - Retained limits: intentional fully offstage whale wait; high-count/size overlap;
   coarser small/Bold and light fine detail. No battery-life or universal FPS claim.
 

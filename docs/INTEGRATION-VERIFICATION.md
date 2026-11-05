@@ -79,11 +79,12 @@ Halos/stars are quiet in light themes. Whale fully exits and waits intentionally
 Stills do not prove smooth motion. Headless timings are load-dependent, not Mac
 FPS, heat or battery measurements. Catalog docs/images must match Whole window only.
 
-**The author reports a general hand test of v1.2.0 on a Mac with Hermes Desktop
-that went well; it left no recorded checklist results, screenshots or Desktop
-version. Windows and Linux Desktop, Safari, physical phones, other Hermes versions,
-accessibility, heat and battery use remain untested.** Historical images are not new
-native evidence. Public source, release
+**The author reports a general hand test of the full v1.2.0 plugin on a Mac with
+Hermes Desktop that went well; it left no recorded checklist results, screenshots or
+Desktop version, and the Whole-window-only catalog build (the same plugin without its
+second window-placement option) was not hand-tested. Windows and Linux Desktop,
+Safari, physical phones, other Hermes versions, accessibility, heat and battery use
+remain untested.** Historical images are not new native evidence. Public source, release
 assets, validator/CI and catalog admission each need their own evidence;
 maintainers' acceptance is not implied.
 
