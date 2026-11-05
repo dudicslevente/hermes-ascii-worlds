@@ -4,6 +4,7 @@ import {
   createBackgroundStore,
   PLUGIN_VERSION,
 } from "./settings.js";
+import { readWorldSettings } from './settings-v3.js';
 import { createEngine } from "./engine.js";
 
 // Relies on Desktop layout. See docs/BACKGROUND.md for every selector and the known unknowns.
@@ -102,9 +103,14 @@ export function diagnose(doc = document) {
 // One shared bundle per plugin registration: settings-page edits and the background
 // host talk through it. Nothing is attached to window.
 export function createHub(storage) {
+  // The scene envelope and background key can fail/recover independently.
+  const persistence=createStore({settings:true,background:true});
   return {
-    settings: createStore(readSettings(storage)),
-    bg: createBackgroundStore(storage),
+    persistence,
+    // Session-only explicit consent; never persisted across plugin reloads.
+    motionOptIn: createStore(false),
+    settings: createStore(readWorldSettings(storage)),
+    bg: createBackgroundStore(storage, saved=>persistence.set({...persistence.get(),background:saved})),
     status: createStore({ available: true, message: "" }),
   };
 }
@@ -164,10 +170,8 @@ export function createBackgroundHost({ hub, doc = document }) {
   const reduced = () => Boolean(reducedMedia?.matches);
   const engineSettings = () => {
     const s = hub.settings.get();
-    // The background uses the same habitat, colours, appearance, density,
-    // speed and battery-saver choices as the preview. Only pause also follows
-    // the reduced-motion preference.
-    return { ...s, paused: s.paused || reduced() };
+    // Explicit Resume opts both canvases in until the next OS hold/reload.
+    return { ...s, paused: s.paused || (reduced() && !hub.motionOptIn.get()) };
   };
   function sweepStrays() {
     // A previous load of the plugin that never ran cleanup must not stack.
@@ -261,14 +265,19 @@ export function createBackgroundHost({ hub, doc = document }) {
   function refresh() {
     if (attached && active?.engine) active.engine.update(engineSettings());
   }
+  function reducedChanged() {
+    hub.motionOptIn.set(false);
+    if (reduced()) hub.settings.set({ ...hub.settings.get(), paused: true });
+    refresh();
+  }
   return {
     attach() {
       if (attached) return;
       attached = true;
       reducedMedia = matchMedia("(prefers-reduced-motion: reduce)");
-      cleanups.push(hub.bg.subscribe(apply), hub.settings.subscribe(refresh));
-      reducedMedia.addEventListener("change", refresh);
-      cleanups.push(() => reducedMedia.removeEventListener("change", refresh));
+      cleanups.push(hub.bg.subscribe(apply), hub.settings.subscribe(refresh), hub.motionOptIn.subscribe(refresh));
+      reducedMedia.addEventListener("change", reducedChanged);
+      cleanups.push(() => reducedMedia.removeEventListener("change", reducedChanged));
       apply();
     },
     detach() {

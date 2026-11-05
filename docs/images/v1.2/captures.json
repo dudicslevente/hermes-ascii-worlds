@@ -1,0 +1,451 @@
+{
+  "version": "1.2.0",
+  "evidence": "Actual generated plugin; real React Strict Mode; mock SDK; Linux Chromium; native Mac acceptance not claimed.",
+  "pluginSha256": "022004d7444cf947577679ed394e6315bd0c6f60f17a3bf4df1b153c54acca2d",
+  "catalogSha256": "965b4aceaa3921e26360d163ac37f404bc78e6a1474c8c8fbe19c617411d8b82",
+  "captures": [
+    {
+      "file": "koi-dark.png",
+      "kind": "preview",
+      "scene": "koi",
+      "title": "Koi pond",
+      "tone": "dark",
+      "defaults": true,
+      "sha256": "e6233f1d405ce2cea3b6b9f20266b984fefd0a463887a17af7bbf9149d7310b3",
+      "bytes": 40467
+    },
+    {
+      "file": "jellyfish-dark.png",
+      "kind": "preview",
+      "scene": "jellyfish",
+      "title": "Jellyfish drift",
+      "tone": "dark",
+      "defaults": true,
+      "sha256": "af4f8bb0492553e9247b378c776c4922b186d49b1dd4d1fa91f2ba31f3af33cd",
+      "bytes": 119124
+    },
+    {
+      "file": "manta-rays-dark.png",
+      "kind": "preview",
+      "scene": "manta-rays",
+      "title": "Manta rays",
+      "tone": "dark",
+      "defaults": true,
+      "sha256": "b66051dc60bbc1fbd57adcbf1ba129e12de177b4747dac2897a059c57ad09187",
+      "bytes": 43289
+    },
+    {
+      "file": "sea-turtles-dark.png",
+      "kind": "preview",
+      "scene": "sea-turtles",
+      "title": "Sea turtles",
+      "tone": "dark",
+      "defaults": true,
+      "sha256": "cb8b3b1c4d94d0c505a024e7c454cf5d8d81096983983eed729a776f62df235c",
+      "bytes": 70228
+    },
+    {
+      "file": "seahorses-dark.png",
+      "kind": "preview",
+      "scene": "seahorses",
+      "title": "Seahorses",
+      "tone": "dark",
+      "defaults": true,
+      "sha256": "662b6993f4776d806d161b2fbb3e2bf117b0108b135bb509febd66dfc6206e24",
+      "bytes": 69828
+    },
+    {
+      "file": "tiny-fish-school-dark.png",
+      "kind": "preview",
+      "scene": "tiny-fish-school",
+      "title": "Tiny fish school",
+      "tone": "dark",
+      "defaults": true,
+      "sha256": "2101f1a0b7adf406c4126d1ffb5e7d3e4742e8e8715a70de26da0a809cf25dd4",
+      "bytes": 34272
+    },
+    {
+      "file": "solitary-whale-dark.png",
+      "kind": "preview",
+      "scene": "solitary-whale",
+      "title": "Solitary whale",
+      "tone": "dark",
+      "defaults": true,
+      "sha256": "732a8881faccafae9257a3ac596608fa5e30d66fca481a0b3662d8944d611453",
+      "bytes": 84851
+    },
+    {
+      "file": "octopus-dark.png",
+      "kind": "preview",
+      "scene": "octopus",
+      "title": "Octopus",
+      "tone": "dark",
+      "defaults": true,
+      "sha256": "abc21eec1d9387bef567cc9500a3c23947632d3653bb2142103449860e9b85e8",
+      "bytes": 81881
+    },
+    {
+      "file": "butterflies-dark.png",
+      "kind": "preview",
+      "scene": "butterflies",
+      "title": "Butterflies",
+      "tone": "dark",
+      "defaults": true,
+      "sha256": "2e9343777694e3578443d43842d3abfc5b76e0c480c4b813d442d7580ae16c71",
+      "bytes": 31347
+    },
+    {
+      "file": "luna-moths-dark.png",
+      "kind": "preview",
+      "scene": "luna-moths",
+      "title": "Luna moths",
+      "tone": "dark",
+      "defaults": true,
+      "sha256": "c53d5c6214f44cf41e3fa4dbc230653c27653b31d5b22ce1f33a1d080854c50e",
+      "bytes": 40213
+    },
+    {
+      "file": "dragonflies-dark.png",
+      "kind": "preview",
+      "scene": "dragonflies",
+      "title": "Dragonflies",
+      "tone": "dark",
+      "defaults": true,
+      "sha256": "2cc18c24014c886c8dd5345eb01aea7ab46f9f19b2497c2e87dc2b98e7b0b8a6",
+      "bytes": 45085
+    },
+    {
+      "file": "swallows-dark.png",
+      "kind": "preview",
+      "scene": "swallows",
+      "title": "Swallows",
+      "tone": "dark",
+      "defaults": true,
+      "sha256": "287fec0bf7030053e9bff14c116c9beda3604a0099f8435fec2642d1d9489077",
+      "bytes": 36941
+    },
+    {
+      "file": "sleeping-cat-dark.png",
+      "kind": "preview",
+      "scene": "sleeping-cat",
+      "title": "Sleeping cat",
+      "tone": "dark",
+      "defaults": true,
+      "sha256": "71b037f4e26effe93492d82237e167712eb330d168327d43fbf2ded729f72c4f",
+      "bytes": 61389
+    },
+    {
+      "file": "owl-dark.png",
+      "kind": "preview",
+      "scene": "owl",
+      "title": "Owl",
+      "tone": "dark",
+      "defaults": true,
+      "sha256": "82ea1a71042b0c18b33942c591b7ec63ccbd594276cc2af4be3db2ce8cefff3f",
+      "bytes": 76425
+    },
+    {
+      "file": "ginkgo-leaves-dark.png",
+      "kind": "preview",
+      "scene": "ginkgo-leaves",
+      "title": "Ginkgo leaves",
+      "tone": "dark",
+      "defaults": true,
+      "sha256": "cfa46f68ccd4904469ae6bba3aaf903309d2ae2724c1e753dfa5c5fc660b1b8b",
+      "bytes": 71901
+    },
+    {
+      "file": "cherry-blossom-petals-dark.png",
+      "kind": "preview",
+      "scene": "cherry-blossom-petals",
+      "title": "Cherry blossom petals",
+      "tone": "dark",
+      "defaults": true,
+      "sha256": "2562b0a8060786405ae563757d2cbdf4f381b1a7e1a0108376e29fab263caa84",
+      "bytes": 37332
+    },
+    {
+      "file": "fireflies-dark.png",
+      "kind": "preview",
+      "scene": "fireflies",
+      "title": "Fireflies",
+      "tone": "dark",
+      "defaults": true,
+      "sha256": "0550cb33c85e92354b8b35d10c48a6e745f416fa5a4792e6266414559ad2a288",
+      "bytes": 45313
+    },
+    {
+      "file": "bubbles-dark.png",
+      "kind": "preview",
+      "scene": "bubbles",
+      "title": "Bubbles",
+      "tone": "dark",
+      "defaults": true,
+      "sha256": "5b10245f017a2568fb5b99540d040b9fd62ca47ad22d089dcb72c62de324bd76",
+      "bytes": 38700
+    },
+    {
+      "file": "dandelion-seeds-dark.png",
+      "kind": "preview",
+      "scene": "dandelion-seeds",
+      "title": "Dandelion seeds",
+      "tone": "dark",
+      "defaults": true,
+      "sha256": "1f564d1ee73ceae782a52829322041accddd34ee1eb9bc5d822cde1475566862",
+      "bytes": 62540
+    },
+    {
+      "file": "night-sky-dark.png",
+      "kind": "preview",
+      "scene": "night-sky",
+      "title": "Night sky",
+      "tone": "dark",
+      "defaults": true,
+      "sha256": "8f8a28c05b2a53d8b5c24f0091ffc98a2abfef03a906fe95d11f9d2f37886cb1",
+      "bytes": 40935
+    },
+    {
+      "file": "koi-light.png",
+      "kind": "preview",
+      "scene": "koi",
+      "title": "Koi pond",
+      "tone": "light",
+      "defaults": true,
+      "sha256": "50a0d913f939b426a5a84d86ac1fb4d0620c68741ee067a308979acf4b92b288",
+      "bytes": 40299
+    },
+    {
+      "file": "jellyfish-light.png",
+      "kind": "preview",
+      "scene": "jellyfish",
+      "title": "Jellyfish drift",
+      "tone": "light",
+      "defaults": true,
+      "sha256": "cdadba6df13f2c89b24a4c982b0043a24190facdd25cc41887acbf0bf96f3d0e",
+      "bytes": 111061
+    },
+    {
+      "file": "manta-rays-light.png",
+      "kind": "preview",
+      "scene": "manta-rays",
+      "title": "Manta rays",
+      "tone": "light",
+      "defaults": true,
+      "sha256": "3deb89ff26001dc3c5e42a90a641d7ee84ee9325eeb9757f954eeea4d7100640",
+      "bytes": 43016
+    },
+    {
+      "file": "sea-turtles-light.png",
+      "kind": "preview",
+      "scene": "sea-turtles",
+      "title": "Sea turtles",
+      "tone": "light",
+      "defaults": true,
+      "sha256": "8a7f11606a00c02538faa9c044ef60ac8453f3d64a8a2e59f6fc3a473adc98d2",
+      "bytes": 68177
+    },
+    {
+      "file": "seahorses-light.png",
+      "kind": "preview",
+      "scene": "seahorses",
+      "title": "Seahorses",
+      "tone": "light",
+      "defaults": true,
+      "sha256": "b09ad03064bba6f0796f46e20cb635eb38a2a2affac7edbfac59a6844f7cc016",
+      "bytes": 64934
+    },
+    {
+      "file": "tiny-fish-school-light.png",
+      "kind": "preview",
+      "scene": "tiny-fish-school",
+      "title": "Tiny fish school",
+      "tone": "light",
+      "defaults": true,
+      "sha256": "3bb14c578d41bcb84457328aee2334c17885f836cf5c2357fcf7095b99f4dc59",
+      "bytes": 28421
+    },
+    {
+      "file": "solitary-whale-light.png",
+      "kind": "preview",
+      "scene": "solitary-whale",
+      "title": "Solitary whale",
+      "tone": "light",
+      "defaults": true,
+      "sha256": "578a9a28a3ea7adeb4426d1f79554fa8cc199a7bf4d5c2f81eaf964744ed44e8",
+      "bytes": 80157
+    },
+    {
+      "file": "octopus-light.png",
+      "kind": "preview",
+      "scene": "octopus",
+      "title": "Octopus",
+      "tone": "light",
+      "defaults": true,
+      "sha256": "6bb7ac53ad333c693c581690a0b3d519d8f2570536553fc5880b3880f8efeea4",
+      "bytes": 86471
+    },
+    {
+      "file": "butterflies-light.png",
+      "kind": "preview",
+      "scene": "butterflies",
+      "title": "Butterflies",
+      "tone": "light",
+      "defaults": true,
+      "sha256": "df86dbfc67766597fa74ba8089286f68acab837630d2f26bf1b5ed586349a064",
+      "bytes": 31288
+    },
+    {
+      "file": "luna-moths-light.png",
+      "kind": "preview",
+      "scene": "luna-moths",
+      "title": "Luna moths",
+      "tone": "light",
+      "defaults": true,
+      "sha256": "3a476fee6910032358abfaab12564a16accf2a6e2ce78b702b16d72bab819730",
+      "bytes": 38873
+    },
+    {
+      "file": "dragonflies-light.png",
+      "kind": "preview",
+      "scene": "dragonflies",
+      "title": "Dragonflies",
+      "tone": "light",
+      "defaults": true,
+      "sha256": "d06eff2a93a9685957782854e7947f86055af2298338ade7d4a9c96770e39546",
+      "bytes": 46077
+    },
+    {
+      "file": "swallows-light.png",
+      "kind": "preview",
+      "scene": "swallows",
+      "title": "Swallows",
+      "tone": "light",
+      "defaults": true,
+      "sha256": "96fdcee9bd64dcbaff4fa15a87cfe04bc1261a1db4fc6f364ea8206c38f1163b",
+      "bytes": 33224
+    },
+    {
+      "file": "sleeping-cat-light.png",
+      "kind": "preview",
+      "scene": "sleeping-cat",
+      "title": "Sleeping cat",
+      "tone": "light",
+      "defaults": true,
+      "sha256": "07391ae7f313ac743f7f3edaf80e395e408a98ac8c033483766c36f748170b85",
+      "bytes": 63212
+    },
+    {
+      "file": "owl-light.png",
+      "kind": "preview",
+      "scene": "owl",
+      "title": "Owl",
+      "tone": "light",
+      "defaults": true,
+      "sha256": "201a1635222d37dbf45a8324d445c3221f9460707d05157a79fd22732e4d5bc3",
+      "bytes": 75072
+    },
+    {
+      "file": "ginkgo-leaves-light.png",
+      "kind": "preview",
+      "scene": "ginkgo-leaves",
+      "title": "Ginkgo leaves",
+      "tone": "light",
+      "defaults": true,
+      "sha256": "0b628ad04e3d42ffe529424256107e6bf210516b6f017b997a813bb03febca9b",
+      "bytes": 63306
+    },
+    {
+      "file": "cherry-blossom-petals-light.png",
+      "kind": "preview",
+      "scene": "cherry-blossom-petals",
+      "title": "Cherry blossom petals",
+      "tone": "light",
+      "defaults": true,
+      "sha256": "19ab6da1f79bf9cf99f284b49fada13db60d4ef051b4b5919a4485c6d000f837",
+      "bytes": 31649
+    },
+    {
+      "file": "fireflies-light.png",
+      "kind": "preview",
+      "scene": "fireflies",
+      "title": "Fireflies",
+      "tone": "light",
+      "defaults": true,
+      "sha256": "1b92b30a77bc3f1feac1622c2dd9e027e201ae4f097b3cbbfddbe3be30d1a98d",
+      "bytes": 37611
+    },
+    {
+      "file": "bubbles-light.png",
+      "kind": "preview",
+      "scene": "bubbles",
+      "title": "Bubbles",
+      "tone": "light",
+      "defaults": true,
+      "sha256": "4ff2e476d976ce28b311a5dbdc4f5d9b420f4130278328adb2402529f7665e00",
+      "bytes": 34724
+    },
+    {
+      "file": "dandelion-seeds-light.png",
+      "kind": "preview",
+      "scene": "dandelion-seeds",
+      "title": "Dandelion seeds",
+      "tone": "light",
+      "defaults": true,
+      "sha256": "56ac99bfe26125fafe82b939731a7b1a4ffb7e793e5bc0cca8a0e0d6dff95b6a",
+      "bytes": 44272
+    },
+    {
+      "file": "night-sky-light.png",
+      "kind": "preview",
+      "scene": "night-sky",
+      "title": "Night sky",
+      "tone": "light",
+      "defaults": true,
+      "sha256": "3aa7fe8c336eb78699e7312aba4f0f4ff060e967d8dc1a1458579691f0578e6b",
+      "bytes": 31883
+    },
+    {
+      "file": "settings-full.png",
+      "kind": "settings",
+      "scene": "butterflies",
+      "tone": "light",
+      "variant": "full",
+      "sha256": "e29b7dbabfef8a6b660aa091f661f763cd1bf96d686b9adc4c7c3dac30996fe1",
+      "bytes": 174765
+    },
+    {
+      "file": "whole-window.png",
+      "kind": "composited-background",
+      "scene": "manta-rays",
+      "tone": "dark",
+      "placement": "front",
+      "strength": 0.28,
+      "variant": "full",
+      "sha256": "52dfb62b26e108ce2e5889f25fc84544a1171a350d61dbced2a2b75fcd72d83b",
+      "bytes": 151753
+    },
+    {
+      "file": "settings-catalog.png",
+      "kind": "settings",
+      "scene": "butterflies",
+      "tone": "light",
+      "variant": "catalog",
+      "sha256": "44404f1cb2a5974cb05d47065ad109b18f43539ad0e35b6b8d300fde0d43947d",
+      "bytes": 144202
+    },
+    {
+      "file": "whole-window-catalog.png",
+      "kind": "composited-background",
+      "scene": "manta-rays",
+      "tone": "dark",
+      "placement": "front",
+      "strength": 0.28,
+      "variant": "catalog",
+      "sha256": "5a84e699ab2f4ddd6ad1759738239a2bf862538f9f0e3ce99b2ac10745129ae3",
+      "bytes": 129750
+    }
+  ],
+  "errors": [],
+  "warnings": [],
+  "unexpectedRequests": []
+}

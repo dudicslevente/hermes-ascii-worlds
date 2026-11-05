@@ -1,6 +1,14 @@
 # Third-party notices
 
-The distribution bundles no third-party implementation, images, fonts, or audio.
+The runtime bundles no external artwork, fonts, or audio. Documentation includes
+original project screenshots and labelled contact sheets, not runtime assets.
+
+Version 1.2.0 includes the project's approved MIT Animation Lab core and
+eighteen scene modules under src/lab/. Scene sources and saved storyboard are
+retained byte-identically; the sampler alone adds transparent-background support.
+Approved standalone artifact provenance SHA-256:
+`d2edc1ffa534eb585b0a5bb66136336ee972be2b19e33e65c3d748fc34367bc7`.
+This does not imply the standalone gallery's review approves this integration.
 
 The Desktop adapter references React, React JSX runtime, and the public Hermes plugin SDK, supplied by the Desktop host rather than redistributed here. Their licenses remain with their respective projects.
 

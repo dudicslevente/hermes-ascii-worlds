@@ -1,92 +1,89 @@
-# Plugin catalog notes
+# Catalog variant and publication disclosures
 
-The Hermes plugin catalog is a human-reviewed list. Entries are added by a pull request to `NousResearch/hermes-agent` from the plugin's owner. The full rules are in the catalog's own README and at https://hermes-agent.nousresearch.com/docs/developer-guide/plugins/catalog-submission. This page records where this plugin stands.
+The Hermes plugin catalog is **human reviewed**, not a self-service marketplace.
+A public source push, a GitHub release and catalog admission are distinct. Do not
+claim acceptance until maintainers merge the entry. A new version of an entry that
+is already listed is a new reviewed SHA-bump pull request (admission rule 4 of the submission guide linked below), not an
+edit of an earlier merged one; the older pin stays installable until that pull
+request lands.
 
-## Layout
+Authoritative rules: [submission guide](https://hermes-agent.nousresearch.com/docs/developer-guide/plugins/catalog-submission)
+and [entry schema](https://github.com/NousResearch/hermes-agent/blob/main/plugin-catalog/README.md).
 
-The repository follows what the catalog and the Desktop installer read:
+## Exact variant
 
-```
-plugin.yaml        manifest: name, version, description, requires_hermes
-desktop/plugin.js  the plugin (a single plain ES module, built and committed)
-README.md          rendered on the plugin's catalog page at the pinned commit
-```
+The `catalog` branch is **Whole window only**. It uses native Settings, title-bar
+and palette SDK contributions, plugin-local storage and a transparent click-through
+canvas layer. It has no placement selector or host-background restyling.
 
-The built `desktop/plugin.js` must be committed, because the catalog installs the exact commit. CI fails if it is out of date (on the `catalog` branch it checks the catalog build).
 
-## Local check
+Build a non-destructive alternate artifact:
 
 ```sh
-hermes plugins validate .
+node scripts/build.mjs --catalog --out /your/scratch/catalog-plugin.js
+node --check /your/scratch/catalog-plugin.js
+node --test tests/catalog-variant.test.mjs tests/public-docs.test.mjs
 ```
 
-- **`main` (full plugin):** passes, with one expected warning: `desktop surface review (rule 8)` lists the app-markup selectors used by the Chat area placement.
-- **`catalog` branch:** passes with no rule 8 warning. The only warning left is `no __init__.py`, which is expected for a Desktop-only plugin with no Python half.
+`--out` leaves `desktop/plugin.js` and `demo.html` untouched. The generated
+catalog variant must be tested and validated from its **exact prospective tree**,
+not inferred from an older pin or normal-build results.
 
-(`hermes plugins doctor` checks Python plugins and does not apply here.)
+Maintainers of this repository can use `scripts/make-catalog-branch.sh` only after a clean,
+reviewed main tree exists. It adds one generated commit on top of the previous
+`catalog` tip, so a commit that an accepted entry already pins stays reachable;
+`--push` is a plain fast-forward push, and the script never rewrites or force-pushes
+history. Run `git fetch origin` first so your local `catalog` branch is current.
+**Do not run it just to preview docs.** For a separate source-tree copy,
+`node scripts/catalog-readme.mjs --root /path/to/copy` generates matching README,
+install, changelog and selected documentation, without modifying the main tree.
 
-## Rule 8 and the two branches
+## Entry and images
 
-Rule 8 says a listed Desktop plugin must not reach into the app's own markup to restyle core UI. The Chat area placement does that: while it is on, it makes the app's background layers transparent so the animation shows through. A reviewer would likely decline it, so the repository ships two things from one source tree:
+- Public cloneable repository with `plugin.yaml`, committed `desktop/plugin.js`
+  and README at the pinned commit; no dependency trees, binaries or release archives.
+- `version: "1.2.0"`, `requires_hermes: ">=0.21.6"`, matching the source manifest.
+  Desktop-only; no tools, hooks, middleware or required environment secrets.
+- **Full 40-character commit SHA**, never a branch, tag or short hash.
+- Banner: `docs/images/v1.2/banner.png`, **1200x600 (2:1)**.
+- At most **six** screenshots: recommended paths/captions are in the
+  [gallery](GALLERY.md#capture-provenance-and-reuse).
+- Use raw GitHub-hosted image URLs pinned to that **same commit**, not `main`.
+  Catalog README is rendered from the pin; raw HTML is filtered, so use ordinary
+  Markdown images and links. Every linked file/image must exist in that tree.
 
-| | `main` and GitHub releases | `catalog` branch |
-|---|---|---|
-| Placements | Chat area and Whole window | Whole window only |
-| Touches the app's own markup | Chat area does, through CSS | No |
-| Validator rule 8 warning | Yes (three selectors) | None |
-| Intended for | People installing from the GitHub release | The catalog entry |
+Selected catalog settings/background screenshots come from the **actual separately
+built catalog plugin**, not the full variant. All current images disclose
+**v1.2.0 browser mock-host capture; native Mac acceptance not claimed**.
 
-The `catalog` branch is generated, never edited by hand: `scripts/make-catalog-branch.sh` builds `desktop/plugin.js` with `npm run build:catalog` (which removes the code between `@chat-area` markers) and strips the Chat area text from the README. `tests/catalog-variant.test.mjs` checks that the catalog bundle contains none of the app selectors or colour variables.
+## Runtime disclosure (admission rule 13)
 
-The catalog entry's `sha` is a commit on the `catalog` branch, not on `main`.
+- **Network/telemetry:** none at runtime. No third-party calls, accounts or usage reporting.
+- **Credentials/environment:** none requested or stored. No `.env`, OAuth store,
+  keychain, browser-profile or other credential-store access.
+- **Files/processes:** no runtime file reads or shell/child processes. Build,
+  packaging, gallery and browser-test tools are contributor commands, not plugin services.
+- **Data:** plugin-namespaced validated scene/background preferences only. No
+  conversation text is read or sent. Explicit Check background reads canvas,
+  computed styles and geometry locally; inspect reports before sharing.
+- **Work while enabled:** one window canvas and optional visible preview, bounded
+  allocations and frame caps, resize/visibility/theme handling. No background daemon.
+- **Trust:** Desktop plugins execute with renderer authority; error isolation is
+  not capability isolation. No self-updater, remote loader or private host store access.
 
-## Other rules, and where the plugin stands
+## Validator and acceptance
 
-| Rule | Status |
-|---|---|
-| 3. No self-updating code | Complies: no network access of any kind |
-| 5. Owner submits | The repository owner must open the PR |
-| 6. Declared capabilities match | None declared and none used |
-| 8. Stay inside the SDK surface | The catalog branch does: no app selectors, no `eval`, no `import()`, no script injection, no observers. `main` does not (Chat area) |
-| 13. Disclose risky behaviour | None: no network, no files outside plugin storage, no shell, no background processes, no credentials, no telemetry. It adds one canvas layer, one style tag and one attribute to the page while Background is on |
-| 14. Truthful compatibility | `requires_hermes: ">=0.21.6"`, the first release with settings pages and the title-bar area (found in the Hermes git history). Not tested on every release since |
-| 17. No binaries | Plain source only |
+Against the final catalog tree, use the current documented validator:
 
-## Draft catalog entry
-
-Not submitted. The `sha` must be the full 40-character commit on the `catalog` branch (`git rev-parse catalog`), and the entry goes in `plugin-catalog/ascii-worlds.yaml` in `NousResearch/hermes-agent`.
-
-```yaml
-name: ascii-worlds
-repo: https://github.com/dudicslevente/hermes-ascii-worlds
-sha: <40-hex commit sha of the pushed release>
-title: ASCII Worlds
-description: Koi and jellyfish drawn live in text glyphs. Choose how many and their colours in Settings, and optionally let them swim across the whole Hermes window. Desktop-only (desktop/plugin.js, plugin SDK surface only); no agent tools, hooks, middleware, env vars or network access.
-maintainer: dudicslevente
-tier: community
-category: desktop
-requires_hermes: ">=0.21.6"
-version: "1.1.0"
-docs_url: https://github.com/dudicslevente/hermes-ascii-worlds
-image: https://raw.githubusercontent.com/dudicslevente/hermes-ascii-worlds/<sha>/docs/images/banner.png
-screenshots:
-  - https://raw.githubusercontent.com/dudicslevente/hermes-ascii-worlds/<sha>/docs/images/settings-background.png
-  - https://raw.githubusercontent.com/dudicslevente/hermes-ascii-worlds/<sha>/docs/images/settings-scene.png
-  - https://raw.githubusercontent.com/dudicslevente/hermes-ascii-worlds/<sha>/docs/images/koi-whole-window-1.jpg
-  - https://raw.githubusercontent.com/dudicslevente/hermes-ascii-worlds/<sha>/docs/images/jellyfish-whole-window-1.jpg
-platforms: []
-capabilities:
-  provides_tools: []
-  provides_hooks: []
-  provides_middleware: []
-  requires_env: []
+```sh
+hermes plugins validate /path/to/catalog-checkout --install-deps
 ```
 
-`docs/images/banner.png` is a 1200x600 (2:1) image, the shape the catalog README asks for. It is pinned to the commit by replacing `<sha>` in the raw URL.
+Run only in an appropriate reviewed test environment; this is a contributor
+instruction, **not a claim that the current publication passed validation or CI**.
+Read every warning. This Desktop-only plugin declares no Python dependencies.
+The publisher records validator output, the public commit and the exact image pins
+in the pull request description. Maintainers still decide acceptance.
 
-## PR description checklist
-
-- What it does and which surfaces it uses: a settings page, a title-bar button, two palette commands, and a canvas layer on the page while Background is on. Say that the pinned commit is on the `catalog` branch, which omits the Chat area placement on purpose.
-- The disclosure lines from rule 13 above.
-- Screenshots of the settings page and of the animation in the Whole window placement.
-- The `hermes plugins validate` output for the pinned commit.
+[Compatibility](COMPATIBILITY.md) · [Verification](INTEGRATION-VERIFICATION.md) ·
+[Privacy-aware development](DEVELOPMENT.md)

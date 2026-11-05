@@ -1,118 +1,136 @@
 # ASCII Worlds
 
-![ASCII Worlds banner](docs/images/banner.png)
+Twenty quiet, procedural glyph habitats for Hermes Desktop. Koi and jellyfish,
+sea turtles and moths, a sleeping cat, drifting petals, a slowly changing sky.
+Every creature is drawn from characters, not a video or downloaded image.
 
-A tiny aquarium for Hermes Desktop, drawn entirely out of text characters. Koi and jellyfish swim across your window, turn around, drift past each other and never really repeat. Flip one switch and they are there behind your work. Flip it again and they are gone.
+![Solitary whale rendered as coloured glyphs in the v1.2.0 dark preview; browser mock host, not native Mac evidence](docs/images/v1.2/banner.png)
 
-![Koi swimming across the Hermes Desktop window](docs/images/koi-whole-window-1.jpg)
+**Version 1.2.0.** The images on this page are **v1.2.0 browser mock-host captures,
+not Mac screenshots**. The author hand-tested 1.2.0 in Hermes Desktop on a Mac and
+reports that everything worked; it was a general hand test with no recorded checklist
+results. See the [verification scope](docs/INTEGRATION-VERIFICATION.md).
 
-*Koi drifting across Hermes Desktop. Every screenshot here is from Hermes Desktop 0.22.6.*
+## Start here
 
-Nothing is downloaded and nothing is pre-rendered. Every fish is built from shapes and glyphs on a canvas inside your own app, so it works offline and it is a single readable file.
+1. Use the reviewed `desktop/plugin.js` from this repository, or an explicitly
+   versioned asset from [Releases](https://github.com/dudicslevente/hermes-ascii-worlds/releases).
+   A source push does not create a release ZIP.
+2. In the Desktop app's plugin-management page, **reveal the actual plugin folder**.
+   Install on the computer running Desktop, not a remote gateway. Desktop plugins
+   are app-level across profiles and connections; switching profiles is not isolation.
+3. Back up an existing installation, then place the file at
+   `<revealed plugin folder>/ascii-worlds/plugin.js`. Follow [INSTALL.md](INSTALL.md)
+   for guarded copy, backup and rollback commands.
+4. Run **Reload desktop plugins** from the command palette and enable ASCII Worlds.
+   Open **Settings -> Plugins -> ASCII Worlds** (plugin-management labels vary by app build).
+5. Choose a Habitat. The preview works without enabling the optional background.
 
-## What you can do with it
+`hermes plugins install ascii-worlds` installs the maintainer-reviewed commit that the Hermes catalog entry currently pins. Check the version shown on the ASCII Worlds settings page, then reload desktop plugins.
 
-- **Pick a habitat.** A koi pond or a jellyfish drift. Choose anywhere from 0 to 10 creatures.
-- **Colour them your way.** Start from the original koi patterns or one of the Jewel, Sunset, Pastel and Forest palettes, or give every single fish and jellyfish its own colour. Koi get a multi-tone pattern built around the colour you choose, not a flat tint.
-- **Make it fit your setup.** It follows your Hermes theme on its own, light or dark. Speed, glyph density, pause, and a battery saver that draws 12 frames a second instead of 30 if you want your laptop to stay cool.
-- **See it across the whole window.** The animation sits over everything, sidebars included, at a strength you choose.
-- **Stay in control.** It respects your reduced-motion setting, pauses when the window is hidden, and removes everything it added the moment you turn it off.
-
-Everything lives in one place, **Settings -> Plugins -> ASCII Worlds**, with a quick on/off button in the title bar.
-
-## Screenshots
-
-| Koi pond | Jellyfish drift |
-|---|---|
-| ![Koi across the window](docs/images/koi-whole-window-2.jpg) | ![Jellyfish across the window](docs/images/jellyfish-whole-window-1.jpg) |
-| ![More koi](docs/images/koi-whole-window-3.jpg) | ![More jellyfish](docs/images/jellyfish-whole-window-2.jpg) |
-
-And the settings page, where all of it is controlled:
-
-![Background section of the settings page](docs/images/settings-background.png)
-
-![Scene and colours section of the settings page](docs/images/settings-scene.png)
-
-## Install
-
-Desktop plugins live on the computer that runs the Desktop app, not on a remote gateway.
-
-1. Download `ascii-worlds-<version>-plugin.zip` from the [latest release](https://github.com/dudicslevente/hermes-ascii-worlds/releases/latest) and unzip it. Inside you will find a folder called `ascii-worlds`.
-2. Copy that folder into `~/.hermes/desktop-plugins/`, so the plugin ends up at `~/.hermes/desktop-plugins/ascii-worlds/plugin.js`. The folder name has to stay `ascii-worlds`. If you use `HERMES_HOME` or a named profile, use the `desktop-plugins/` folder inside that Hermes home instead.
-3. Open the command palette and run **Reload desktop plugins**. If ASCII Worlds does not show up, go to **Capabilities -> Plugins** and make sure it is switched on.
-4. Replacing an older copy? Quit and reopen Hermes Desktop once, so a stale copy cannot keep running.
-
-Installing from the Hermes plugin catalog? Run `hermes plugins install ascii-worlds`, then run **Reload desktop plugins** in Hermes Desktop (or reopen it). The steps above are for installing from a GitHub release instead.
-
-Prefer the command line? From a clone of this repository:
+Want to try the artwork first? Open [`demo.html`](demo.html) directly in a browser.
+It works offline and is not Hermes Desktop. Building needs Node 20+, not `npm install`:
 
 ```sh
-mkdir -p ~/.hermes/desktop-plugins/ascii-worlds
-cp desktop/plugin.js ~/.hermes/desktop-plugins/ascii-worlds/plugin.js
+npm run verify
 ```
 
-To remove it, switch it off in Capabilities -> Plugins and delete the folder.
+## All twenty habitats
 
-You need Hermes Desktop 0.21.6 or newer, which is the first release with plugin settings pages and the title-bar slot. I have only tried it by hand on Hermes Desktop 0.22.6 on macOS, so Windows, Linux and other versions are untested. The Desktop plugin SDK is documented [here](https://hermes-agent.nousresearch.com/docs/developer-guide/desktop-plugin-sdk).
+![Labelled overview of all twenty actual v1.2.0 plugin previews, ten dark and ten light; browser mock-host captures](docs/images/v1.2/overview.png)
 
-## Using it
+[Open the full dark/light gallery](docs/GALLERY.md). These are stills, not proof of smooth motion or native integration.
 
-1. Open **Settings -> Plugins -> ASCII Worlds**.
-2. Switch on **Show the animation in Hermes**.
-3. Choose a habitat, how many creatures you want and what colour they are under **Scene and colours**.
+| Habitat | Default / maximum | Character |
+| --- | ---: | --- |
+| Koi pond | 3 / 10 | Patterned bodies, travelling tail waves |
+| Jellyfish drift | 5 / 10 | Pulsing bells and trailing strands |
+| Manta rays | 1 / 6 | Gliding turns, rippling fins |
+| Sea turtles | 2 / 6 | Shells and alternating flippers |
+| Seahorses | 3 / 8 | Upright drift and curled tails |
+| Tiny fish school | 12 / 40 | Cohesion and individually phased strokes |
+| Solitary whale | 1 / 3 | Broad crossings, including a deliberate offstage wait |
+| Octopus | 2 / 4 | Independently curling arms |
+| Butterflies | 2 / 12 | Hinged patterned wings |
+| Luna moths | 1 / 8 | Eyespots and long hindwing tails |
+| Dragonflies | 3 / 8 | Hover, glide and wing blur |
+| Swallows | 3 / 10 | Flap/glide cycles and forked tails |
+| Sleeping cat | 1 / 4 | A placed, breathing companion; no roaming |
+| Owl | 1 / 3 | A placed companion with an optional perch |
+| Ginkgo leaves | 14 / 60 | Tumbling fans |
+| Cherry blossom petals | 18 / 80 | Flutter and shared gusts |
+| Fireflies | 9 / 40 | Independent glow cycles |
+| Bubbles | 12 / 40 | Rising, wobbling rings |
+| Dandelion seeds | 8 / 24 | Tilting stalks and fine parachutes |
+| Night sky | 80 / 220 | Fixed twinkling stars and optional meteors |
 
-You can also toggle the animation any time with the **Background** button in the title bar, or from the command palette with **ASCII Worlds: toggle background** and **ASCII Worlds: open settings**.
+## Make it yours
 
-The **Strength** slider controls how bold it is. 28 percent is a good place to start.
+- **Independent scene preferences:** counts, colours and applicable controls return
+  when you revisit a habitat. Count includes zero. New habitats add Size and Scene strength.
+- **Colour:** named palettes, Custom tint, and ten retained Individual slots where
+  meaningful. Counts above ten repeat slots; Night sky deliberately has no Individual mode.
+- **Motion:** Speed, or Pace for stationary/local motion, plus appropriate current,
+  breeze or wind and scene-specific extras. Fine / Balanced / Bold glyph density.
+- **Automatic theme:** preview and background follow Hermes, with OS fallback.
+  There is no appearance picker.
+- **Pause and Battery saver:** nominal frame caps are 30 fps or 12 fps, not guaranteed
+  achieved rates or measured battery savings. Hidden windows suspend; offscreen previews stop.
+- **Reduced motion:** starts still. Explicit Resume opts both canvases into motion
+  for this plugin session; closing Settings keeps consent, a new OS hold/reload revokes it.
+- **Reset this scene** affects only the selected habitat. **Reset to defaults** resets
+  every scene and returns to Koi; neither resets background preferences or deletes old rollback records.
 
-The animation is drawn over the whole window, sidebars included. Because it sits on top, glyphs can drift faintly over text and controls, and clicks pass straight through. It adds one extra layer above the app and changes nothing else, so it does not depend on how Hermes Desktop lays out its window.
+The [complete control matrix](docs/FEATURE-CONTROLS.md) lists ranges, palette exceptions,
+extras and count-zero behaviour. [Migration and storage](docs/SETTINGS-MIGRATION.md)
+explains v1/v2 -> v3, memory-only warnings and rollback.
 
-## If something looks off
+## Optional animation in the window
 
-- **I turned it on and see nothing.** Open Settings -> Plugins -> ASCII Worlds, press **Check background** and read the report. It shows the running version and whether the animation layer exists, is on top and has painted anything. Then open an issue with that text.
-- **It looks too busy.** Lower **Strength**, pick the Monochrome colour, or use fewer creatures.
-- **My computer feels warm.** Switch on **Battery saver**, choose a bolder glyph density, pause motion, or use fewer creatures. Jellyfish cost far more than koi. The animation in Hermes uses the same settings as the preview, so fine glyphs at full speed cost the most.
-- **The plugin is not in Settings.** Check that it is enabled in Capabilities -> Plugins, then run **Reload desktop plugins**. On a Desktop version without plugin settings pages, the title-bar button and the command palette entries still work.
+Background is **off by default**. Toggle it in Settings, with the title-bar button,
+or with **ASCII Worlds: toggle background** in the palette. **ASCII Worlds: open
+settings** navigates to the form when the host provides the required SDK exports.
+The background shares the preview's scene settings; its separate Strength is 8–60%
+(default 28%). Clicks pass through, but a visible overlay can still affect readability.
 
-If you report a bug, please include the text from **Check background** and your Hermes Desktop version. It saves a lot of guessing.
+This catalog build offers **Whole window only**: transparent glyphs above app content, with no placement selector and no host-background restyling.
 
-## Privacy and security
 
-- No network access, no telemetry, no analytics, no external fonts or images.
-- Your preferences are saved in the plugin's own local storage on your machine and never leave it.
-- Like every disk plugin, it runs inside the Desktop app with the app's authority. It is one readable file. It draws on a canvas, and while the animation is on it adds one layer, one stylesheet and one attribute to the page, then removes them when you turn it off. The exact pieces are listed in [How Background works](docs/HOW-BACKGROUND-WORKS.md).
-- The switch in the settings, the title-bar button and the command palette entry each turn it off and put the page back as it was.
+![Whole-window-only catalog settings form with butterfly preview, controls and reset buttons; browser mock host](docs/images/v1.2/settings-catalog.png)
 
-## Good to know
+Actual catalog-build settings. No unsupported placement choice is shown.
 
-- I have only checked it by hand on one Hermes Desktop version on macOS. Windows and Linux are untested.
-- Lots of large, finely detailed creatures cost real CPU, jellyfish far more than koi. Your hardware matters, so the maximum is 10 of each, and Battery saver and the glyph density setting are there to turn the cost down.
-- The art is original and procedural. It is an independent take on the glyph-aquarium look, not a copy of any product.
+![Actual Whole-window catalog layer composited at 28% over a generic labelled mock workspace, with native settings alongside](docs/images/v1.2/whole-window-catalog.png)
 
-## More designs are coming, and you can help
+This is a deliberately generic browser mock workspace, **not a fabricated Hermes
+app screenshot**. The browser composites the actual plugin layer at its real opacity.
 
-Koi and jellyfish are just the start. I plan to add new designs over time, and I would love to see yours. Habitats are small, self-contained pieces: a creature is a function that describes its shape and motion, and the engine turns that into glyphs. If you have an idea, say a seahorse, a school of tiny fish, falling leaves, a night sky, or a colour palette you think is missing, you are very welcome to:
+## Privacy, resources and limits
 
-- open an [issue](https://github.com/dudicslevente/hermes-ascii-worlds/issues) to suggest it, or to say you are working on it so we do not overlap,
-- send a pull request. [CONTRIBUTING.md](CONTRIBUTING.md) explains how to set up, and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) walks through how a new habitat is added, tested and shown in both the settings preview and the background.
+- No runtime network calls, telemetry, accounts, credentials, shell commands,
+  external art/fonts or downloaded code. Preferences use plugin-namespaced local storage.
+  Conversation text is never read or sent by the plugin. Optional test tooling is separate.
+- One active renderer per visible canvas: the preview and, if enabled, one window layer.
+  Bounded canvas/grid allocations and scene caps limit work, not CPU or battery guarantees.
+- **Check background** is an explicit local diagnostic of build/layer/canvas/style geometry.
+  Review diagnostic text and screenshots before sharing them; they can identify host layout.
+- High counts or large sizes can overlap. Small/Bold output simplifies thin features;
+  light Cat/Owl faces, pale light-theme seeds, fish and swallows, and quiet halos/stars
+  are lower-contrast. The whale intentionally leaves the frame.
+- Declared Hermes floor: **>=0.21.6**. The author hand-tested 1.2.0 on a Mac with
+  Hermes Desktop (a general test; no Desktop version or per-item results were recorded).
+  Windows and Linux Desktop, Safari, physical phones, other Hermes versions,
+  accessibility, heat and battery use are untested.
+- Desktop plugins execute with the renderer's authority; error isolation is not a security sandbox.
 
-Bug fixes, docs, accessibility improvements and testing on Windows and Linux are just as welcome as new art.
+## Documentation and contributing
 
-## Try it without installing
+[Install / rollback](INSTALL.md) · [Gallery](docs/GALLERY.md) ·
+[Controls](docs/FEATURE-CONTROLS.md) · [Background internals](docs/HOW-BACKGROUND-WORKS.md) ·
+[Architecture](docs/ARCHITECTURE.md) · [Development / testing](docs/DEVELOPMENT.md) ·
+[Compatibility](docs/COMPATIBILITY.md) · [Manual Mac checklist](docs/MANUAL-MAC-CHECKLIST.md) ·
+[Catalog disclosures](docs/CATALOG.md) · [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md)
 
-Open `demo.html` in a modern browser. It is a self-contained offline page. Add `?chat=1` to the address to see the background over a fake chat.
-
-## For developers
-
-It is one plain ES module with no build-time dependencies. The source is split into small files and bundled into `desktop/plugin.js` by a short script.
-
-```sh
-npm run build    # regenerate desktop/plugin.js and demo.html
-npm run verify   # unit tests, then build
-```
-
-More in [Architecture](docs/ARCHITECTURE.md), [Development and testing](docs/DEVELOPMENT.md), [Will a Hermes update break this?](docs/COMPATIBILITY.md), [Catalog notes](docs/CATALOG.md) and the [changelog](CHANGELOG.md).
-
-## Licence and credits
-
-MIT. See [LICENSE](LICENSE) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Inspired by public ASCII motion experiments and the principles of the MIT-licensed ascii-diorama project. No code from them is included.
+MIT. Original koi/jellyfish artwork and approved Lab scene modules are retained.
+[Third-party notices](THIRD_PARTY_NOTICES.md) document provenance and visual references.
+[Historical v1.1 images](docs/HISTORY.md) are labelled separately and are not new Mac testing.

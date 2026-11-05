@@ -1,58 +1,65 @@
-# How Background mode works
+# Background implementation and troubleshooting
 
-> The catalog version of the plugin (the `catalog` branch) has only the Whole window placement, so everything below about Chat area applies to the full plugin on `main` and its GitHub releases.
+Background is optional and off by default. It renders the selected scene using
+the same settings as the preview, on a separate transparent full-window canvas.
+Its own Strength defaults to 28% and ranges from 8–60%.
 
-Background mode draws the current scene on one full-window canvas. This page lists exactly what it adds to the page, how the two placements differ, and what to check if it stops working. It is written for people who want to verify the plugin or fix it after a Hermes Desktop update.
+## Owned elements and cleanup
 
-## What it adds to the page (only while Background is on)
+While enabled, the plugin adds one root `data-ascii-worlds-bg` attribute, one
+`data-ascii-worlds-bg="layer"` div with a canvas, and one version-stamped style
+element. The layer is fixed to the window, clipped, `aria-hidden`, unselectable
+and `pointer-events: none`. It does not intercept clicks or keyboard input.
 
-1. An attribute on the root element: `html[data-ascii-worlds-bg="on"]`.
-2. One `<div data-ascii-worlds-bg="layer" data-ascii-worlds-version="..." data-ascii-worlds-placement="behind|front" aria-hidden="true">` appended to `document.body`, holding one `<canvas>` whose CSS opacity is the strength setting. It has `position: fixed; inset: 0; pointer-events: none; user-select: none; overflow: hidden; contain: strict`.
-3. One `<style data-ascii-worlds-bg-style data-ascii-worlds-version="...">` in `<head>`. It holds the rules below in Chat area placement and is empty in Whole window placement.
+Turning it off, unmounting its title-bar contribution, disabling the plugin or
+calling host disposal removes the layer, style and attribute. Startup removes
+stray layers from an earlier load. One active scene engine belongs to each
+canvas; preview and background never create twenty parallel scene loops.
 
-All of it is removed when Background is turned off, when the title-bar component unmounts, and when the plugin is disabled. A sweep before activation removes strays from an earlier load. Nothing is attached to `window`.
+## Whole window
 
-## Chat area (saved as `behind`)
+Whole window is a transparent glyph overlay at the top of the window stacking
+order. Its stylesheet is empty: it does not clear host backgrounds or rewrite
+core UI. It can pass faintly over text, panels and controls, so lower strength
+helps readability. Click-through does not make an overlay visually invisible.
+This is the **only placement in the catalog build**, which has no placement selector.
 
-The layer sits at `z-index: -1` and is only visible through transparent regions. Hermes Desktop paints opaque colours on several elements between the page and the message list, so while the layer is on, this stylesheet makes them transparent:
+![Whole-window-only catalog build at default 28% strength in a generic mock workspace, not Hermes Desktop](images/v1.2/whole-window-catalog.png)
 
-```
-html[data-ascii-worlds-bg="on"] body,
-html[data-ascii-worlds-bg="on"] body :has([data-chat-surface]),
-html[data-ascii-worlds-bg="on"] [data-chat-surface],
-html[data-ascii-worlds-bg="on"] [data-chat-surface] [data-slot="aui_thread-viewport"],
-html[data-ascii-worlds-bg="on"] [data-chat-surface] :has([data-slot="aui_thread-viewport"]) { background: transparent !important; }
-```
+The image is an actual browser-composited layer, not a raw alpha canvas export.
+It is labelled **v1.2.0 browser mock-host capture; native Mac acceptance not claimed**.
 
-- The first line clears the body itself, which is opaque and would otherwise cover the layer.
-- The second clears every element that contains a chat surface (the wrappers around the chat, many levels up).
-- The last three clear the chat surface, the message list, and the wrappers between them.
-- Everything is scoped under the plugin's own attribute, so the rules vanish with the layer. They use pure CSS and only the documented `[data-chat-surface]` and `[data-slot="aui_thread-viewport"]` hooks; no script walks or observes the page.
-- `!important` appears on that single declaration only. Without it, a wrapper painted with an inline style stays opaque (there is a regression test for exactly this).
-- Sidebars and other panels are not on that list. They keep their own backgrounds, which is why the animation stops at their edges.
 
-The layer paints its own base colour of `var(--ui-chat-surface-background, var(--ui-bg-chrome, transparent))`, so clearing the chat's wrappers does not shift the chat's colour, and it follows light and dark themes. This depends on those variables being visible from `<body>`. They are app-internal names, not a documented contract, and may change.
+## Theme, motion and resource bounds
 
-## Whole window (saved as `front`)
+The preview and layer read the host's text-colour theme token, with OS fallback;
+there is no theme picker. Moving renderers cache the theme reading. Visible stills
+check their own theme probe about every 1.1 seconds and repaint only on a change,
+without advancing clocks. Offscreen previews, hidden documents and disposed
+canvases stop work; resumed clocks do not catch up hidden time.
 
-The layer sits at the highest `z-index`, has no base colour and its stylesheet is empty. Only the glyphs are drawn, over the whole window, at the chosen strength. Pointer events pass through. Because it clears nothing, the host's layout cannot hide it. It is drawn over the sidebars and, being on top, also faintly over text and controls.
+Pause applies to both paths. Reduced-motion startup is static; explicit Resume
+opts both into motion for that plugin session. Closing Settings retains consent;
+a new OS hold or reload revokes it. Battery saver caps at 12 instead of 30 fps.
+Bounds include 1800x1400 logical canvas dimensions, DPR <=2, approximately four
+million backing pixels and a 220x150 glyph grid. These are allocation limits,
+not measured Mac performance, heat or battery guarantees.
 
-## Resource use
+## Check background
 
-The animation uses the same settings as the preview (habitat, colours, glyph density, speed and battery saver) and is limited to one engine for the whole window. There is no appearance setting: light or dark ink follows the Hermes theme, read from the documented `--ui-text-primary` variable about once a second, with the operating system setting as a fallback. Fine glyphs at full speed are the most expensive combination, jellyfish especially; battery saver and a bolder density turn the cost down. It pauses when the document is hidden and starts paused if your system asks for reduced motion. Pausing motion in the settings page also pauses the background. The preview in the settings page is a second engine and animates only while it is on screen.
+The button produces a **local, read-only diagnostic on explicit request**:
+plugin/layer/style build, placement, layer dimensions/base colour and painted
+canvas pixels. It does not read message text or transmit the result. It reads
+its own canvas and style geometry once; the result may still reveal host layout,
+so inspect it before attaching it to a public issue.
 
-## Troubleshooting report
 
-**Check background** in the settings page prints a read-only report: the plugin build, the build stamped on the running layer and style (so a stale copy is obvious), the placement, the layer size and base colour, how many canvas pixels are painted, and every element between the page and the chat that is still painting a colour (including the body). It reads styles and the layer's own canvas once, when pressed, and changes nothing.
+- `LAYER: missing`: the background is not enabled or its title-bar mount is unavailable.
+- Different plugin/layer/style versions: an old copy may remain; disable and reload
+  first, then quit/reopen Desktop if ordinary reload does not recover.
+- Empty scene: check Count, Pause, strength and the whale's deliberate offstage wait.
+- Missing background control: the host may lack the guarded title-bar SDK surface;
+  the standalone preview can remain usable.
 
-Reading it:
-
-- A different version on the layer than the plugin build means an old copy is still running. Quit and reopen Hermes Desktop.
-- `LAYER: missing` means Background is not on.
-- Lines starting `BODY`, `ABOVE-chat` or `INSIDE-chat` name elements the Chat area rules could not clear. Switch to Whole window, and include the report in a bug report.
-
-## Known limits
-
-- Chat area relies on the app's current layout and theme variables; verify after Desktop updates.
-- Only a host rule that is itself `!important` and at least as specific could keep a wrapper opaque in Chat area placement.
-- Areas whose colour came from a wrapper that is now cleared (for example parts of the window chrome) may show the layer's base colour instead. Report anything that looks wrong.
+No automated mock-host check proves native placement. Follow the
+[Mac checklist](MANUAL-MAC-CHECKLIST.md) and [compatibility checks](COMPATIBILITY.md).

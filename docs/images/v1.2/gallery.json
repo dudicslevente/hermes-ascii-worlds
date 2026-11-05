@@ -1,0 +1,563 @@
+{
+  "version": "1.2.0",
+  "pluginSha256": "022004d7444cf947577679ed394e6315bd0c6f60f17a3bf4df1b153c54acca2d",
+  "catalogSha256": "965b4aceaa3921e26360d163ac37f404bc78e6a1474c8c8fbe19c617411d8b82",
+  "images": [
+    {
+      "file": "banner.png",
+      "caption": "2:1 letterboxed Solitary whale preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1200,
+        600
+      ],
+      "bytes": 145672,
+      "sha256": "7970a525aa7dc8ed09d913853fb6370f5709e6bc06077ab56d98094a6b1e9449",
+      "source": "scaled real captures; no synthesized artwork"
+    },
+    {
+      "file": "bubbles-dark.png",
+      "caption": "Bubbles: dark preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 38700,
+      "sha256": "5b10245f017a2568fb5b99540d040b9fd62ca47ad22d089dcb72c62de324bd76",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "bubbles-light.png",
+      "caption": "Bubbles: light preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 34724,
+      "sha256": "4ff2e476d976ce28b311a5dbdc4f5d9b420f4130278328adb2402529f7665e00",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "butterflies-dark.png",
+      "caption": "Butterflies: dark preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 31347,
+      "sha256": "2e9343777694e3578443d43842d3abfc5b76e0c480c4b813d442d7580ae16c71",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "butterflies-light.png",
+      "caption": "Butterflies: light preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 31288,
+      "sha256": "df86dbfc67766597fa74ba8089286f68acab837630d2f26bf1b5ed586349a064",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "cherry-blossom-petals-dark.png",
+      "caption": "Cherry blossom petals: dark preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 37332,
+      "sha256": "2562b0a8060786405ae563757d2cbdf4f381b1a7e1a0108376e29fab263caa84",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "cherry-blossom-petals-light.png",
+      "caption": "Cherry blossom petals: light preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 31649,
+      "sha256": "19ab6da1f79bf9cf99f284b49fada13db60d4ef051b4b5919a4485c6d000f837",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "dandelion-seeds-dark.png",
+      "caption": "Dandelion seeds: dark preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 62540,
+      "sha256": "1f564d1ee73ceae782a52829322041accddd34ee1eb9bc5d822cde1475566862",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "dandelion-seeds-light.png",
+      "caption": "Dandelion seeds: light preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 44272,
+      "sha256": "56ac99bfe26125fafe82b939731a7b1a4ffb7e793e5bc0cca8a0e0d6dff95b6a",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "dragonflies-dark.png",
+      "caption": "Dragonflies: dark preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 45085,
+      "sha256": "2cc18c24014c886c8dd5345eb01aea7ab46f9f19b2497c2e87dc2b98e7b0b8a6",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "dragonflies-light.png",
+      "caption": "Dragonflies: light preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 46077,
+      "sha256": "d06eff2a93a9685957782854e7947f86055af2298338ade7d4a9c96770e39546",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "fireflies-dark.png",
+      "caption": "Fireflies: dark preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 45313,
+      "sha256": "0550cb33c85e92354b8b35d10c48a6e745f416fa5a4792e6266414559ad2a288",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "fireflies-light.png",
+      "caption": "Fireflies: light preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 37611,
+      "sha256": "1b92b30a77bc3f1feac1622c2dd9e027e201ae4f097b3cbbfddbe3be30d1a98d",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "ginkgo-leaves-dark.png",
+      "caption": "Ginkgo leaves: dark preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 71901,
+      "sha256": "cfa46f68ccd4904469ae6bba3aaf903309d2ae2724c1e753dfa5c5fc660b1b8b",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "ginkgo-leaves-light.png",
+      "caption": "Ginkgo leaves: light preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 63306,
+      "sha256": "0b628ad04e3d42ffe529424256107e6bf210516b6f017b997a813bb03febca9b",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "jellyfish-dark.png",
+      "caption": "Jellyfish drift: dark preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        362
+      ],
+      "bytes": 119124,
+      "sha256": "af4f8bb0492553e9247b378c776c4922b186d49b1dd4d1fa91f2ba31f3af33cd",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "jellyfish-light.png",
+      "caption": "Jellyfish drift: light preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        362
+      ],
+      "bytes": 111061,
+      "sha256": "cdadba6df13f2c89b24a4c982b0043a24190facdd25cc41887acbf0bf96f3d0e",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "koi-dark.png",
+      "caption": "Koi pond: dark preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        362
+      ],
+      "bytes": 40467,
+      "sha256": "e6233f1d405ce2cea3b6b9f20266b984fefd0a463887a17af7bbf9149d7310b3",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "koi-light.png",
+      "caption": "Koi pond: light preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        362
+      ],
+      "bytes": 40299,
+      "sha256": "50a0d913f939b426a5a84d86ac1fb4d0620c68741ee067a308979acf4b92b288",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "luna-moths-dark.png",
+      "caption": "Luna moths: dark preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 40213,
+      "sha256": "c53d5c6214f44cf41e3fa4dbc230653c27653b31d5b22ce1f33a1d080854c50e",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "luna-moths-light.png",
+      "caption": "Luna moths: light preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 38873,
+      "sha256": "3a476fee6910032358abfaab12564a16accf2a6e2ce78b702b16d72bab819730",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "manta-rays-dark.png",
+      "caption": "Manta rays: dark preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 43289,
+      "sha256": "b66051dc60bbc1fbd57adcbf1ba129e12de177b4747dac2897a059c57ad09187",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "manta-rays-light.png",
+      "caption": "Manta rays: light preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 43016,
+      "sha256": "3deb89ff26001dc3c5e42a90a641d7ee84ee9325eeb9757f954eeea4d7100640",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "night-sky-dark.png",
+      "caption": "Night sky: dark preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 40935,
+      "sha256": "8f8a28c05b2a53d8b5c24f0091ffc98a2abfef03a906fe95d11f9d2f37886cb1",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "night-sky-light.png",
+      "caption": "Night sky: light preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 31883,
+      "sha256": "3aa7fe8c336eb78699e7312aba4f0f4ff060e967d8dc1a1458579691f0578e6b",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "octopus-dark.png",
+      "caption": "Octopus: dark preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 81881,
+      "sha256": "abc21eec1d9387bef567cc9500a3c23947632d3653bb2142103449860e9b85e8",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "octopus-light.png",
+      "caption": "Octopus: light preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 86471,
+      "sha256": "6bb7ac53ad333c693c581690a0b3d519d8f2570536553fc5880b3880f8efeea4",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "overview.png",
+      "caption": "Labelled contact sheet of real previews",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1640,
+        1480
+      ],
+      "bytes": 326845,
+      "sha256": "15a15ab405a3dbb6939b7a022f302e322a23d105b85d25c99126ef6e1e749175",
+      "source": "scaled real captures; no synthesized artwork"
+    },
+    {
+      "file": "owl-dark.png",
+      "caption": "Owl: dark preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 76425,
+      "sha256": "82ea1a71042b0c18b33942c591b7ec63ccbd594276cc2af4be3db2ce8cefff3f",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "owl-light.png",
+      "caption": "Owl: light preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 75072,
+      "sha256": "201a1635222d37dbf45a8324d445c3221f9460707d05157a79fd22732e4d5bc3",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "sea-turtles-dark.png",
+      "caption": "Sea turtles: dark preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 70228,
+      "sha256": "cb8b3b1c4d94d0c505a024e7c454cf5d8d81096983983eed729a776f62df235c",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "sea-turtles-light.png",
+      "caption": "Sea turtles: light preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 68177,
+      "sha256": "8a7f11606a00c02538faa9c044ef60ac8453f3d64a8a2e59f6fc3a473adc98d2",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "seahorses-dark.png",
+      "caption": "Seahorses: dark preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 69828,
+      "sha256": "662b6993f4776d806d161b2fbb3e2bf117b0108b135bb509febd66dfc6206e24",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "seahorses-light.png",
+      "caption": "Seahorses: light preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 64934,
+      "sha256": "b09ad03064bba6f0796f46e20cb635eb38a2a2affac7edbfac59a6844f7cc016",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "settings-catalog.png",
+      "caption": "butterflies: light settings",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1100,
+        1736
+      ],
+      "bytes": 144202,
+      "sha256": "44404f1cb2a5974cb05d47065ad109b18f43539ad0e35b6b8d300fde0d43947d",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "settings-full.png",
+      "caption": "butterflies: light settings",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1100,
+        1909
+      ],
+      "bytes": 174765,
+      "sha256": "e29b7dbabfef8a6b660aa091f661f763cd1bf96d686b9adc4c7c3dac30996fe1",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "sleeping-cat-dark.png",
+      "caption": "Sleeping cat: dark preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 61389,
+      "sha256": "71b037f4e26effe93492d82237e167712eb330d168327d43fbf2ded729f72c4f",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "sleeping-cat-light.png",
+      "caption": "Sleeping cat: light preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 63212,
+      "sha256": "07391ae7f313ac743f7f3edaf80e395e408a98ac8c033483766c36f748170b85",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "solitary-whale-dark.png",
+      "caption": "Solitary whale: dark preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 84851,
+      "sha256": "732a8881faccafae9257a3ac596608fa5e30d66fca481a0b3662d8944d611453",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "solitary-whale-light.png",
+      "caption": "Solitary whale: light preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 80157,
+      "sha256": "578a9a28a3ea7adeb4426d1f79554fa8cc199a7bf4d5c2f81eaf964744ed44e8",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "swallows-dark.png",
+      "caption": "Swallows: dark preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 36941,
+      "sha256": "287fec0bf7030053e9bff14c116c9beda3604a0099f8435fec2642d1d9489077",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "swallows-light.png",
+      "caption": "Swallows: light preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 33224,
+      "sha256": "96fdcee9bd64dcbaff4fa15a87cfe04bc1261a1db4fc6f364ea8206c38f1163b",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "tiny-fish-school-dark.png",
+      "caption": "Tiny fish school: dark preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 34272,
+      "sha256": "2101f1a0b7adf406c4126d1ffb5e7d3e4742e8e8715a70de26da0a809cf25dd4",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "tiny-fish-school-light.png",
+      "caption": "Tiny fish school: light preview",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1052,
+        562
+      ],
+      "bytes": 28421,
+      "sha256": "3bb14c578d41bcb84457328aee2334c17885f836cf5c2357fcf7095b99f4dc59",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "whole-window-catalog.png",
+      "caption": "manta-rays: dark composited-background",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1400,
+        880
+      ],
+      "bytes": 129750,
+      "sha256": "5a84e699ab2f4ddd6ad1759738239a2bf862538f9f0e3ce99b2ac10745129ae3",
+      "source": "actual browser screenshot"
+    },
+    {
+      "file": "whole-window.png",
+      "caption": "manta-rays: dark composited-background",
+      "evidence": "v1.2.0 browser mock-host capture; native Mac acceptance not claimed",
+      "dimensions": [
+        1400,
+        880
+      ],
+      "bytes": 151753,
+      "sha256": "52dfb62b26e108ce2e5889f25fc84544a1171a350d61dbced2a2b75fcd72d83b",
+      "source": "actual browser screenshot"
+    }
+  ],
+  "overviewThemes": {
+    "dark": 10,
+    "light": 10
+  }
+}

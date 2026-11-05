@@ -50,12 +50,20 @@ function SettingsPage({ ctx, instances, hub }) {
             display: "flex",
             justifyContent: "center",
           },
-          children: jsx(Button, {
+          children: [jsx(Button, {
             size: "sm",
             variant: "ghost",
-            onClick: () => world.current?.reset(),
+            onClick: () => world.current?.resetScene(),
+            'aria-label': 'Reset active scene to defaults',
+            title: 'Reset active scene only; keep other scenes',
+            children: "Reset this scene",
+          }, 'scene-reset'), jsx(Button, {
+            size: "sm",
+            variant: "ghost",
+            onClick: () => world.current?.resetAll(),
+            title: 'Reset all scene preferences and return to the koi pond; background placement is kept',
             children: "Reset to defaults",
-          }),
+          }, 'all-reset')],
         },
         "reset",
       ),
