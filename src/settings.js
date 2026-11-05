@@ -202,7 +202,7 @@ export function frameCap(eco) {
 // Shown on the Background layer and in the Check background report so a console or a bug
 // report can tell exactly which build is running. Kept equal to package.json
 // by a unit test.
-export const PLUGIN_VERSION = "1.1.0";
+export const PLUGIN_VERSION = "1.2.0";
 export const BACKGROUND_KEY = "background.v1";
 export const BACKGROUND_MIN = 0.08;
 // The catalog build (npm run build:catalog) rewrites this to false and removes
@@ -275,7 +275,7 @@ export function createStore(initial) {
     size: () => listeners.size,
   };
 }
-export function createBackgroundStore(storage) {
+export function createBackgroundStore(storage, onSave = () => {}) {
   const store = createStore(readBackground(storage));
   return {
     get: store.get,
@@ -285,6 +285,7 @@ export function createBackgroundStore(storage) {
     set(patch) {
       const next = normalizeBackground({ ...store.get(), ...patch });
       const saved = writeBackground(storage, next);
+      onSave(saved);
       store.set(next);
       return saved;
     },

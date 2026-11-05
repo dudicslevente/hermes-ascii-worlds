@@ -1,31 +1,64 @@
 # Changelog
 
-All notable changes to ASCII Worlds. This project follows semantic versioning.
+Notable source changes. This project follows semantic versioning; a versioned
+source update does not by itself create a GitHub release or catalog approval.
+
+## 1.2.0
+
+- Added eighteen habitats to the native Settings selector, preview and optional
+  window background: mantas, turtles, seahorses, schooling fish, whale, octopus,
+  butterflies, moths, dragonflies, swallows, cat, owl, leaves, petals, fireflies,
+  bubbles, seeds and stars. Original Koi/Jellyfish geometry remains unchanged.
+- Independent per-scene count/colour/settings; Size, Scene strength, useful
+  flow/extras; local Pace for stationary subjects. Night sky omits Individual.
+- Additive `settings.v3` migration from read-only v2/v1, retained aliases/hidden
+  colour slots, no startup writes and memory-only failure warnings.
+- Added Reset this scene while preserving global Reset to defaults/return to Koi.
+- Corrected per-record warning recovery, shared explicit reduced-motion Resume
+  and bounded host-theme refresh of visible paused stills; added regressions.
+- Scoped, deterministic dependency-free bundling with portable module IDs.
+  Alternate catalog output leaves the normal plugin/demo untouched.
+- Current public docs include all twenty controls, app-level installation,
+  symlink-guarded backup/rollback, privacy/resource limits, contributor tests
+  and actual dark/light mock-host screenshots. Historical images are separate.
+- Catalog documentation generation now transforms linked feature docs as well
+  as README, and selects the separately captured Whole-window-only form.
+- No new runtime dependency, network call or self-updater. The author hand-tested
+  1.2.0 on a Mac with Hermes Desktop (a general test, no recorded checklist
+  results); screenshots are explicitly browser/mock evidence.
+- Retained limits: intentional fully offstage whale wait; high-count/size overlap;
+  coarser small/Bold and light fine detail. No battery-life or universal FPS claim.
 
 ## 1.1.0
 
-- Koi and jellyfish now swim instead of rotating, with a calmer tail beat. Koi have a travelling body wave, a tail fin that follows the spine and gently rowing pectoral fins. Jellyfish pulse their bell (squash and stretch) with tentacles that trail and straighten between pulses.
-- The animation in Hermes now follows the settings page. Glyph density, appearance, speed and battery saver used to apply only to the preview; the background had its own fixed values.
-- Removed the Appearance setting. The preview and the animation always follow your Hermes theme (light or dark) on their own. An appearance saved by an earlier version is ignored.
-- Renamed "Eco / 12 fps" to "Battery saver", with a sentence explaining what it does.
-- The default koi are drawn differently now, so the koi golden test fixture was regenerated on purpose.
+- Koi gained a travelling body wave, spine-following tail and rowing pectoral
+  fins. Jellyfish gained pulsing bells and lagged trailing tentacles, with calmer motion.
+- Window animation now follows the preview's density, speed, palettes and saver.
+- Removed Appearance: preview and background automatically follow the host theme;
+  old saved appearance is ignored. Renamed Eco to Battery saver with plain-language help.
+- Koi golden fixture was deliberately regenerated for that artwork change.
 
 ## 1.0.1
 
-- README rewritten in a friendlier voice, with real Hermes Desktop screenshots, install steps that use the release zip (which already contains the `ascii-worlds` folder), and a section inviting contributions and new designs.
-- New catalog build (`npm run build:catalog`, `scripts/make-catalog-branch.sh`): the same plugin with only the Whole window placement, so it never touches the app's own markup. The full plugin on `main` is unchanged.
-- No change to how the plugin behaves.
+- Friendlier documentation, installation instructions, historical Desktop
+  screenshots and contributor guidance.
+<!-- chat-area:begin -->
+- Added Whole-window-only catalog build, omitting the full distribution's Chat
+  area restyling. The full plugin's behaviour did not change in that patch.
+<!-- chat-area:end -->
+<!-- catalog: - Added the Whole-window-only catalog build. No runtime behaviour change in that patch. -->
 
 ## 1.0.0
 
-First public release.
+First public release: Koi and Jellyfish, procedural glyph shading and routes,
+0–10 populations, per-creature colours, named/custom palettes, native Settings,
+title-bar/palette controls, pause/saver/reduced motion, bounds and cleanup.
 
-- Koi and jellyfish habitats, procedurally drawn in glyphs with shaded, articulated creatures that travel across the canvas and turn along smooth routes.
-- Choose 0 to 10 koi or 0 to 10 jellyfish, and an individual colour for each one. Each koi gets a multi-tone pattern built from the colour you pick.
-- More colour options: original koi patterns, four multicolour koi palettes (Jewel, Sunset, Pastel, Forest), natural, cyan, ember and monochrome tints, and a custom tint.
-- Show the animation in Hermes with two placements: **Chat area** (shows through the chat and stops at the sidebars) and **Whole window** (drawn over everything, including the sidebars).
-- All controls live in Settings -> Plugins -> ASCII Worlds, with a quick toggle in the title bar and command palette entries. There is no docked pane to get stuck open.
-- Light, dark and follow-system appearance, speed, glyph density, pause and eco mode.
-- Reduced-motion support, hidden-window pausing, bounded memory, and full cleanup when turned off or disabled.
-- A Check background report for troubleshooting.
-- Offline: no network access, no telemetry.
+<!-- chat-area:begin -->
+The full release offered Chat area (through chat wrapper backgrounds) and Whole
+window (transparent overlay above all content) placements.
+<!-- chat-area:end -->
+<!-- catalog: The catalog distribution uses a transparent Whole-window overlay. -->
+
+The original appearance picker was superseded by automatic theme-following in
+1.1.0. Runtime operation is offline, without telemetry.

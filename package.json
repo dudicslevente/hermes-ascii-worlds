@@ -1,9 +1,9 @@
 {
   "name": "ascii-worlds",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
   "type": "module",
-  "description": "Quiet, procedural glyph aquariums for Hermes Desktop.",
+  "description": "Twenty quiet, procedural glyph habitats for Hermes Desktop.",
   "scripts": {
     "build": "node scripts/build.mjs",
     "test": "node --test tests/*.test.mjs",

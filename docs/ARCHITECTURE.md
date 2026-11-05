@@ -1,74 +1,86 @@
 # Architecture
 
-## Files and boundaries
+Version 1.2.0 extends the existing native Settings page, preview
+and optional background; it is not a gallery/iframe replacement.
 
-| File | Responsibility |
+| Boundary | Responsibility |
 | --- | --- |
-| `src/settings.js` | Defaults, validated persistence, grid bounds, stable spatial hash |
-| `src/art.js` | Pure scene geometry as a function of size and simulation time |
-| `src/engine.js` | Color-field sampling, glyph output, clock, canvas sizing, lifecycle |
-| `src/styles.js` | Scoped settings-page styling with host theme variables |
-| `src/world.js` | The settings page: accessible controls, the live preview, and instance ownership; shared by the Desktop plugin and the offline demo |
-| `src/background.js` | Background mode: the stores shared with the settings page, the layer host, the page-clearing stylesheet and the Check background report |
-| `src/plugin.js` | React boundary, native SDK Button, settings-page registration with fallbacks, title-bar toggle, palette commands, host disposal |
-| `scripts/build.mjs` | Dependency-free deterministic bundle and offline HTML generation |
+| `src/art.js` | Original koi+jelly geometry, byte-identical to baseline |
+| `src/settings.js` | Explicit legacy v2 compatibility API; shared background validation/stores/version |
+| `src/settings-v3.js` | Exact twenty IDs, additive per-scene envelope, migration, aliases, patches, scoped reset, clocks |
+| `src/lab/scenes/` | Eighteen approved corrected pure scene modules, unchanged |
+| `src/lab/core/` | Approved utilities, five-material palettes, scene validation and corrected glyph sampler |
+| `src/engine.js` | Original renderer plus one integrated scheduler / active sampler per canvas |
+| `src/world.js` | Native controls / preview, explicit `makeThemeReader` import |
+| `src/background.js` | Shared settings and persistence-warning hub; optional window layer, diagnostics and cleanup |
+| `src/plugin.js` | React/SDK registration/fallbacks, titlebar/palette, host disposal |
+| `scripts/bundle.mjs` | Dependency-free scoped ESM subset, relative IDs, explicit exports |
 
-The project deliberately avoids a framework in the engine and controls. React appears only at the Desktop adapter boundary, where it belongs. A mount owns its DOM subtree and never queries the host's DOM.
+## Rendering and time
 
-## Rendering
+The original `createRenderer` function and original art path remain unchanged.
+Lab uses the approved corrected sampler: light monotonic material exposure,
+contrast-preserving subpixel choice and glyph weights remain. Only copied Lab
+sampler changes are `options.transparent` support and clear instead of backdrop
+fill for background mode. All eighteen scene modules remain byte-identical to
+the approved export. No Lab UI/reference directory is copied.
 
-`drawField(context, width, height, scene, time, settings = {})` paints into a hidden canvas at two samples per glyph cell in each dimension. It has no clock, global seed, network, or DOM dependencies. A koi's centerline bends with time; its outline tapers along that spine. Patches are clipped inside the body. Paired pectoral fins, curved forked tails and fin rays remain separate translucent surfaces. By default five independently sized jellyfish combine a shaded projected hemispherical mesh, meridian and latitude ribs, a double elliptical rim, scalloped organs, five folded oral arms, 26 marginal strands and seven longer curling streamers. All geometry is still sampled into ASCII, not displayed as vectors.
+The integrated engine instantiates one active sampler per canvas. Switching
+families releases the old field. Only it schedules RAF; the retained standalone
+Lab engine export is never instantiated. Preview plus optional background have
+one scheduler each, not one per scene.
 
-`scenePose` supplies normalized full-domain continuous routes, scaled tangent headings, and signed turn curvature. Koi spines bend through turns and their tails beat behind the heading. Both scenes integrate a swimming pulse into their trajectory clock; there are no static center anchors or visible wrap jumps. The unit suite asserts substantial normalized travel over 30 simulation seconds, per-step continuity, real turning and numerical tangent agreement.
+Legacy time remains speed-scaled travel time. Lab travel rate is Speed and local
+articulation rate is Speed^0.6, integrated independently without retroactive
+jumps on edits. A scene change involving Lab resets both clocks; koi/jelly
+switches keep the old time behavior. `renderAt(t,b)` freezes time; omitted `b`
+is derived from Speed. Cat/Owl pace breathing, blinks and gestures, not travel.
+Night sky retains stationary stars with optional meteors.
 
-The renderer samples all four subpixels in every cell footprint, retaining strong thin-strand samples rather than losing them between cell centers. For jellyfish, sample selection is brightness-aware to preserve luminous rim highlights over darker opaque surfaces. The glyph ramp contains only ASCII characters.
+Preview and background share the same normalized model. Theme follows the
+host's original `options.isDark` reader, falling back to OS; no theme picker.
+Canvas allocation limits remain 1800x1400 logical, DPR<=2 / ~4 million backing
+pixels and 220x150 glyph cells. These are bounds, not performance guarantees.
+Lab count zero bypasses every ornament; legacy faint decorative dots remain.
 
-The renderer samples that field on a bounded grid. Pigment and alpha determine glyph weight; a spatial hash gives each cell a stable identity. Glyphs do not receive a new random value every frame. The visible layer is entirely glyphs and faint cell rectangles. Very dark ink is lifted in midnight mode; light-mode pigments are restrained enough to remain visible on paper.
+## Ownership and lifecycle
 
-The scene changes continuously but the cell grid does not move. Some glyph changes at silhouette boundaries are inherent to sampled ASCII, especially at bold density. Fine density gives the cleanest anatomy. System monospace fonts keep the distribution asset-free.
+The original capped scheduler owns RAF, resize/intersection observers, hidden
+and colour-scheme listeners. Hidden time is not caught up. Moving edits coalesce
+into capped frames; paused/manual views repaint once. Hosted backgrounds skip
+intersection observation. Destroy is idempotent and removes observers/listeners,
+canvas state and DOM. Mutators after disposal are inert, including reset.
 
-Canvas backing dimensions are limited to 1800 × 1400 logical pixels, DPR is capped at 2, and backing allocation is capped around four million pixels. The sampling grid is independently capped at 220 × 150 cells. Oversized hosts scale the bounded output to fit. ResizeObserver follows the actual canvas content box, not a guessed window size.
+The Settings page owns its DOM only. React is only the SDK adapter boundary.
+The existing titlebar, palette, Settings registration/fallbacks and host-disposal
+paths remain. Rendering failures show a fallback or restore/disable background.
+Persistence health is tracked separately for settings.v3 and background.v1; a
+successful save clears only that record's warning. Reduced-motion Resume grants
+both paths a session-only opt-in that survives Settings close/reopen; a new OS
+hold or plugin reload revokes it. No preference is silently written at startup.
+Visible paused/manual canvases check their own theme probe every 1.1 seconds
+and repaint only on a theme change. These bounded checks stop when hidden,
+offscreen or disposed; they never resume the animation clock.
+No plugin state is attached to window; only the offline demo has an inspection API.
 
-## Lifecycle
+## Persistence and build
 
-`createEngine` owns the animation request, ResizeObserver, IntersectionObserver, document visibility listener, and color-scheme listener. It cancels animation as soon as the document or intersection is hidden. Settings and resize notifications may update pending state while hidden, but do not sample or draw until visible. Delta time is capped at 100 ms, preventing jumps after stalls.
+See [SETTINGS-MIGRATION.md](SETTINGS-MIGRATION.md). V3 is the integrated writer;
+old v2 helper exports remain explicit compatibility APIs. The UI derives Lab
+controls from definitions, retaining original named koi/jelly controls.
 
-While motion is running, settings changes mark the next frame dirty and share the capped scheduler. Input events do not render independently of that clock. Paused and fixed-time views repaint once when a setting changes. The settings page owns its scroll area, leaving the native Reset to defaults control in a strip that stays visible.
+Bundling wraps each source module in lexical scope with explicit exports,
+relative `src/...` IDs, no absolute paths/timestamps/eval/runtime loader. The
+checked-in ESM subset rejects cycles, unsupported syntax, path escapes and
+external imports other than react, react/jsx-runtime, @hermes/plugin-sdk.
+The catalog transform strips `@chat-area` blocks before wrapping. `--out` emits
+only the requested JS bundle, not the ordinary plugin/demo.
 
-`mountWorld` owns the engine, input listeners, reduced-motion listener, and DOM. It treats storage failure as nonfatal. A failed canvas context or draw replaces the art with an accessible error message; it does not retry in a tight loop. Destroy disconnects observers, removes listeners, cancels the scheduled frame, clears backing canvases, and removes its subtree. Both destroy paths are idempotent.
+## Add a scene
 
-The Desktop effect cleans up on React unmount. An instance registry also cleans up on `ctx.onDispose`, so host disable does not depend solely on React effect timing. The adapter's React error boundary covers render errors; the world handles imperative canvas errors separately.
-
-## Persistence
-
-The public Desktop plugin SDK documentation describes `ctx.storage` as a synchronous, plugin-namespaced store with `get(key, fallback)`, `set(key, value)` and `remove(key)`. This project uses `get` with an explicit fallback.
-
-Only `settings.v2` is written through the provided namespaced storage object. The record has `schemaVersion: 2`, independent `koiColour`/`koiTint` and `jellyColour`/`jellyTint`, `koiCount` and `jellyCount` (integers 0–10, defaults 3 and 5), and `koiColors` and `jellyColors` (ten validated six-digit hex strings each, including hidden slots). Existing background/density/speed/pause/eco fields remain shared. `colour` and `tint` are compatibility aliases derived from the active habitat; `setSettings` accepts aliases and targets only the selected habitat. All arrays returned or normalized are fresh copies; defaults are frozen. A strict allowlist and numeric bounds normalize every read. The browser adapter uses the equivalent JSON record under `ascii-worlds.settings.v2`.
-
-Read v2 first, then legacy `settings.v1` if v2 is absent or unreadable. Since old shared colour ownership is ambiguous, preserve its choice for jellyfish only and restore koi natural. Other old preferences survive. Migration leaves v1 intact, writing v2 on the next control change. Malformed JSON is caught independently for each key.
-
-Koi multicolour palettes replace body patch pigments before field sampling; they bypass screen-space tinting. Individual jellyfish colours enter each creature's existing shaded mesh and strands before sampling, also bypassing global tinting. In `individual` koi mode `koiPigmentsFromColor(hex)` derives a five-pigment patch set (cream base, the chosen colour as the main patch, a hue-shifted secondary, a dark ink accent and a gold accent) with pure arithmetic, so each fish is multi-tone and deterministic. Stable integer slot indices determine colour, route, phase and bounded size. The first five sizes and all route equations remain unchanged. Slots six through ten have explicit bounded sizes; count zero emits no geometry. The native colour editor is a disclosure inside the settings page, not a floating overlay. Fixed-time rendering, frame stats, and simulation time are not persisted. Reduced-motion startup pausing does not overwrite a stored motion choice until the user changes a control.
-
-## Add a habitat
-
-1. Add a pure drawing function to `src/art.js`. Use the supplied time rather than `Date.now`, random calls, or independent timers. Paint transparent shapes into the field; do not draw text there.
-2. Add the scene to the validation allowlist and the static habitat select in `world.js`. Add its heading, specimen name, and accessible description in `reflect`.
-3. Keep composition responsive in `drawField`. Test wide and tall art regions, not just outer window sizes: controls consume real space.
-4. If adding a module, put it before its consumers in the build script's explicit module order. The tiny bundler supports semicolon-terminated local import declarations across one or several lines and the current top-level exports, not arbitrary package resolution. Keep the supported external React and SDK imports in the adapter.
-5. Add a deterministic geometry test and capture both palettes at preview and large sizes. Rebuild and commit the two generated files; never hand-edit the generated `desktop/plugin.js` and `demo.html`.
-
-For a new setting, update defaults and normalization together, then add a labeled control and coverage for malformed persistence. Do not add a global event handler or background task when an instance-owned listener suffices.
-
-## The settings page and its fallbacks
-
-There is no docked pane. The Desktop SDK closes a plugin when its only pane is closed, so a pane cannot be hidden, and the documentation points plugin preferences at Settings -> Plugins. `src/plugin.js` registers one page, `ctx.registerSettingsPage({ id: 'settings', title: 'ASCII Worlds', icon: 'color-mode', render })`. If that function does not exist it falls back to `ctx.register({ area: 'settings.plugins', ... })`, the form the documentation gives for older hosts. If neither works the plugin still loads: the title-bar toggle and Background mode keep working. The page mounts `mountWorld` in an effect and destroys it on unmount; the preview stops animating whenever it is scrolled out of view.
-
-Newer SDK exports (`registerSettingsPage`, `TITLEBAR_AREAS`, `PALETTE_AREA`, `pluginSettingsHref`, `host.navigate`) are read through a namespace import and guarded. Without the title bar, Background mode reports itself unavailable; without `host.navigate` and `pluginSettingsHref` the "open settings" palette command is not registered.
-
-## Background mode
-
-`createHub` returns three small subscribe/get/set stores: the scene settings, the saved Background preferences (`background.v1`), and a status message. The settings page writes the scene settings into the hub on every edit and the layer host listens, so changes show immediately in the background. A title-bar component (a permanent mount point) calls `host.attach()` on mount and `host.detach()` on unmount; detach removes the layer, the style tag and the `html` attribute. `createEngine(canvas, settings, onError, { hosted, transparent })` skips the IntersectionObserver for a full-window layer and clears instead of painting an opaque pond. Nothing is attached to `window`. How the two placements work, the exact selectors and the troubleshooting report are in [HOW-BACKGROUND-WORKS.md](HOW-BACKGROUND-WORKS.md).
-
-## Host behaviour worth re-checking after Desktop updates
-
-Everything above follows the documented SDK. These parts rely on how the app is laid out or on documented-but-unexercised contribution shapes, so check them first if something stops working: the Behind placement (chat hook, wrapper colours, theme variables), the shape of title-bar and palette contributions, and the settings-page API. Automated tests use mock hosts for all of these; see [DEVELOPMENT.md](DEVELOPMENT.md).
+Add a pure Lab-contract module, register its ID in the integrated order and add
+count-zero, deterministic/non-rigid geometry, colour, controls, clocks and
+persistence tests. Do not alter legacy art for a new habitat. Rebuild generated
+files, inspect actual light/dark articulated/travelling output, update the
+control matrix, and complete the native Mac checklist before claiming native acceptance. Nonempty
+pixels are not proof of natural anatomy or beauty.

@@ -6,6 +6,30 @@ import {
   normalizeSettings,
 } from "./settings.js";
 import { drawField } from "./art.js";
+import { normalizeWorldSettings, advanceClocks } from './settings-v3.js';
+import { sceneById } from './lab/scenes/registry.js';
+import { createRenderer as createLabRenderer } from './lab/core/engine.js';
+import { beatFromTravel } from './lab/core/settings.js';
+
+// A single active sampler per canvas. The original renderer below is kept
+// unchanged; switching renderer families releases the previous field canvas.
+export function createSceneRenderer(canvas, initial, options = {}) {
+  let current=null, family=null, width=1, height=1, dpr=1, disposed=false;
+  const stats={frames:0,glyphs:0};
+  return {
+    stats,
+    resize(w,h,p=1) { if(disposed)return; width=w;height=h;dpr=p;current?.resize(w,h,p); },
+    render(t,raw,dark=true,b) {
+      if(disposed)return;
+      const s=normalizeWorldSettings(raw), def=sceneById(s.scene), next=def?'lab':'legacy';
+      if(family!==next) { current?.destroy();current=def?createLabRenderer(canvas,options):createRenderer(canvas,options);family=next;current.resize(width,height,dpr); }
+      if(def) current.render(def,s.scenes[s.scene],t,b??beatFromTravel(t,s.speed),dark);
+      else current.render(t,s,dark);
+      Object.assign(stats,current.stats,{frames:stats.frames+1,scene:s.scene,creatures:def?s.count:(s.scene==='koi'?s.koiCount:s.jellyCount),palette:dark?'dark':'light'});
+    },
+    destroy() { if(disposed)return;disposed=true;current?.destroy();stats.disposed=true; }
+  };
+}
 
 export function createRenderer(canvas, options = {}) {
   // Background mode draws glyphs on a transparent canvas so only the art, not
@@ -208,19 +232,22 @@ export function createEngine(
   onError = () => {},
   options = {},
 ) {
-  const renderer = createRenderer(canvas, options),
+  const renderer = createSceneRenderer(canvas, initialSettings, options),
     media = matchMedia("(prefers-color-scheme: dark)");
   // options.isDark lets a host say whether the surface behind the canvas is
   // dark (the background layer follows the Hermes theme). Without it the
   // operating system's colour scheme decides, as before.
   const isDark = () => (options.isDark ? options.isDark() : media.matches);
-  let settings = normalizeSettings(initialSettings),
+  let settings = normalizeWorldSettings(initialSettings),
     disposed = false,
     visible = Boolean(options.hosted);
   let frame = 0,
+    themeTimer = 0,
+    lastDark = null,
     last = null,
     lastDraw = -Infinity,
     time = 0,
+    beat = 0,
     dirty = true;
   let size = { width: 1, height: 1 },
     manual = false;
@@ -234,20 +261,44 @@ export function createEngine(
   function cancel() {
     if (frame) cancelAnimationFrame(frame);
     frame = 0;
+    if (themeTimer) clearTimeout(themeTimer);
+    themeTimer = 0;
     last = null;
+  }
+  // No SDK theme event is required: inspect only our own theme probe, at most
+  // once per 1.1s for a visible still. Moving frames already read that probe.
+  // Hidden/offscreen/disposed canvases own no timer; no host DOM observation.
+  function watchTheme() {
+    if (themeTimer || !options.isDark || !allowed() || (!settings.paused && !manual)) return;
+    themeTimer = setTimeout(() => {
+      themeTimer = 0;
+      if (!allowed()) return;
+      try {
+        if (isDark() !== lastDark) {
+          dirty = true;
+          sync();
+        } else watchTheme();
+      } catch (error) {
+        manual = true;
+        onError(error);
+      }
+    }, 1100);
   }
   function paint() {
     if (!allowed()) return;
     renderer.resize(size.width, size.height, devicePixelRatio);
-    renderer.render(time, settings, isDark());
+    lastDark = isDark();
+    renderer.render(time, settings, lastDark, beat);
     dirty = false;
     lastDraw = performance.now();
   }
   function tick(now) {
     frame = 0;
     if (!allowed() || settings.paused || manual) return;
-    if (last !== null)
-      time += Math.min(0.1, (now - last) / 1000) * settings.speed;
+    if (last !== null) {
+      const clocks = advanceClocks(time, beat, (now-last)/1000, settings.speed);
+      time=clocks.time;beat=clocks.beat;
+    }
     last = now;
     try {
       if (now - lastDraw >= 1000 / frameCap(settings.eco)) {
@@ -257,7 +308,8 @@ export function createEngine(
             size.width * size.height < 1000000)
         )
           renderer.resize(size.width, size.height, devicePixelRatio);
-        renderer.render(time, settings, isDark());
+        lastDark = isDark();
+        renderer.render(time, settings, lastDark, beat);
         dirty = false;
         // Retain the frame phase. Resetting it to every RAF timestamp drops
         // a nominal 30 fps cap toward 20 fps when timestamps have small jitter.
@@ -282,6 +334,7 @@ export function createEngine(
       return;
     }
     if (!settings.paused && !manual) frame = requestAnimationFrame(tick);
+    else watchTheme();
   }
   const resizeObserver = new ResizeObserver((entries) => {
     const rect = entries[0]?.contentRect;
@@ -313,7 +366,13 @@ export function createEngine(
     stats,
     update(value) {
       if (disposed) return;
-      settings = normalizeSettings(value);
+      const next=normalizeWorldSettings(value);
+      if(next.scene!==settings.scene && (sceneById(next.scene)||sceneById(settings.scene))) {time=0;beat=0;last=null;}
+      settings = next;
+      if (!settings.paused && !manual && themeTimer) {
+        clearTimeout(themeTimer);
+        themeTimer = 0;
+      }
       dirty = true;
       // Coalesce moving controls into the capped clock instead of painting for
       // every input event. Paused or fixed-time views still repaint once.
@@ -327,9 +386,10 @@ export function createEngine(
       }
     },
     // Explicit fixed-time rendering disables the animation clock until resume().
-    renderAt(value) {
+    renderAt(value, beatValue) {
       if (disposed) return;
       time = Math.max(0, Number(value) || 0);
+      beat = beatValue===undefined ? beatFromTravel(time,settings.speed) : Math.max(0,Number(beatValue)||0);
       manual = true;
       dirty = true;
       sync();

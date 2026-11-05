@@ -1,82 +1,147 @@
 # Development and testing
 
-## Build
+## Small, deterministic build
 
-Node 20 or newer. No dependencies, no install step.
-
-```sh
-npm run build    # bundle src/ into desktop/plugin.js and demo.html
-npm run verify   # unit tests, then build (run `node --check desktop/plugin.js` after)
-npm run demo     # serve demo.html on http://127.0.0.1:4178 (loopback only; PORT changes it)
-```
-
-The build concatenates the project's modules in a fixed order, removes only their local import and export declarations, and keeps the three supported external imports (`react`, `react/jsx-runtime`, `@hermes/plugin-sdk`). It is deterministic: no timestamps, no minifier. Never edit the generated files by hand.
-
-## Unit tests
-
-`npm test` runs `tests/*.test.mjs` with Node's built-in runner: settings validation and migration, pose and route maths (the creatures must really travel and turn), population and colour handling for both habitats, a golden check that pins default koi output to the 1.0.1 build, Background storage and stylesheet rules, and a check that the version constant matches `package.json`.
-
-## Browser tests
-
-These need a Playwright installation and a Chromium build, which are not part of this repository.
+Node **20+** builds and tests the project without installing packages. Python 3
+is used by the optional all-gates and packaging scripts. The plugin needs only
+the React/SDK modules supplied by Desktop at runtime.
 
 ```sh
-mkdir -p /tmp/aw-tools && cd /tmp/aw-tools && npm init -y && npm i react react-dom esbuild playwright
-cd -   # back to this project
-ASCII_WORLDS_TOOLS=/tmp/aw-tools node scripts/prepare-harness.mjs   # builds tests/.harness (React modules for the mock host)
-
-export PLAYWRIGHT_MODULE=/tmp/aw-tools/node_modules/playwright/index.mjs
-export CHROMIUM_PATH=/path/to/a/chromium/executable
-node tests/browser.mjs              # offline demo: determinism, persistence, keyboard, reduced motion, visibility, disposal
-node tests/background-harness.mjs   # plugin on a mock Hermes page: settings page, placements, lifecycle, fallbacks
-node tests/background-realshape.mjs # regression page that copies a measured Hermes Desktop layout
-node tests/timing.mjs               # real-time frame counts (headless; not a device benchmark)
+npm test
+npm run build
+npm run verify
+node --check desktop/plugin.js
+node scripts/build.mjs --catalog --out /your/scratch/catalog-plugin.js
 ```
 
-`tests/fixtures/` holds the mock host page and mocked SDKs (`?api=page|fallback|none`, `?nonav`, `?noarea`, `?bare` select variants). They imitate only what the SDK documentation describes. A pass proves the plugin's own logic against that description, not behaviour inside the real app, so also check a real Hermes Desktop before releasing.
+Commit generated `desktop/plugin.js` and `demo.html` with their source changes;
+never hand-edit them. Two normal builds must produce the same bytes. The scoped
+ESM-subset bundler rejects unsupported syntax/cycles and keeps deterministic
+relative module IDs. An alternate `--out` build never rewrites the regular plugin
+or demo. Public CI reruns unit/build checks and detects stale committed output.
 
-`tests/background-realshape.mjs` deserves a note. Its fixture copies the layout of a real window (opaque body, opaque wrappers painted by utility classes, one wrapper painted inline, and a theme variable for the chat colour). When you change the Behind rules, run it before and after removing the new rule from the built file: the test should fail without the rule. That negative control is how the body and inline cases were found.
+## Browser prerequisites, separate from the plugin
 
-## Motion evidence
+Use a separately provisioned tooling directory containing **Playwright, React,
+react-dom and esbuild**, plus an existing Chromium executable. Nothing below
+automatically installs packages, modifies a live Desktop app or needs credentials.
 
-`tests/render-motion.mjs` captures 201 frames per scene at 10 fps (0 to 20 simulation seconds). `python scripts/encode-motion.py` then encodes clips and contact sheets with ffmpeg and Pillow. Both are optional tools. `scenePose(scene, index, seconds, width, height)` in `src/art.js` is a pure function, which is why travel can be measured in unit tests.
+```sh
+export ASCII_WORLDS_TOOLS=/path/to/tools
+export PLAYWRIGHT_MODULE="$ASCII_WORLDS_TOOLS/node_modules/playwright/index.mjs"
+export CHROMIUM_PATH=/path/to/chrome
+node scripts/prepare-harness.mjs
+```
 
-## The offline demo API
+Preparation creates ignored `tests/.harness/browser-deps/`. Real-React suites use
+React Strict Mode with a mock SDK, actual generated plugin registration/native
+form, and actual Chromium canvas output. The supplemental CDP/minimal-JSX tests
+are not substitutes for React conformance or native Mac testing. Some historical
+suites use short-lived loopback fixture servers; gallery capture routes local
+fixture requests in-process and rejects unexpected origins. No public service is started.
 
-`demo.html` exposes a small deterministic API for tests and screenshots:
+## Complete gate
+
+```sh
+python3 scripts/verify-local-candidate.py --browser --out /your/scratch/results
+```
+
+This runs units, normal/repeat/catalog builds, JS syntax and `git diff --check`,
+then all **eleven** browser suites, serially:
+
+| Suite | Principal coverage |
+| --- | --- |
+| `browser` | Original preview controls, persistence, resize and cleanup |
+| `background-harness` | Layer lifecycle, controls, click-through and frame cap |
+| `background-realshape` | Full-distribution host-layout fixture and restoration |
+| `settings-layout` | Real host-scroll layout; no fixed-height settings collapse |
+| `timing` | Capped scheduling and suspension |
+| `all-scenes-browser` | All twenty IDs, both canvas paths, applicable palettes/slots, stills/articulation |
+| `live-controls` | Live Speed and flow/extras in both paths, including meteors |
+| `storage-browser` | Readable/write-denied startup, saved Pause and rollback records |
+| `integrated-plugin` | Supplemental dependency-free Chromium/CDP registered-plugin probe |
+| `integrated-demo` | Offline demo via Chromium/CDP |
+| `corrections-browser` | Independent record recovery, shared reduced-motion Resume, paused host-theme refresh/cleanup |
+
+Keep timing-heavy runs serial: headless scheduling varies with machine load.
+Caps are not guaranteed achieved rates. Reports contain machine paths and are
+**private evidence**, not public files to stage. Preserve original test inventory
+and golden fixtures. The public [verification summary](INTEGRATION-VERIFICATION.md)
+distinguishes automated checks from the author's general Mac hand test.
+
+## Refresh the gallery
+
+Only documentation tooling needs **Pillow** (Python); it is not a build/runtime
+dependency. Reuse the browser tools above. An optional `ASCII_WORLDS_FONT` points
+to a TrueType font for contact-sheet labels; otherwise DejaVu Sans/default is used.
+
+```sh
+node scripts/capture-gallery.mjs
+python3 scripts/compose-gallery.py
+python3 scripts/audit-public.py
+```
+
+The capture script runs from the **full source checkout** (not the transformed
+catalog branch). It loads the unchanged generated full plugin and a separately
+built catalog plugin through real React + mock SDK. It records forty default
+scene/theme previews, full/catalog forms and actual 28% composited window layers,
+checks click-through and cleanup, and rejects page/console/unexpected-request errors.
+The composition script only scales/letterboxes real frames: no invented artwork.
+`ASCII_WORLDS_GALLERY` can point both scripts at a separate output directory.
+
+Inspect **actual pixels**, not just hashes: all twenty, dark/light, animal faces,
+wing/fin poses, scene clipping and caption legibility. Inspect form and background
+images too. A generic mock workspace must say it is a mock and contain no real
+conversation, session/sidebar titles, accounts or machine information. Never
+pass it off as a native app screen. Platform/font changes may change rasterization.
+
+## Packaging and publication hygiene
+
+```sh
+python3 scripts/package-release.py /your/scratch/packages
+```
+
+This rebuilds twice, verifies version/imports, writes deterministic install/source
+ZIPs with Python stdlib `zipfile`, checks CRC and compares every mapped byte.
+Packages include portable docs and current gallery assets, not internal receipts,
+Git state, dependency trees or raw videos. Extract the source package somewhere
+fresh, prepare its harness and rerun the complete gate before claiming package
+acceptance. Runtime identity must match the install package.
+
+Run `python3 scripts/audit-public.py` for Markdown links/alt text, image dimensions
+and manifests, public-text privacy patterns, exact twenty-scene screenshot coverage
+and catalog-doc transformation. It does not certify security or inspect every
+image semantically; human/visual review remains necessary. Never stage with
+`git add -A` from a tree containing private evidence. Publish only the explicit,
+reviewed file allowlist, then verify the exact remote tree and CI.
+
+For catalog docs on a source-tree copy:
+
+```sh
+node scripts/catalog-readme.mjs --root /path/to/copy
+```
+
+It strips full-only marked sections in the README **and linked feature docs**,
+selects actual catalog settings images and refuses unmarked unsupported claims.
+It does not build/push a branch or open a PR. See [catalog disclosures](CATALOG.md).
+
+## Offline demo API
+
+Open `demo.html` directly. `?chat=1` adds explicitly mock content, not a host install.
+The demo-only inspection API is intentionally absent from the Desktop plugin:
 
 ```js
-asciiWorlds.setSettings({ scene: 'jellyfish', palette: 'dark', density: 'fine', paused: true });
-asciiWorlds.setSettings({ jellyCount: 2, jellyColour: 'individual', jellyColors: ['#ff9977', '#99ddff'] });
-asciiWorlds.renderAt(12);   // simulation seconds; also stops the automatic clock
-asciiWorlds.stats;          // frames, glyphs, creatures, grid size, backing size, DPR, time
-asciiWorlds.settings;       // a copy
-asciiWorlds.resume();       // leave fixed-time mode
-asciiWorlds.reset();
-asciiWorlds.destroy();      // idempotent
+asciiWorlds.setSettings({ scene: 'owl', size: 0.8, extras: { perch: false } });
+asciiWorlds.renderAt(2, 5); // frozen travel / independent articulation
+asciiWorlds.settings;     // copied v3 state and legacy koi/jelly aliases
+asciiWorlds.stats;
+asciiWorlds.resume();
+asciiWorlds.resetScene(); // active habitat only
+asciiWorlds.reset();      // global reset; returns to Koi
+asciiWorlds.destroy();
 ```
 
-For a screenshot URL use `?scene=koi&palette=light&density=fine&paused=true&time=12` and wait for `asciiWorlds.stats.glyphs > 0`. Add `chat=1` to see Background mode over a fake chat. Fixed-time output is deterministic for the same viewport, DPR, fonts and settings; font rasterisation differs between operating systems.
-
-## Saved preferences
-
-Two keys in the plugin's storage: `settings.v2` (scene settings, `schemaVersion: 2`, with an older `settings.v1` still read) and `background.v1` (enabled, strength, placement: `behind` is shown as Chat area, `front` as Whole window). Both are validated field by field on every read, and a corrupt value falls back to a safe default instead of breaking the page. The demo uses `ascii-worlds.settings.v2` in the browser's local storage. See [ARCHITECTURE.md](ARCHITECTURE.md) for the migration rules.
-
-## Catalog build
-
-The plugin catalog does not allow a plugin to restyle the app's own markup (rule 8), and the Chat area placement does exactly that. Every piece of code that does it sits between `@chat-area:begin` and `@chat-area:end` markers (and `<!-- chat-area:begin -->` markers in the settings markup and the README).
-
-```sh
-npm run build:catalog             # writes the Whole-window-only desktop/plugin.js
-scripts/make-catalog-branch.sh    # builds it on a `catalog` branch (add --push to publish the branch)
-```
-
-`main` always holds the full plugin. The `catalog` branch is `main` plus one generated commit. Never edit it by hand; rerun the script after changing `main`. The browser suites that exercise Chat area (`background-harness`, `background-realshape`, and the placement cards in `settings-layout`) run against `main` only; `tests/catalog-variant.test.mjs` checks the catalog bundle.
-
-## Regenerating the koi golden hashes
-
-`tests/fixtures/koi-golden.json` holds a hash of every canvas call for the default koi. It exists so that drawing changes are never accidental. If you change how koi are drawn on purpose, regenerate it and explain why in the changelog:
-
-```sh
-node -e "import('./tests/koi-golden.helper.mjs').then(async ({GOLDEN_CASES, recordField, hashCalls}) => { const fs = await import('node:fs'); const out = {}; for (const c of GOLDEN_CASES) out[`${c.w}x${c.h}@${c.t}/${c.colour}`] = hashCalls(recordField(c.w, c.h, 'koi', c.t, {colour: c.colour})); fs.writeFileSync('tests/fixtures/koi-golden.json', JSON.stringify(out, null, 2) + '\\n'); })"
-```
+The old one-argument `renderAt` form remains. Themes follow host/OS automatically.
+See [architecture](ARCHITECTURE.md), [migration](SETTINGS-MIGRATION.md) and the
+[manual Mac checklist](MANUAL-MAC-CHECKLIST.md). Native acceptance must be measured,
+not inferred from a passing browser fixture.

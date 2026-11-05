@@ -9,15 +9,18 @@ import {
   PLUGIN_VERSION,
 } from "./settings.js";
 import { createEngine } from "./engine.js";
-import { diagnose } from "./background.js";
+import { diagnose, makeThemeReader } from "./background.js";
+import { readWorldSettings, writeWorldSettings, normalizeWorldSettings, patchWorldSettings, resetWorldScene, WORLD_SCENES, colourModes } from './settings-v3.js';
+import { sceneById } from './lab/scenes/registry.js';
 import { WORLD_CSS } from "./styles.js";
 
 export function mountWorld(root, storage = browserStorage(), hub = null) {
-  let settings = readSettings(storage),
+  let settings = hub ? normalizeWorldSettings(hub.settings.get()) : readWorldSettings(storage),
     disposed = false,
     engine;
   const reduced = matchMedia("(prefers-reduced-motion: reduce)");
-  if (reduced.matches) settings.paused = true;
+  const initiallyHeld = reduced.matches && !hub?.motionOptIn?.get();
+  if (initiallyHeld) settings.paused = true;
   const listeners = [];
   const listen = (node, name, handler) => {
     node.addEventListener(name, handler);
@@ -72,15 +75,50 @@ export function mountWorld(root, storage = browserStorage(), hub = null) {
     </section>
     <section class="aw-section aw-about" aria-labelledby="aw-h-about">
       <h3 class="aw-h aw-h-small" id="aw-h-about">About ASCII Worlds</h3>
-      <p class="aw-help aw-about-lead">A small aquarium for your chats. Every koi and jellyfish is drawn live out of text characters, and each one swims its own route across the screen.</p>
+      <p class="aw-help aw-about-lead">A small aquarium for your chats. Twenty procedural glyph habitats now extend the original koi and jellyfish with wings, drifting leaves and quiet companions. Preview and background share the same settings.</p>
       <p class="aw-help aw-about-small">Version ${PLUGIN_VERSION}. Free and open source under the MIT licence.</p>
     </section>`;
   root.replaceChildren(style, world);
   const find = (s) => world.querySelector(s),
     canvas = find("canvas"),
     note = find(".aw-note");
-  let reflectedScene;
+  let reflectedScene, saveFailed=false, motionHold=initiallyHeld;
+  const labControls=document.createElement('div');
+  labControls.className='aw-lab-controls';
+  labControls.style.cssText='display:contents';
+  find('[name="density"]').closest('label').before(labControls);
+  const blurb=document.createElement('p');blurb.className='aw-help';
+  find('.aw-caption').after(blurb);
+  const selector=find('[name="scene"]');
+  selector.replaceChildren(...WORLD_SCENES.map(def=>{const o=document.createElement('option');o.value=def.id;o.textContent=def.name;return o;}));
+  function renderNote() {
+    note.textContent=[(hub?.persistence ? hub.persistence.get().settings===false : saveFailed)?'Preferences could not be saved. Edits are memory-only for this session.':'',motionHold&&settings.paused?'Motion paused to follow your reduced-motion preference. Resume only when you want motion.':'',sceneById(settings.scene)&&settings.count===0?'Count is zero: this scene is intentionally empty.':''].filter(Boolean).join(' ');
+  }
+  function buildLabControls(def) {
+    labControls.replaceChildren();
+    if(!def)return;
+    const add=(key,label,type='range',min=0,max=1,step=0.05)=>{
+      const field=document.createElement('label');field.className='aw-field';
+      const span=document.createElement('span');span.textContent=label;
+      const input=document.createElement('input');input.type=type;input.name=key;input.dataset.lab=key;input.setAttribute('aria-label',label);
+      if(type==='range'||type==='number'){input.min=min;input.max=max;input.step=step;}
+      field.append(span,input);labControls.append(field);return input;
+    };
+    add('count',`${def.count.noun} count (0–${def.count.max})`,'number',0,def.count.max,1);
+    add('size','Size','range',0.5,1.6,0.05);add('strength','Scene strength','range',0.2,1,0.05);
+    if(def.flow)add('flow',def.flow.label,'range',def.flow.min??0,def.flow.max??1.5,0.05);
+    for(const extra of def.extras||[])add(`extra-${extra.key}`,extra.label,extra.type==='toggle'?'checkbox':'range',extra.min,extra.max,extra.step??0.05);
+    if(def.individual!==false) {
+      const details=document.createElement('details');details.className='aw-individual';
+      const summary=document.createElement('summary');summary.textContent='Individual colours';details.append(summary);
+      const help=document.createElement('p');help.textContent='Ten retained slots. Populations above ten repeat these colours; reducing count never deletes a slot.';details.append(help);
+      const slots=document.createElement('div');slots.className='aw-colour-slots';details.append(slots);labControls.append(details);
+      for(let i=0;i<10;i++){const input=add(`color-${i}`,`Individual ${i+1} colour`,'color');slots.append(input.closest('label'));}
+    }
+  }
   function reflect() {
+    const def=sceneById(settings.scene);
+    find('.aw-art').style.height=def?'clamp(320px, 48vw, 480px)':'';
     if (reflectedScene !== settings.scene) {
       const names = {
         natural:
@@ -98,15 +136,26 @@ export function mountWorld(root, storage = browserStorage(), hub = null) {
         individual: "Individual colours",
       };
       find('[name="colour"]').replaceChildren(
-        ...(settings.scene === "koi" ? KOI_MODES : JELLY_MODES).map((value) => {
+        ...colourModes(settings.scene).map((value) => {
           const option = document.createElement("option");
           option.value = value;
           option.textContent = names[value];
           return option;
         }),
       );
+      buildLabControls(def);
       reflectedScene = settings.scene;
     }
+    if(def)for(const input of labControls.querySelectorAll('input')) {
+      const key=input.dataset.lab;
+      const value=key.startsWith('extra-')?settings.extras[key.slice(6)]:key.startsWith('color-')?settings.colors[Number(key.slice(6))]:settings[key];
+      if(input.type==='checkbox')input.checked=value;else input.value=value;
+      if(key.startsWith('color-'))input.closest('label').hidden=Number(key.slice(6))>=Math.min(10,settings.count);
+    }
+    blurb.textContent=(def?.blurb||'Original procedural aquarium artwork.')+' Reset this scene preserves other scenes and global preferences. Reset to defaults resets all scenes and returns to the koi pond.';
+    find('[name="speed"]').max=def?2:1.5;
+    find('[name="speed"]').closest('label').querySelector('span').textContent=def?.motion==='stationary'?'Pace (local motion)':'Speed';
+    if(def)find('[name="colour"] option[value="natural"]').textContent='Natural';
     find(".aw-population").hidden = settings.scene !== "jellyfish";
     find(".aw-jelly-individual").hidden = settings.scene !== "jellyfish";
     find(".aw-koi-population").hidden = settings.scene !== "koi";
@@ -147,22 +196,24 @@ export function mountWorld(root, storage = browserStorage(), hub = null) {
         ? `${settings.koiCount} procedural koi with ${settings.colour === "natural" ? "red, cream, ink and gold" : "shaded"} patches, rendered entirely as colored glyphs`
         : `${settings.jellyCount} jellyfish with long flowing tentacles, rendered entirely as colored glyphs`,
     );
+    if(def) {find('.aw-specimen').textContent=def.name.toUpperCase();canvas.setAttribute('aria-label',`${settings.count} ${def.name}, rendered entirely as coloured glyphs. ${def.blurb}`);}
+    renderNote();
   }
   function update(patch, persist = true) {
     if (disposed) return;
-    // Legacy demo API aliases target the newly selected habitat, never both.
-    const habitat = (patch.scene || settings.scene) === "koi" ? "koi" : "jelly";
-    const next = { ...settings, ...patch };
-    if (Object.hasOwn(patch, "colour")) next[`${habitat}Colour`] = patch.colour;
-    if (Object.hasOwn(patch, "tint")) next[`${habitat}Tint`] = patch.tint;
-    settings = normalizeSettings(next);
+    settings=patchWorldSettings(settings,patch);
+    if(Object.hasOwn(patch,'paused')) {
+      if(!patch.paused)motionHold=false;
+      hub?.motionOptIn?.set(!patch.paused && reduced.matches);
+    }
     reflect();
     engine?.update(settings);
     hub?.settings.set(settings);
-    if (persist)
-      note.textContent = writeSettings(storage, settings)
-        ? ""
-        : "Preferences could not be saved in this environment.";
+    if (persist) {
+      saveFailed=!writeWorldSettings(storage, settings);
+      if(hub?.persistence)hub.persistence.set({...hub.persistence.get(),settings:!saveFailed});
+      renderNote();
+    }
   }
   function fail(error) {
     canvas.hidden = true;
@@ -190,12 +241,16 @@ export function mountWorld(root, storage = browserStorage(), hub = null) {
       ? status.message
       : status.message ||
         "Background needs the title bar mount point, which this Desktop version does not provide.";
+      const p=hub?.persistence?.get().background===false?' Background edits are memory-only: preferences could not be saved.':'';
+    find('.aw-bg-status').textContent+=p;
+    renderNote();
   }
   reflect();
   if (hub) {
     reflectBg();
     hub.settings.set(settings);
     listeners.push(hub.bg.subscribe(reflectBg), hub.status.subscribe(reflectBg));
+    if(hub.persistence)listeners.push(hub.persistence.subscribe(reflectBg));
   }
   try {
     const theme = makeThemeReader(world, document.defaultView);
@@ -203,6 +258,14 @@ export function mountWorld(root, storage = browserStorage(), hub = null) {
   } catch (error) {
     fail(error);
   }
+  const labChange=e=>{
+    const input=e.target,key=input.dataset?.lab;if(!key)return;
+    if(key.startsWith('color-')){const colors=[...settings.colors];colors[Number(key.slice(6))]=input.value;update({colors,colour:'individual'});}
+    else if(key.startsWith('extra-'))update({extras:{[key.slice(6)]:input.type==='checkbox'?input.checked:Number(input.value)}});
+    else update({[key]:Number(input.value)});
+  };
+  listen(labControls,'input',e=>{if(e.target.type!=='color'&&e.target.type!=='checkbox')labChange(e);});
+  listen(labControls,'change',e=>{if(e.target.type==='color'||e.target.type==='checkbox')labChange(e);});
   for (const name of ["scene", "density", "colour", "tint"])
     listen(find(`[name="${name}"]`), "change", (e) =>
       update(
@@ -262,21 +325,14 @@ export function mountWorld(root, storage = browserStorage(), hub = null) {
   }
   listen(reduced, "change", (e) => {
     if (e.matches) {
+      motionHold=true;
       update({ paused: true }, false);
-      note.textContent =
-        "Motion paused to follow your reduced-motion preference.";
     }
   });
-  if (reduced.matches)
-    note.textContent =
-      "Reduced motion is on. Resume only when you want motion.";
+  renderNote();
   return {
     get settings() {
-      return {
-        ...settings,
-        jellyColors: [...settings.jellyColors],
-        koiColors: [...settings.koiColors],
-      };
+      return normalizeWorldSettings(settings);
     },
     get stats() {
       return engine ? { ...engine.stats } : null;
@@ -284,14 +340,32 @@ export function mountWorld(root, storage = browserStorage(), hub = null) {
     setSettings(patch) {
       update(patch);
     },
-    renderAt(time) {
-      return engine?.renderAt(time);
+    renderAt(time, beat) {
+      if(disposed)return;
+      return engine?.renderAt(time, beat);
     },
     resume() {
       engine?.resume();
     },
+    resetScene() {
+      if(disposed)return;
+      settings=resetWorldScene(settings);
+      update({});
+    },
     reset() {
-      update({ ...DEFAULTS, paused: reduced.matches });
+      if(disposed)return;
+      settings=normalizeWorldSettings({...DEFAULTS,paused:reduced.matches});
+      motionHold=reduced.matches;
+      hub?.motionOptIn?.set(false);
+      update({});
+      engine?.resume();
+    },
+    resetAll() {
+      if(disposed)return;
+      settings=normalizeWorldSettings({...DEFAULTS,paused:reduced.matches});
+      motionHold=reduced.matches;
+      hub?.motionOptIn?.set(false);
+      update({});
       engine?.resume();
     },
     destroy() {

@@ -9,9 +9,15 @@ about: Something does not look or work right
 
 **Hermes Desktop version and operating system:**
 
-**Placement (Chat area or Whole window):**
+<!-- chat-area:begin -->
+**Distribution and placement (full: Chat area / Whole window; catalog: Whole window only):**
+<!-- chat-area:end -->
+<!-- catalog: **Catalog distribution, Whole-window overlay:** -->
 
-**Text from Settings -> Plugins -> ASCII Worlds -> Check background** (please paste it all):
+**Habitat, settings and theme:**
+
+**Sanitized text from Settings -> Plugins -> ASCII Worlds -> Check background**
+(review for host-layout or other private information before sharing):
 
 ```
 ```
