@@ -1,8 +1,9 @@
 # Manual Mac Hermes v1.2 test and rollback checklist
 
 **Every box below is intentionally unchecked.** The author reports a general hand
-test of v1.2.0 on a Mac with Hermes Desktop, and that everything worked, but no
-item-by-item results were recorded. Use this list to record your own results.
+test of the full v1.2.0 plugin on a Mac with Hermes Desktop, and that everything
+worked, but no item-by-item results were recorded. Use this list to record your own
+results.
 Historical v1.1 photos / Lab approval are not v1.2 native host verification.
 
 ## Before testing

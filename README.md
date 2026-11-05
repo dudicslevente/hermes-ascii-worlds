@@ -7,9 +7,12 @@ Every creature is drawn from characters, not a video or downloaded image.
 ![Solitary whale rendered as coloured glyphs in the v1.2.0 dark preview; browser mock host, not native Mac evidence](docs/images/v1.2/banner.png)
 
 **Version 1.2.0.** The images on this page are **v1.2.0 browser mock-host captures,
-not Mac screenshots**. The author hand-tested 1.2.0 in Hermes Desktop on a Mac and
-reports that everything worked; it was a general hand test with no recorded checklist
-results. See the [verification scope](docs/INTEGRATION-VERIFICATION.md).
+not Mac screenshots**. The author hand-tested the full 1.2.0 plugin in Hermes Desktop
+on a Mac and reports that everything worked; it was a general hand test with no
+recorded checklist results. The Whole-window-only catalog build is the same plugin
+without its second window-placement option; automated tests, browser captures and the
+Hermes validator cover it, but the hand test did not. See the
+[verification scope](docs/INTEGRATION-VERIFICATION.md).
 
 ## Start here
 
@@ -117,10 +120,10 @@ app screenshot**. The browser composites the actual plugin layer at its real opa
 - High counts or large sizes can overlap. Small/Bold output simplifies thin features;
   light Cat/Owl faces, pale light-theme seeds, fish and swallows, and quiet halos/stars
   are lower-contrast. The whale intentionally leaves the frame.
-- Declared Hermes floor: **>=0.21.6**. The author hand-tested 1.2.0 on a Mac with
-  Hermes Desktop (a general test; no Desktop version or per-item results were recorded).
-  Windows and Linux Desktop, Safari, physical phones, other Hermes versions,
-  accessibility, heat and battery use are untested.
+- Declared Hermes floor: **>=0.21.6**. The author hand-tested the full 1.2.0 plugin on a
+  Mac with Hermes Desktop (a general test; no Desktop version or per-item results were
+  recorded); the catalog build was not hand-tested. Windows and Linux Desktop, Safari,
+  physical phones, other Hermes versions, accessibility, heat and battery use are untested.
 - Desktop plugins execute with the renderer's authority; error isolation is not a security sandbox.
 
 ## Documentation and contributing

@@ -20,11 +20,14 @@ unchanged by the documentation work. See [verification](docs/INTEGRATION-VERIFIC
 for identities and scope. The backup and rollback instructions keep app-level
 ownership, assume no storage export and refuse symlinked paths.
 
-The author hand-tested v1.2.0 in Hermes Desktop on a Mac and reports that everything
-worked. It was a general hand test: no Desktop version, screenshots or per-item
-results were recorded, so the [Mac checklist](docs/MANUAL-MAC-CHECKLIST.md) stays
-unchecked. Windows and Linux Desktop, Safari, physical phones, other Hermes
-versions, accessibility, heat and battery use remain untested.
+The author hand-tested the full v1.2.0 plugin in Hermes Desktop on a Mac and reports
+that everything worked. It was a general hand test: no Desktop version, screenshots or
+per-item results were recorded, so the [Mac checklist](docs/MANUAL-MAC-CHECKLIST.md)
+stays unchecked. The Whole-window-only catalog build is the same plugin without its
+second window-placement option; automated tests, browser captures and the Hermes
+validator cover it, but the hand test did not. Windows and Linux Desktop, Safari,
+physical phones, other Hermes versions, accessibility, heat and battery use remain
+untested.
 
 ## Publication boundary
 

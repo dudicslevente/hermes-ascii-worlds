@@ -1,8 +1,10 @@
 # Compatibility and host-update checks
 
-**The author hand-tested v1.2.0 in Hermes Desktop on a Mac and reports that
-everything worked** (a general test; the Desktop version and per-item results were
-not recorded). Linux Chromium + real React Strict Mode/mock SDK tests are not a
+**The author hand-tested the full v1.2.0 plugin in Hermes Desktop on a Mac and reports
+that everything worked** (a general test; the Desktop version and per-item results were
+not recorded). The Whole-window-only catalog build is the same plugin without its
+second window-placement option; automated tests, browser captures and the Hermes
+validator cover it, but the hand test did not. Linux Chromium + real React Strict Mode/mock SDK tests are not a
 live Desktop app. Historical images are attributed to v1.1/Desktop 0.22.6/macOS,
 not newly verified current compatibility. Windows/Linux Desktop, Safari, physical
 phones, accessibility, heat, battery and the full supported host-version matrix
