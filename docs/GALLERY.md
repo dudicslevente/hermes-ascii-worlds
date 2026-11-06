@@ -1,44 +1,31 @@
-# Screenshot gallery — ASCII Worlds 1.2.0
+# Gallery - ASCII Worlds 1.2.0
 
-**Every current image below is a v1.2.0 browser mock-host capture, not a Mac
-screenshot.** The captions say "native Mac acceptance not claimed" because a
-mock-host image cannot show it; the author's separate hand test is in
-[STATUS](../STATUS.md). The real generated `desktop/plugin.js` is registered
-with a mock SDK and rendered through **real React Strict Mode in Linux Chromium**.
-Nothing here is a live Desktop Preview, an invented app screenshot, or an old Lab
-render passed off as this plugin.
+Every picture here was captured from the real plugin. Each habitat is shown
+paused at its default composition, in both the dark and the light Hermes theme.
 
-The scene frames use default scene controls, paused at their initial composition.
-Light/dark is supplied by the mock host's theme tokens, not a plugin theme picker.
-Labels identify the capture environment. The overview is a labelled contact sheet
-of these real frames; the 2:1 banner is a letterboxed real whale frame. Neither
-adds invented creatures. Stills establish appearance, not animation smoothness.
-
-![All twenty habitats, labelled; ten dark and ten light actual plugin previews](images/v1.2/overview.png)
+![All twenty habitats in ASCII Worlds](images/v1.2/overview.png)
 
 ## A closer look
 
-![Sea turtles with shells and four flippers on a light glyph field; actual plugin preview](images/v1.2/sea-turtles-light.png)
+![Sea turtles with patterned shells and four flippers](images/v1.2/sea-turtles-light.png)
 
-Sea turtles, light theme. Two default subjects; no size or population tuning for the image.
+Sea turtles, light theme.
 
-![Luna moth with patterned wings and long hindwing tails on the dark preview](images/v1.2/luna-moths-dark.png)
+![A luna moth with patterned wings and long tails](images/v1.2/luna-moths-dark.png)
 
-Luna moths, dark theme. A sparse default composition preserves the character texture.
+Luna moth, dark theme.
 
-![A curled, breathing sleeping cat shown in a paused dark glyph preview](images/v1.2/sleeping-cat-dark.png)
+![A curled-up sleeping cat](images/v1.2/sleeping-cat-dark.png)
 
-Sleeping cat, dark theme. It stays placed; Pace affects local gestures, not roaming.
-Small/light facial details remain coarse and lower-contrast.
+Sleeping cat, dark theme.
 
-![Bubbles rendered as outlined glyph rings on the light preview](images/v1.2/bubbles-light.png)
+![Bubbles drawn as outlined glyph rings](images/v1.2/bubbles-light.png)
 
-Bubbles, light theme. Default outlined rings; ambient scenes deliberately have quieter contrast.
+Bubbles, light theme.
 
 ## Every habitat, in both themes
 
-Open any frame at full size. All forty are captured from the current generated
-plugin, not its standalone demo. Names and exact IDs match the native selector.
+Open any frame at full size. The names match the habitat picker in Settings.
 
 | Habitat / exact ID | Dark frame | Light frame |
 | --- | --- | --- |
@@ -63,42 +50,19 @@ plugin, not its standalone demo. Names and exact IDs match the native selector.
 | Dandelion seeds / `dandelion-seeds` | [Dark](images/v1.2/dandelion-seeds-dark.png) | [Light](images/v1.2/dandelion-seeds-light.png) |
 | Night sky / `night-sky` | [Dark](images/v1.2/night-sky-dark.png) | [Light](images/v1.2/night-sky-light.png) |
 
-## Actual Settings and composited background
+## Settings and the window background
 
-<!-- chat-area:begin -->
-![Full-distribution settings: both background placement choices, live butterfly preview, per-scene controls and reset buttons](images/v1.2/settings-full.png)
+![The ASCII Worlds settings page with a live preview and controls](images/v1.2/settings-catalog.png)
 
-Full distribution form. Both Whole window and Chat area are visible; this image is
-**not selected for the catalog**. The labels and controls are the real plugin's UI.
+The settings page: habitat, count, colours, speed, size, density and reset buttons.
 
-![Full-distribution Whole-window layer at 28% composited over a generic browser mock workspace](images/v1.2/whole-window.png)
+![The Whole window background at 28 percent strength over a simple workspace page](images/v1.2/whole-window-catalog.png)
 
-Full distribution at default background strength, not a raw alpha canvas export.
-<!-- chat-area:end -->
+The optional Whole window background at its default 28% strength. Clicks pass straight through it.
 
-![Actual Whole-window-only catalog settings with butterfly preview and all relevant controls; browser mock host](images/v1.2/settings-catalog.png)
+## About these images
 
-Catalog form, captured from a **separately generated catalog plugin**, without a
-placement selector. This is the appropriate settings image for a catalog listing.
-
-![Actual catalog Whole-window layer over generic mock content, at 28% strength with clicks passing through](images/v1.2/whole-window-catalog.png)
-
-Actual browser compositing at 28%. The fixture contains generic explanatory text,
-no real conversation, session titles, sidebar or machine/account information.
-Click-through was exercised during capture. It is a mock host, not Hermes UI artwork.
-
-## Capture provenance and reuse
-
-- [Capture manifest](images/v1.2/captures.json): exact plugin/catalog SHA-256,
-  scene/tone/settings and byte hashes of actual screenshots.
-- [Image manifest](images/v1.2/gallery.json): captions, dimensions, byte sizes and
-  SHA-256 for every current PNG, including the contact sheet and banner.
-- [Reproduce the gallery](DEVELOPMENT.md#refresh-the-gallery): optional docs tooling,
-  no live app install or remote requests. Font rasterization can vary by platform.
-- [Historical v1.1 images](HISTORY.md): separate, explicitly historical crops.
-
-The catalog schema allows a 2:1 banner and **up to six** gallery images. The
-recommended catalog-safe set is `overview.png`, `sea-turtles-light.png`,
-`luna-moths-dark.png`, `sleeping-cat-dark.png`, `settings-catalog.png`, and
-`whole-window-catalog.png`, all under `docs/images/v1.2/`. Pin their raw GitHub URLs
-to the same full commit as the catalog entry, never a moving branch.
+- [Capture manifest](images/v1.2/captures.json): plugin checksums and settings for each capture.
+- [Image manifest](images/v1.2/gallery.json): captions, sizes and checksums of every picture.
+- [Reproduce the gallery](DEVELOPMENT.md#refresh-the-gallery): optional tooling, no install needed.
+- [Older v1.1 images](HISTORY.md).

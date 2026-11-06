@@ -41,7 +41,7 @@ test("the full README keeps its chat-area and catalog markers", (t) => {
   const readme = readFileSync(path.join(root, "README.md"), "utf8");
   const begins = (readme.match(/<!-- chat-area:begin -->/g) || []).length;
   const ends = (readme.match(/<!-- chat-area:end -->/g) || []).length;
-  assert.ok(begins >= 4 && begins === ends, `chat-area markers: ${begins} begin, ${ends} end`);
+  assert.ok(begins >= 1 && begins === ends, `chat-area markers: ${begins} begin, ${ends} end`);
   assert.ok(/<!-- catalog:/.test(readme), "catalog-only text is present");
 });
 

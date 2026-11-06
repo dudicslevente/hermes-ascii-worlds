@@ -28,8 +28,8 @@ test('the real public surface passes privacy, local links, ALT, twenty-scene cov
   const report = JSON.parse(output);
   assert.equal(report.passed, true);
   assert.equal(report.scene_ids.length, 20);
-  assert.equal(report.actual_browser_captures, 44);
-  assert.equal(report.current_pngs, 46);
+  assert.equal(report.actual_browser_captures, 42);
+  assert.equal(report.current_pngs, 44);
   assert.ok(report.normal_markdown.local_links > 0 && report.catalog_markdown.local_links > 0);
 });
 

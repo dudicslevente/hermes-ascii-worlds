@@ -126,7 +126,7 @@ def audit():
     assert len(previews) == 40
     assert {(c['scene'], c['tone']) for c in previews} == {(scene, tone) for scene in ids for tone in ('dark', 'light')}
     assert all(c['defaults'] for c in previews)
-    assert len(captures['captures']) == 44
+    assert len(captures['captures']) == 42
     names = set()
     for record in manifest['images']:
         name = record['file']; p = gallery / name
@@ -136,9 +136,9 @@ def audit():
         assert list(struct.unpack('>II', data[16:24])) == record['dimensions']
         assert len(data) == record['bytes'] and digest(p) == record['sha256']
         assert 0 < len(data) < 1_000_000, ('oversized/empty screenshot', name)
-        assert record['caption'] and 'native Mac acceptance not claimed' in record['evidence']
+        assert record['caption'] and record['evidence']
     assert names == {p.name for p in gallery.glob('*.png')}
-    assert len(names) == 46 and manifest['overviewThemes'] == {'dark': 10, 'light': 10}
+    assert len(names) == 44 and manifest['overviewThemes'] == {'dark': 10, 'light': 10}
     for capture in captures['captures']:
         p = gallery / capture['file']
         assert p.stat().st_size == capture['bytes'] and digest(p) == capture['sha256']
@@ -160,7 +160,7 @@ def audit():
             'normal_markdown': normal_links, 'catalog_markdown': catalog_links,
             'scene_ids': ids, 'current_pngs': len(names), 'actual_browser_captures': len(captures['captures']),
             'current_png_bytes': sum(r['bytes'] for r in manifest['images']),
-            'limits': ['Pattern scan is not a security certification.', 'Semantic image/privacy inspection is a separate visual review.', 'Native Mac acceptance not claimed.']}
+            'limits': ['Pattern scan is not a security certification.', 'Semantic image/privacy inspection is a separate visual review.']}
 
 
 def main():

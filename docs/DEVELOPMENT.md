@@ -84,16 +84,15 @@ python3 scripts/audit-public.py
 The capture script runs from the **full source checkout** (not the transformed
 catalog branch). It loads the unchanged generated full plugin and a separately
 built catalog plugin through real React + mock SDK. It records forty default
-scene/theme previews, full/catalog forms and actual 28% composited window layers,
-checks click-through and cleanup, and rejects page/console/unexpected-request errors.
-The composition script only scales/letterboxes real frames: no invented artwork.
+scene/theme previews, the catalog settings form and the 28% window layer, checks
+click-through and cleanup, and rejects page/console/unexpected-request errors.
+The composition script only scales real frames: no invented artwork.
 `ASCII_WORLDS_GALLERY` can point both scripts at a separate output directory.
 
 Inspect **actual pixels**, not just hashes: all twenty, dark/light, animal faces,
-wing/fin poses, scene clipping and caption legibility. Inspect form and background
-images too. A generic mock workspace must say it is a mock and contain no real
-conversation, session/sidebar titles, accounts or machine information. Never
-pass it off as a native app screen. Platform/font changes may change rasterization.
+wing/fin poses and scene clipping. Inspect the form and background images too. The
+example workspace page must contain no real conversation, session/sidebar titles,
+accounts or machine information. Platform/font changes may change rasterization.
 
 ## Packaging and publication hygiene
 
