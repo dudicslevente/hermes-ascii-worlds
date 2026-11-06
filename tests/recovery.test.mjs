@@ -18,7 +18,7 @@ test('reduced-motion consent is session-only and startup performs no writes',()=
  first.motionOptIn.set(true);assert.equal(first.motionOptIn.get(),true);assert.deepEqual(writes,[]);
  assert.equal(createHub(storage).motionOptIn.get(),false);assert.deepEqual(writes,[]);
 });
-test('local install/source archives include controls and rollback, exclude internal records and runtime dependencies',async()=>{
+test('release archives contain the docs and exact bundle and no development state',async()=>{
  const out=await mkdtemp(path.join(tmpdir(),'ascii-worlds-package-test-'));
  try{
   const pack=spawnSync('python3',['scripts/package-release.py',out],{encoding:'utf8'});assert.equal(pack.status,0,pack.stderr+pack.stdout);
@@ -30,9 +30,9 @@ for kind in ['-plugin','']:
   assert z.testzip() is None
   prefix=f'ascii-worlds-{version}{kind}/'
   names=[n.removeprefix(prefix) for n in z.namelist()]
-  for required in ['docs/FEATURE-CONTROLS.md','docs/SETTINGS-MIGRATION.md','docs/MANUAL-MAC-CHECKLIST.md','INSTALL.md','docs/LOCAL-TEST-CANDIDATE.md']: assert required in names,required
+  for required in ['README.md','INSTALL.md','CHANGELOG.md','LICENSE','docs/CONTROLS.md','docs/SETTINGS.md','docs/GALLERY.md','docs/images/overview.png','docs/images/settings.png']: assert required in names,required
   assert not any(any(part in n.split('/') for part in ['.git','node_modules','.harness','evidence']) for n in names)
-  assert 'STATUS.md' not in names and 'docs/INTEGRATION-REVIEW.md' not in names
+  assert 'STATUS.md' not in names and not any(n.startswith('evidence/') for n in names)
   plugin='ascii-worlds/plugin.js' if kind else 'desktop/plugin.js'
   assert z.read(prefix+plugin)==pathlib.Path('desktop/plugin.js').read_bytes()
   assert z.read(prefix+'demo.html')==pathlib.Path('demo.html').read_bytes()
@@ -40,7 +40,7 @@ for kind in ['-plugin','']:
    if pathlib.Path(n).suffix in ['.js','.mjs','.py','.md','.html','.json','.yaml']:
     b=z.read(prefix+n)
     assert (b'/home/'+b'levi/') not in b and (b'/'+b'Users/') not in b,n
-print('install/source CRC, mapping, docs, privacy and exact bundle PASS')`,out],{encoding:'utf8'});
+print('archives OK')`,out],{encoding:'utf8'});
   assert.equal(inspect.status,0,inspect.stderr+inspect.stdout);
  }finally{await rm(out,{recursive:true,force:true})}
 });

@@ -1,10 +1,10 @@
-"""Build CRC-checked local install/source archives; Python stdlib only.
+"""Build the release archives (plugin ZIP and source ZIP); Python stdlib only.
 
   python3 scripts/package-release.py [output-dir]
 
 This never installs, commits, pushes or publishes. Each build is deterministic;
 archive paths preserve the original release layout (outer versioned folder,
-inner ascii-worlds/plugin.js). Internal receipts are not distributed.
+inner ascii-worlds/plugin.js).
 """
 import hashlib
 import json
@@ -16,12 +16,10 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parent.parent
 DOCS = [
-    'ARCHITECTURE.md', 'CATALOG.md', 'COMPATIBILITY.md', 'DEVELOPMENT.md',
-    'DEMO-VIDEO-SCRIPT.md', 'FEATURE-CONTROLS.md', 'HOW-BACKGROUND-WORKS.md',
-    'LAB-FEATURE-PARITY.md', 'LOCAL-TEST-CANDIDATE.md', 'MANUAL-MAC-CHECKLIST.md',
-    'SETTINGS-MIGRATION.md', 'GALLERY.md', 'HISTORY.md',
+    'ARCHITECTURE.md', 'BACKGROUND.md', 'COMPATIBILITY.md', 'CONTROLS.md',
+    'DEVELOPMENT.md', 'GALLERY.md', 'RELEASING.md', 'SETTINGS.md',
 ]
-COMMON = ['README.md', 'INSTALL.md', 'LICENSE', 'CHANGELOG.md', 'CONTRIBUTING.md', 'THIRD_PARTY_NOTICES.md', 'package.json', 'plugin.yaml']
+COMMON = ['README.md', 'INSTALL.md', 'LICENSE', 'CHANGELOG.md', 'CONTRIBUTING.md', 'SECURITY.md', 'THIRD_PARTY_NOTICES.md', 'package.json', 'plugin.yaml']
 SKIP = {'node_modules', '.git', '__pycache__', 'evidence', '.harness', 'release'}
 
 
@@ -32,13 +30,8 @@ def digest(p):
 def mappings(root=ROOT):
     shared = {n: root / n for n in COMMON}
     shared.update({'docs/' + n: root / 'docs' / n for n in DOCS})
-    # The repository now contains a portable summary, never private raw receipts.
-    shared['docs/INTEGRATION-VERIFICATION.md'] = root / 'docs/INTEGRATION-VERIFICATION.md'
-    review = root / 'docs/FINAL-INTEGRATION-REVIEW.md'
-    if review.exists():
-        shared['docs/FINAL-INTEGRATION-REVIEW.md'] = review
     for p in sorted((root / 'docs/images').rglob('*')):
-        if p.is_file() and p.suffix in {'.png', '.jpg', '.json'}:
+        if p.is_file() and p.suffix in {'.png', '.jpg'}:
             shared[str(p.relative_to(root))] = p
     install = {**shared, 'ascii-worlds/plugin.js': root / 'desktop/plugin.js', 'demo.html': root / 'demo.html'}
     source = {**shared, 'desktop/plugin.js': root / 'desktop/plugin.js', 'demo.html': root / 'demo.html'}

@@ -5,7 +5,7 @@ import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 import path from 'node:path';
 const root=fileURLToPath(new URL('../',import.meta.url));
-const output=process.env.ASCII_WORLDS_CORRECTION_OUT||path.join(root,'evidence/correction');
+const output=process.env.ASCII_WORLDS_TEST_OUT||path.join(root,'evidence/browser');
 await mkdir(output,{recursive:true});
 const {chromium}=await import(pathToFileURL(process.env.PLAYWRIGHT_MODULE));
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_PATH,args:['--no-sandbox']});
@@ -82,4 +82,4 @@ try{
   report.checks.push('R3 '+id+' both paused paths light/dark, no resumed motion, bounded/hidden/offscreen/disposed timers');await c.close();
  }
  assert.deepEqual(report.errors,[]);assert.deepEqual(report.warnings,[]);assert.deepEqual(report.remote,[]);report.passed=true;
-}catch(e){report.passed=false;report.failure=e.stack;process.exitCode=1;}finally{await writeFile(path.join(output,'corrections-'+chosen+'.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report,null,2));await browser.close();}
+}catch(e){report.passed=false;report.failure=e.stack;process.exitCode=1;}finally{await writeFile(path.join(output,'recovery-'+chosen+'.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report,null,2));await browser.close();}

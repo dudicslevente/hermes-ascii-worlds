@@ -3,7 +3,7 @@
 import {mkdirSync,writeFileSync} from 'node:fs';
 import assert from 'node:assert/strict';
 import {launch,waitFor} from './cdp.mjs';
-const out=new URL('../evidence/integration/',import.meta.url);mkdirSync(out,{recursive:true});
+const out=new URL('../evidence/browser/',import.meta.url);mkdirSync(out,{recursive:true});
 const browser=await launch();
 try {
  await browser.send('Emulation.setDeviceMetricsOverride',{width:1100,height:800,deviceScaleFactor:1,mobile:false});

@@ -1,146 +1,67 @@
-# Development and testing
+# Development
 
-## Small, deterministic build
+## Build and unit tests
 
-Node **20+** builds and tests the project without installing packages. Python 3
-is used by the optional all-gates and packaging scripts. The plugin needs only
-the React/SDK modules supplied by Desktop at runtime.
+You need Node.js 20 or newer. Nothing has to be installed.
 
 ```sh
-npm test
-npm run build
-npm run verify
-node --check desktop/plugin.js
-node scripts/build.mjs --catalog --out /your/scratch/catalog-plugin.js
+npm test            # unit tests
+npm run build       # regenerate desktop/plugin.js and demo.html
+npm run verify      # tests, then build
+npm run build:catalog -- --out /tmp/catalog-plugin.js   # catalog build, written elsewhere
+npm run demo        # serve demo.html at http://127.0.0.1:4178
 ```
 
-Commit generated `desktop/plugin.js` and `demo.html` with their source changes;
-never hand-edit them. Two normal builds must produce the same bytes. The scoped
-ESM-subset bundler rejects unsupported syntax/cycles and keeps deterministic
-relative module IDs. An alternate `--out` build never rewrites the regular plugin
-or demo. Public CI reruns unit/build checks and detects stale committed output.
+`desktop/plugin.js` and `demo.html` are generated; commit them with the source change and never
+edit them by hand. Two builds of the same source produce identical bytes, and CI fails if the
+committed files are stale.
 
-## Browser prerequisites, separate from the plugin
+## Browser tests
 
-Use a separately provisioned tooling directory containing **Playwright, React,
-react-dom and esbuild**, plus an existing Chromium executable. Nothing below
-automatically installs packages, modifies a live Desktop app or needs credentials.
+Eleven browser suites load the generated plugin into a mock Hermes host in Chromium, using real
+React in Strict Mode. They cover the Settings page, every habitat, both canvases, persistence,
+the background layer, theme changes, reduced motion and cleanup. They need tools that are not
+part of this repository: Playwright, React, react-dom and esbuild in one folder, plus a Chromium binary.
 
 ```sh
-export ASCII_WORLDS_TOOLS=/path/to/tools
+export ASCII_WORLDS_TOOLS=/path/to/tools            # contains node_modules with the packages above
 export PLAYWRIGHT_MODULE="$ASCII_WORLDS_TOOLS/node_modules/playwright/index.mjs"
-export CHROMIUM_PATH=/path/to/chrome
-node scripts/prepare-harness.mjs
+export CHROMIUM_PATH=/path/to/chromium
+node scripts/prepare-harness.mjs                     # builds the React modules into tests/.harness
+npm run test:browser                                 # runs the suites one after another
 ```
 
-Preparation creates ignored `tests/.harness/browser-deps/`. Real-React suites use
-React Strict Mode with a mock SDK, actual generated plugin registration/native
-form, and actual Chromium canvas output. The supplemental CDP/minimal-JSX tests
-are not substitutes for React conformance or native Mac testing. Some historical
-suites use short-lived loopback fixture servers; gallery capture routes local
-fixture requests in-process and rejects unexpected origins. No public service is started.
+The suites run one at a time because their timing checks depend on machine load. They are
+test fixtures with a mock host, not the real Desktop app.
 
-## Complete gate
+## Add a habitat
 
-```sh
-python3 scripts/verify-local-candidate.py --browser --out /your/scratch/results
-```
+1. Create `src/lab/scenes/<id>.js` with a pure scene definition. Use the supplied time, stable seeds
+   and bounded populations. Do not use timers, the DOM, storage, the network or `Math.random`.
+2. Register it in `src/lab/scenes/registry.js` and in `WORLD_IDS` in `src/settings-v3.js`.
+3. Declare its count range, controls and extras in the definition; the Settings form is built from it.
+4. Add tests: count zero, count cap, deterministic geometry, colour modes, controls and persistence.
+   `tests/runtime-integration.test.mjs` and `tests/lab-poses.test.mjs` show the patterns.
+5. Run `npm run verify` and the browser tests, then look at the habitat in light and dark,
+   with motion, at the default and at a large size.
+6. Add the pictures to `docs/images/habitats/`, update the tables in the README, `docs/CONTROLS.md`
+   and `docs/GALLERY.md`, and add a changelog entry.
 
-This runs units, normal/repeat/catalog builds, JS syntax and `git diff --check`,
-then all **eleven** browser suites, serially:
+## Demo page
 
-| Suite | Principal coverage |
-| --- | --- |
-| `browser` | Original preview controls, persistence, resize and cleanup |
-| `background-harness` | Layer lifecycle, controls, click-through and frame cap |
-| `background-realshape` | Full-distribution host-layout fixture and restoration |
-| `settings-layout` | Real host-scroll layout; no fixed-height settings collapse |
-| `timing` | Capped scheduling and suspension |
-| `all-scenes-browser` | All twenty IDs, both canvas paths, applicable palettes/slots, stills/articulation |
-| `live-controls` | Live Speed and flow/extras in both paths, including meteors |
-| `storage-browser` | Readable/write-denied startup, saved Pause and rollback records |
-| `integrated-plugin` | Supplemental dependency-free Chromium/CDP registered-plugin probe |
-| `integrated-demo` | Offline demo via Chromium/CDP |
-| `corrections-browser` | Independent record recovery, shared reduced-motion Resume, paused host-theme refresh/cleanup |
-
-Keep timing-heavy runs serial: headless scheduling varies with machine load.
-Caps are not guaranteed achieved rates. Reports contain machine paths and are
-**private evidence**, not public files to stage. Preserve original test inventory
-and golden fixtures. The public [verification summary](INTEGRATION-VERIFICATION.md)
-distinguishes automated checks from the author's general Mac hand test.
-
-## Refresh the gallery
-
-Only documentation tooling needs **Pillow** (Python); it is not a build/runtime
-dependency. Reuse the browser tools above. An optional `ASCII_WORLDS_FONT` points
-to a TrueType font for contact-sheet labels; otherwise DejaVu Sans/default is used.
-
-```sh
-node scripts/capture-gallery.mjs
-python3 scripts/compose-gallery.py
-python3 scripts/audit-public.py
-```
-
-The capture script runs from the **full source checkout** (not the transformed
-catalog branch). It loads the unchanged generated full plugin and a separately
-built catalog plugin through real React + mock SDK. It records forty default
-scene/theme previews, the catalog settings form and the 28% window layer, checks
-click-through and cleanup, and rejects page/console/unexpected-request errors.
-The composition script only scales real frames: no invented artwork.
-`ASCII_WORLDS_GALLERY` can point both scripts at a separate output directory.
-
-Inspect **actual pixels**, not just hashes: all twenty, dark/light, animal faces,
-wing/fin poses and scene clipping. Inspect the form and background images too. The
-example workspace page must contain no real conversation, session/sidebar titles,
-accounts or machine information. Platform/font changes may change rasterization.
-
-## Packaging and publication hygiene
-
-```sh
-python3 scripts/package-release.py /your/scratch/packages
-```
-
-This rebuilds twice, verifies version/imports, writes deterministic install/source
-ZIPs with Python stdlib `zipfile`, checks CRC and compares every mapped byte.
-Packages include portable docs and current gallery assets, not internal receipts,
-Git state, dependency trees or raw videos. Extract the source package somewhere
-fresh, prepare its harness and rerun the complete gate before claiming package
-acceptance. Runtime identity must match the install package.
-
-Run `python3 scripts/audit-public.py` for Markdown links/alt text, image dimensions
-and manifests, public-text privacy patterns, exact twenty-scene screenshot coverage
-and catalog-doc transformation. It does not certify security or inspect every
-image semantically; human/visual review remains necessary. Never stage with
-`git add -A` from a tree containing private evidence. Publish only the explicit,
-reviewed file allowlist, then verify the exact remote tree and CI.
-
-For catalog docs on a source-tree copy:
-
-```sh
-node scripts/catalog-readme.mjs --root /path/to/copy
-```
-
-It strips full-only marked sections in the README **and linked feature docs**,
-selects actual catalog settings images and refuses unmarked unsupported claims.
-It does not build/push a branch or open a PR. See [catalog disclosures](CATALOG.md).
-
-## Offline demo API
-
-Open `demo.html` directly. `?chat=1` adds explicitly mock content, not a host install.
-The demo-only inspection API is intentionally absent from the Desktop plugin:
+`demo.html` is a standalone offline copy of the Settings page. Add `?chat=1` to see the background over a
+made-up chat. It exposes a small inspection API that the Desktop plugin does not:
 
 ```js
 asciiWorlds.setSettings({ scene: 'owl', size: 0.8, extras: { perch: false } });
-asciiWorlds.renderAt(2, 5); // frozen travel / independent articulation
-asciiWorlds.settings;     // copied v3 state and legacy koi/jelly aliases
-asciiWorlds.stats;
-asciiWorlds.resume();
-asciiWorlds.resetScene(); // active habitat only
-asciiWorlds.reset();      // global reset; returns to Koi
+asciiWorlds.renderAt(2, 5);   // freeze travel time and articulation time
+asciiWorlds.settings;         // current settings
+asciiWorlds.resetScene();     // active habitat only
+asciiWorlds.reset();          // everything; returns to koi
 asciiWorlds.destroy();
 ```
 
-The old one-argument `renderAt` form remains. Themes follow host/OS automatically.
-See [architecture](ARCHITECTURE.md), [migration](SETTINGS-MIGRATION.md) and the
-[manual Mac checklist](MANUAL-MAC-CHECKLIST.md). Native acceptance must be measured,
-not inferred from a passing browser fixture.
+## Further reading
+
+[Architecture](ARCHITECTURE.md) · [Controls](CONTROLS.md) · [Settings](SETTINGS.md) ·
+[Window background](BACKGROUND.md) · [Releasing](RELEASING.md)

@@ -1,31 +1,40 @@
 # Contributing
 
-Node 20+; no runtime/build package installation is required. Run `npm run verify`
-and `node --check desktop/plugin.js`. Browser tooling is separate; see
-[development/testing](docs/DEVELOPMENT.md).
+Thanks for helping. Bug reports, new habitats, documentation and test improvements are all welcome.
 
-- Add tests first and retain RED evidence for new behavior. Never weaken the
-  original meaningful tests or regenerate the koi golden without authorization.
-- Preserve original koi/jelly geometry and sampler. Add new art as pure modules
-  using the Lab contract / registry, not by expanding src/art.js or an iframe UI.
-- Use supplied clocks, stable seeds and bounded populations. No timers, DOM,
-  storage, network or Math.random in scene definitions.
-- Expose each applicable control through the native Settings form; add validation,
-  scene isolation, count-zero/colour/persistence and actual canvas tests.
-- Keep only react, react/jsx-runtime, @hermes/plugin-sdk external. The build is
-  deterministic/scoped; never edit generated plugin.js/demo.html by hand.
-- Keep catalog @chat-area blocks intact; new art never needs host restyling.
-- Use host theme variables in UI; no theme picker. No emojis in code/docs/UI.
-- Every listener/observer/RAF/DOM side effect must be cleaned on all disposal
-  paths. Disposed mutators must be inert.
-- Keep reports honest: mock/browser output is not Mac Hermes evidence. Inspect
-  meaningful motion and light anatomy, disclose overlap/offstage limits, and
-  complete the native checklist before claiming native acceptance.
+## Getting started
 
-See [architecture](docs/ARCHITECTURE.md), [control matrix](docs/FEATURE-CONTROLS.md)
-and [migration/rollback](docs/SETTINGS-MIGRATION.md). Gallery refresh, publication
-privacy checks and variant-doc generation are documented in development/testing.
-Use an explicit reviewed publish allowlist; never stage private logs or tool trees.
-Preserve the original storyboard as historical production direction.
-Reports should include exact
-build, host/OS, placement, scene/settings and Check background diagnostics.
+You need Node.js 20 or newer. There is nothing to install.
+
+```sh
+git clone https://github.com/dudicslevente/hermes-ascii-worlds.git
+cd hermes-ascii-worlds
+npm run verify     # unit tests, then build
+npm run demo       # serve demo.html locally
+```
+
+`desktop/plugin.js` and `demo.html` are generated from `src/` by `npm run build`.
+Commit them with your source changes and never edit them by hand.
+The [development guide](docs/DEVELOPMENT.md) covers the browser tests and how to add a habitat.
+
+## Pull requests
+
+- Open an issue first for large changes, or to say you are working on a new habitat.
+- Add or update tests, and keep `npm run verify` green.
+- Keep the runtime free of dependencies: the plugin may only import `react`,
+  `react/jsx-runtime` and `@hermes/plugin-sdk`.
+- No network access, telemetry or new stored data without discussion.
+- Anything the plugin adds to the page must be removed again when it is turned off,
+  and every listener, observer and animation frame must be cleaned up on disposal.
+- Use the host's theme variables for plugin UI; there is no theme picker.
+- Habitat scenes are pure functions of size and time: no timers, DOM, storage, network or `Math.random`.
+  Expose every applicable control in the native Settings form and keep populations bounded.
+- Keep the `chat-area` blocks in the documentation and source intact. The catalog build removes them.
+- Only state in docs and pull requests what you actually tested.
+
+## Reporting bugs
+
+Please include the Hermes Desktop version, your operating system, the habitat and settings,
+and the text from **Check background** in the plugin settings (it contains no conversation text).
+
+See also: [architecture](docs/ARCHITECTURE.md), [controls](docs/CONTROLS.md) and [settings storage](docs/SETTINGS.md).

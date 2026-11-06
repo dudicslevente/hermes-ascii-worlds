@@ -1,48 +1,29 @@
-# Compatibility and host-update checks
+# Compatibility
 
-**The author hand-tested the full v1.2.0 plugin in Hermes Desktop on a Mac and reports
-that everything worked** (a general test; the Desktop version and per-item results were
-not recorded). The Whole-window-only catalog build is the same plugin without its
-second window-placement option; automated tests, browser captures and the Hermes
-validator cover it, but the hand test did not. Linux Chromium + real React Strict Mode/mock SDK tests are not a
-live Desktop app. Historical images are attributed to v1.1/Desktop 0.22.6/macOS,
-not newly verified current compatibility. Windows/Linux Desktop, Safari, physical
-phones, accessibility, heat, battery and the full supported host-version matrix
-remain unverified.
+ASCII Worlds needs **Hermes Desktop 0.21.6 or newer**, the first release with plugin settings
+pages and the title-bar slot. This minimum is declared in `plugin.yaml`.
 
-Declared minimum Hermes version: **>=0.21.6**, matching `plugin.yaml`. The twenty
-habitats add no new runtime dependency or SDK floor; a declared floor is not a
-claim that every later host version was tested.
+## Host surfaces it uses
 
-| Surface | Contract and fallback |
+| Surface | How it is used |
 | --- | --- |
-| Settings | Guarded `registerSettingsPage`; fallback `settings.plugins` contribution; no docked preferences pane |
-| Missing Settings API | Title-bar/palette operation can remain available; no invented private navigation fallback |
-| Title bar | Guarded `TITLEBAR_AREAS.right`; absent surface disables window-background controls with an explanation |
-| Palette | Guarded `PALETTE_AREA`; navigation also requires `host.navigate` and `pluginSettingsHref` |
-| Storage | Synchronous plugin-namespaced get/set, validated values, no startup writes; failures retain readable records and in-session edits with warnings |
-| Theme | Host text-colour token with OS fallback; no appearance picker; bounded refresh of paused stills |
-| Whole window | Transparent click-through overlay, no host-background clearing |
+| Settings page | `registerSettingsPage`, with a fallback to the `settings.plugins` area. There is no docked pane |
+| Title bar | One toggle button in `TITLEBAR_AREAS.right`. Without it, the background toggle is unavailable and the preview still works |
+| Command palette | **ASCII Worlds: toggle background** and **open settings**. Opening settings also needs `host.navigate` and `pluginSettingsHref` |
+| Storage | `ctx.storage` (synchronous, private to the plugin). Failures never block the plugin |
+| Theme | The host's text-colour variable, with the operating system as a fallback. There is no theme picker |
+| Whole window | A transparent, click-through canvas above the app. It does not change the app's own layout |
 
-Only `react`, `react/jsx-runtime` and `@hermes/plugin-sdk` remain external.
-The plugin has no runtime network, shell execution or downloaded code.
-Desktop plugins execute with renderer authority: error boundaries do not create
-a security sandbox. Disable the background/plugin if a host problem appears.
+The plugin imports only `react`, `react/jsx-runtime` and `@hermes/plugin-sdk`. It makes no network requests.
+Desktop plugins run with the app's authority; error boundaries are not a security sandbox.
 
-## After a Desktop update
+## After a Hermes Desktop update
 
-With an already available reviewed Hermes source checkout:
+With a checkout of the Hermes source, run:
 
 ```sh
-node scripts/check-desktop-compat.mjs /path/to/hermes-source
+node scripts/check-desktop-compat.mjs /path/to/hermes-agent
 ```
 
-The script separates **SDK** and **LAYOUT** assumptions, with different failure
-statuses. It does not install the host or prove native behaviour. Then follow the
-[manual Mac checklist](MANUAL-MAC-CHECKLIST.md), including reset, theme, motion,
-storage, title-bar, click-through and clean disable/reload.
-
-
-See [automated verification scope](INTEGRATION-VERIFICATION.md) and
-[development reproduction](DEVELOPMENT.md). Do not turn mock screenshots into a
-native compatibility promise.
+It reports SDK assumptions (a failure means the plugin needs a fix) separately from layout assumptions
+used only by an optional placement of the full build. It reads source text and does not run Desktop.
