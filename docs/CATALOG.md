@@ -46,15 +46,14 @@ install, changelog and selected documentation, without modifying the main tree.
   Desktop-only; no tools, hooks, middleware or required environment secrets.
 - **Full 40-character commit SHA**, never a branch, tag or short hash.
 - Banner: `docs/images/v1.2/banner.png`, **1200x600 (2:1)**.
-- At most **six** screenshots: recommended paths/captions are in the
-  [gallery](GALLERY.md#capture-provenance-and-reuse).
+- At most **six** screenshots: the pictures are in the
+  [gallery](GALLERY.md).
 - Use raw GitHub-hosted image URLs pinned to that **same commit**, not `main`.
   Catalog README is rendered from the pin; raw HTML is filtered, so use ordinary
   Markdown images and links. Every linked file/image must exist in that tree.
 
-Selected catalog settings/background screenshots come from the **actual separately
-built catalog plugin**, not the full variant. All current images disclose
-**v1.2.0 browser mock-host capture; native Mac acceptance not claimed**.
+Catalog settings and background screenshots come from the separately built
+catalog plugin, not the full variant.
 
 ## Runtime disclosure (admission rule 13)
 

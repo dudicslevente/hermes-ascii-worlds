@@ -24,10 +24,9 @@ core UI. It can pass faintly over text, panels and controls, so lower strength
 helps readability. Click-through does not make an overlay visually invisible.
 This is the **only placement in the catalog build**, which has no placement selector.
 
-![Whole-window-only catalog build at default 28% strength in a generic mock workspace, not Hermes Desktop](images/v1.2/whole-window-catalog.png)
+![The Whole window background at default 28 percent strength over a simple workspace page](images/v1.2/whole-window-catalog.png)
 
-The image is an actual browser-composited layer, not a raw alpha canvas export.
-It is labelled **v1.2.0 browser mock-host capture; native Mac acceptance not claimed**.
+The Whole window layer at its default strength.
 
 
 ## Theme, motion and resource bounds

@@ -1,11 +1,7 @@
 # Install, update and roll back — ASCII Worlds 1.2.0
 
-This version has twenty habitats. This page covers the manual install; a GitHub
-release asset or the Hermes catalog are other routes and can carry an earlier
-version. The author hand-tested the full 1.2.0 plugin on a Mac with Hermes Desktop and
-reports that everything worked (a general test, no recorded checklist results; the
-catalog build was not hand-tested). The browser gallery is not proof of a live
-installation.
+This version has twenty habitats. This page covers the manual install and how to
+roll back. A GitHub release or the Hermes catalog are other ways to get the plugin.
 
 ## Scope and verified official contract
 

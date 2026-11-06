@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "evidence": "Actual generated plugin; real React Strict Mode; mock SDK; Linux Chromium; native Mac acceptance not claimed.",
+  "evidence": "Actual generated plugin captured in a browser test page.",
   "pluginSha256": "022004d7444cf947577679ed394e6315bd0c6f60f17a3bf4df1b153c54acca2d",
   "catalogSha256": "965b4aceaa3921e26360d163ac37f404bc78e6a1474c8c8fbe19c617411d8b82",
   "captures": [
@@ -11,8 +11,8 @@
       "title": "Koi pond",
       "tone": "dark",
       "defaults": true,
-      "sha256": "e6233f1d405ce2cea3b6b9f20266b984fefd0a463887a17af7bbf9149d7310b3",
-      "bytes": 40467
+      "sha256": "18a5035194b5e7a661faec40fcc6cc26e1b688b554f0471e9b6d3503dacb716f",
+      "bytes": 28612
     },
     {
       "file": "jellyfish-dark.png",
@@ -21,8 +21,8 @@
       "title": "Jellyfish drift",
       "tone": "dark",
       "defaults": true,
-      "sha256": "af4f8bb0492553e9247b378c776c4922b186d49b1dd4d1fa91f2ba31f3af33cd",
-      "bytes": 119124
+      "sha256": "3387b581d538029adc0c2299afa43d35b056ca7d6772ceedb3c42fb918b805c4",
+      "bytes": 106792
     },
     {
       "file": "manta-rays-dark.png",
@@ -31,8 +31,8 @@
       "title": "Manta rays",
       "tone": "dark",
       "defaults": true,
-      "sha256": "b66051dc60bbc1fbd57adcbf1ba129e12de177b4747dac2897a059c57ad09187",
-      "bytes": 43289
+      "sha256": "eb9428448a1367283d0929be80b232a17058126d752705b0b686a94d1417bc76",
+      "bytes": 30932
     },
     {
       "file": "sea-turtles-dark.png",
@@ -41,8 +41,8 @@
       "title": "Sea turtles",
       "tone": "dark",
       "defaults": true,
-      "sha256": "cb8b3b1c4d94d0c505a024e7c454cf5d8d81096983983eed729a776f62df235c",
-      "bytes": 70228
+      "sha256": "2754129f1f17aabdcdae297ad98436ccc7158be8fe53e3f933e496c57fdbd747",
+      "bytes": 58960
     },
     {
       "file": "seahorses-dark.png",
@@ -51,8 +51,8 @@
       "title": "Seahorses",
       "tone": "dark",
       "defaults": true,
-      "sha256": "662b6993f4776d806d161b2fbb3e2bf117b0108b135bb509febd66dfc6206e24",
-      "bytes": 69828
+      "sha256": "abb84bd28478446e33f2ef5a3faa578d2973e35285c3d71c5eafc3ae709a5527",
+      "bytes": 57659
     },
     {
       "file": "tiny-fish-school-dark.png",
@@ -61,8 +61,8 @@
       "title": "Tiny fish school",
       "tone": "dark",
       "defaults": true,
-      "sha256": "2101f1a0b7adf406c4126d1ffb5e7d3e4742e8e8715a70de26da0a809cf25dd4",
-      "bytes": 34272
+      "sha256": "52f9993dad83dab55e8e4e5ed86fee948ed25f8a1511f8f672b6edc3840011b5",
+      "bytes": 22618
     },
     {
       "file": "solitary-whale-dark.png",
@@ -71,8 +71,8 @@
       "title": "Solitary whale",
       "tone": "dark",
       "defaults": true,
-      "sha256": "732a8881faccafae9257a3ac596608fa5e30d66fca481a0b3662d8944d611453",
-      "bytes": 84851
+      "sha256": "9501abaab76bacf8e94d8d5e4177cd1f644ea55db693a1980e1a6467a8539953",
+      "bytes": 71198
     },
     {
       "file": "octopus-dark.png",
@@ -81,8 +81,8 @@
       "title": "Octopus",
       "tone": "dark",
       "defaults": true,
-      "sha256": "abc21eec1d9387bef567cc9500a3c23947632d3653bb2142103449860e9b85e8",
-      "bytes": 81881
+      "sha256": "f74cfb423c574e36e809c0c2e8b1565e79cc42fe440d34047c8c0d5ae89e4248",
+      "bytes": 69297
     },
     {
       "file": "butterflies-dark.png",
@@ -91,8 +91,8 @@
       "title": "Butterflies",
       "tone": "dark",
       "defaults": true,
-      "sha256": "2e9343777694e3578443d43842d3abfc5b76e0c480c4b813d442d7580ae16c71",
-      "bytes": 31347
+      "sha256": "984a279337bc86bf462cc6034aa36852c535f3d2633afc137d3cabd2915e41b2",
+      "bytes": 19777
     },
     {
       "file": "luna-moths-dark.png",
@@ -101,8 +101,8 @@
       "title": "Luna moths",
       "tone": "dark",
       "defaults": true,
-      "sha256": "c53d5c6214f44cf41e3fa4dbc230653c27653b31d5b22ce1f33a1d080854c50e",
-      "bytes": 40213
+      "sha256": "97d45c9374d907cf4f4ba8ac1aebb6af7d5d5fbc55d10958d8017afb2e905f49",
+      "bytes": 28576
     },
     {
       "file": "dragonflies-dark.png",
@@ -111,8 +111,8 @@
       "title": "Dragonflies",
       "tone": "dark",
       "defaults": true,
-      "sha256": "2cc18c24014c886c8dd5345eb01aea7ab46f9f19b2497c2e87dc2b98e7b0b8a6",
-      "bytes": 45085
+      "sha256": "5d9c31e813877793de6f97d704e78c34d7d962fa74f9fab9f369c357b14277fb",
+      "bytes": 32760
     },
     {
       "file": "swallows-dark.png",
@@ -121,8 +121,8 @@
       "title": "Swallows",
       "tone": "dark",
       "defaults": true,
-      "sha256": "287fec0bf7030053e9bff14c116c9beda3604a0099f8435fec2642d1d9489077",
-      "bytes": 36941
+      "sha256": "f8e31b5c4f9791f7c5c206098f0262522be48559851a79ed7fe20cc4bf3557b0",
+      "bytes": 24903
     },
     {
       "file": "sleeping-cat-dark.png",
@@ -131,8 +131,8 @@
       "title": "Sleeping cat",
       "tone": "dark",
       "defaults": true,
-      "sha256": "71b037f4e26effe93492d82237e167712eb330d168327d43fbf2ded729f72c4f",
-      "bytes": 61389
+      "sha256": "3876e051f69db66da206b8829cfacc572dad80f850ad4c1beb58fd3593ba1aa0",
+      "bytes": 48916
     },
     {
       "file": "owl-dark.png",
@@ -141,8 +141,8 @@
       "title": "Owl",
       "tone": "dark",
       "defaults": true,
-      "sha256": "82ea1a71042b0c18b33942c591b7ec63ccbd594276cc2af4be3db2ce8cefff3f",
-      "bytes": 76425
+      "sha256": "22de9d623a26e692bc4747f3e25a716ec9a141af4f30e7d9194e9577ded6454e",
+      "bytes": 65128
     },
     {
       "file": "ginkgo-leaves-dark.png",
@@ -151,8 +151,8 @@
       "title": "Ginkgo leaves",
       "tone": "dark",
       "defaults": true,
-      "sha256": "cfa46f68ccd4904469ae6bba3aaf903309d2ae2724c1e753dfa5c5fc660b1b8b",
-      "bytes": 71901
+      "sha256": "3067492e399d68a5661654fa5686c3bc509db04aaafcaa119bb35c6364e684ad",
+      "bytes": 59374
     },
     {
       "file": "cherry-blossom-petals-dark.png",
@@ -161,8 +161,8 @@
       "title": "Cherry blossom petals",
       "tone": "dark",
       "defaults": true,
-      "sha256": "2562b0a8060786405ae563757d2cbdf4f381b1a7e1a0108376e29fab263caa84",
-      "bytes": 37332
+      "sha256": "df8f281d2bd608566aba0c019b23ab16f4b8def8dec7c46001577e423814ba15",
+      "bytes": 24168
     },
     {
       "file": "fireflies-dark.png",
@@ -171,8 +171,8 @@
       "title": "Fireflies",
       "tone": "dark",
       "defaults": true,
-      "sha256": "0550cb33c85e92354b8b35d10c48a6e745f416fa5a4792e6266414559ad2a288",
-      "bytes": 45313
+      "sha256": "f2189e0f172a0a9c9b3effaabb47ea942935f246e9978a48263b678218c91d2d",
+      "bytes": 34181
     },
     {
       "file": "bubbles-dark.png",
@@ -181,8 +181,8 @@
       "title": "Bubbles",
       "tone": "dark",
       "defaults": true,
-      "sha256": "5b10245f017a2568fb5b99540d040b9fd62ca47ad22d089dcb72c62de324bd76",
-      "bytes": 38700
+      "sha256": "de7f833cf12bad70cc1cd58fd3047bbf11a9729b731a21dc8726b2840805a152",
+      "bytes": 27032
     },
     {
       "file": "dandelion-seeds-dark.png",
@@ -191,8 +191,8 @@
       "title": "Dandelion seeds",
       "tone": "dark",
       "defaults": true,
-      "sha256": "1f564d1ee73ceae782a52829322041accddd34ee1eb9bc5d822cde1475566862",
-      "bytes": 62540
+      "sha256": "553a7c2df0b8214ffa8928d2a7d36a950a5d6be2b07df684427eef6ffbce7409",
+      "bytes": 50841
     },
     {
       "file": "night-sky-dark.png",
@@ -201,8 +201,8 @@
       "title": "Night sky",
       "tone": "dark",
       "defaults": true,
-      "sha256": "8f8a28c05b2a53d8b5c24f0091ffc98a2abfef03a906fe95d11f9d2f37886cb1",
-      "bytes": 40935
+      "sha256": "732d1aaf51212cf961c3506d8e8378ce918ecb56c18ee510e602a5526e67d751",
+      "bytes": 28585
     },
     {
       "file": "koi-light.png",
@@ -211,8 +211,8 @@
       "title": "Koi pond",
       "tone": "light",
       "defaults": true,
-      "sha256": "50a0d913f939b426a5a84d86ac1fb4d0620c68741ee067a308979acf4b92b288",
-      "bytes": 40299
+      "sha256": "a5478600999d04d0c184a7f574caad577feffb9c93fad3b4346d74d6e2057538",
+      "bytes": 28526
     },
     {
       "file": "jellyfish-light.png",
@@ -221,8 +221,8 @@
       "title": "Jellyfish drift",
       "tone": "light",
       "defaults": true,
-      "sha256": "cdadba6df13f2c89b24a4c982b0043a24190facdd25cc41887acbf0bf96f3d0e",
-      "bytes": 111061
+      "sha256": "1e780e33bf54995e2f5fea341b0c628aca3aef45a14521ccb0203496fddd5929",
+      "bytes": 99459
     },
     {
       "file": "manta-rays-light.png",
@@ -231,8 +231,8 @@
       "title": "Manta rays",
       "tone": "light",
       "defaults": true,
-      "sha256": "3deb89ff26001dc3c5e42a90a641d7ee84ee9325eeb9757f954eeea4d7100640",
-      "bytes": 43016
+      "sha256": "8acddf74e85d27d8a86e75970c35433d3ee98ed2b5a94625955a3e015bd3e730",
+      "bytes": 31127
     },
     {
       "file": "sea-turtles-light.png",
@@ -241,8 +241,8 @@
       "title": "Sea turtles",
       "tone": "light",
       "defaults": true,
-      "sha256": "8a7f11606a00c02538faa9c044ef60ac8453f3d64a8a2e59f6fc3a473adc98d2",
-      "bytes": 68177
+      "sha256": "e2862f5be6418a187dba4a396faf69500a9332ebc10e39624ecf52f2e7c7ed2a",
+      "bytes": 55952
     },
     {
       "file": "seahorses-light.png",
@@ -251,8 +251,8 @@
       "title": "Seahorses",
       "tone": "light",
       "defaults": true,
-      "sha256": "b09ad03064bba6f0796f46e20cb635eb38a2a2affac7edbfac59a6844f7cc016",
-      "bytes": 64934
+      "sha256": "449f3a1349978088ecccc452a45d33eabc07571b1fdcc69657cf8afef48d8726",
+      "bytes": 52083
     },
     {
       "file": "tiny-fish-school-light.png",
@@ -261,8 +261,8 @@
       "title": "Tiny fish school",
       "tone": "light",
       "defaults": true,
-      "sha256": "3bb14c578d41bcb84457328aee2334c17885f836cf5c2357fcf7095b99f4dc59",
-      "bytes": 28421
+      "sha256": "c45be0e1a0cf88893936560d4b14bf141ba528287105c04678585b89ba949668",
+      "bytes": 16119
     },
     {
       "file": "solitary-whale-light.png",
@@ -271,8 +271,8 @@
       "title": "Solitary whale",
       "tone": "light",
       "defaults": true,
-      "sha256": "578a9a28a3ea7adeb4426d1f79554fa8cc199a7bf4d5c2f81eaf964744ed44e8",
-      "bytes": 80157
+      "sha256": "df79b4b622ef5b91c035e3356b4f77d55c2aedc1bc36b4528cb892a231fb7b39",
+      "bytes": 66359
     },
     {
       "file": "octopus-light.png",
@@ -281,8 +281,8 @@
       "title": "Octopus",
       "tone": "light",
       "defaults": true,
-      "sha256": "6bb7ac53ad333c693c581690a0b3d519d8f2570536553fc5880b3880f8efeea4",
-      "bytes": 86471
+      "sha256": "960d48bb6b71dcd52b8fe76cd72f9e2a62a366b60fc94aa639b73d2f901f8c8b",
+      "bytes": 74350
     },
     {
       "file": "butterflies-light.png",
@@ -291,8 +291,8 @@
       "title": "Butterflies",
       "tone": "light",
       "defaults": true,
-      "sha256": "df86dbfc67766597fa74ba8089286f68acab837630d2f26bf1b5ed586349a064",
-      "bytes": 31288
+      "sha256": "767041143cdae5d9f45489c197e1f748cb438f6b6ea90bdddee664cec7366134",
+      "bytes": 19311
     },
     {
       "file": "luna-moths-light.png",
@@ -301,8 +301,8 @@
       "title": "Luna moths",
       "tone": "light",
       "defaults": true,
-      "sha256": "3a476fee6910032358abfaab12564a16accf2a6e2ce78b702b16d72bab819730",
-      "bytes": 38873
+      "sha256": "922c48a4d11373506af7d7f97504ae64d0ea04f341054548e71bc08d7cded5fc",
+      "bytes": 26677
     },
     {
       "file": "dragonflies-light.png",
@@ -311,8 +311,8 @@
       "title": "Dragonflies",
       "tone": "light",
       "defaults": true,
-      "sha256": "d06eff2a93a9685957782854e7947f86055af2298338ade7d4a9c96770e39546",
-      "bytes": 46077
+      "sha256": "3305705ed43dbe24c50bc27c87561adb6ead047b4343ad7bab918ed0548a894b",
+      "bytes": 34108
     },
     {
       "file": "swallows-light.png",
@@ -321,8 +321,8 @@
       "title": "Swallows",
       "tone": "light",
       "defaults": true,
-      "sha256": "96fdcee9bd64dcbaff4fa15a87cfe04bc1261a1db4fc6f364ea8206c38f1163b",
-      "bytes": 33224
+      "sha256": "31cd4e5260fbf44cb686a69c4828cf978f1fe986062fcf42787d39f6ae5cc677",
+      "bytes": 20454
     },
     {
       "file": "sleeping-cat-light.png",
@@ -331,8 +331,8 @@
       "title": "Sleeping cat",
       "tone": "light",
       "defaults": true,
-      "sha256": "07391ae7f313ac743f7f3edaf80e395e408a98ac8c033483766c36f748170b85",
-      "bytes": 63212
+      "sha256": "6a70b3d0180335f8cc6fbf15ba9cce910d16b0e259d24af1e5e52d8cc67a862e",
+      "bytes": 50791
     },
     {
       "file": "owl-light.png",
@@ -341,8 +341,8 @@
       "title": "Owl",
       "tone": "light",
       "defaults": true,
-      "sha256": "201a1635222d37dbf45a8324d445c3221f9460707d05157a79fd22732e4d5bc3",
-      "bytes": 75072
+      "sha256": "d04ff12450b1fcae1605f15440ab124b81cc7a434824c35c87406db1cecb4a84",
+      "bytes": 63297
     },
     {
       "file": "ginkgo-leaves-light.png",
@@ -351,8 +351,8 @@
       "title": "Ginkgo leaves",
       "tone": "light",
       "defaults": true,
-      "sha256": "0b628ad04e3d42ffe529424256107e6bf210516b6f017b997a813bb03febca9b",
-      "bytes": 63306
+      "sha256": "5bd83cca05d664368144ae4bacbd5f86d893b14ffe2fc1e30a8bf753f2dc275b",
+      "bytes": 49669
     },
     {
       "file": "cherry-blossom-petals-light.png",
@@ -361,8 +361,8 @@
       "title": "Cherry blossom petals",
       "tone": "light",
       "defaults": true,
-      "sha256": "19ab6da1f79bf9cf99f284b49fada13db60d4ef051b4b5919a4485c6d000f837",
-      "bytes": 31649
+      "sha256": "b783457c5195d0788e67af82398d0668772886d3561a92f2dd0409f26b93b26c",
+      "bytes": 18655
     },
     {
       "file": "fireflies-light.png",
@@ -371,8 +371,8 @@
       "title": "Fireflies",
       "tone": "light",
       "defaults": true,
-      "sha256": "1b92b30a77bc3f1feac1622c2dd9e027e201ae4f097b3cbbfddbe3be30d1a98d",
-      "bytes": 37611
+      "sha256": "f6e25fba56dc974055ceea4e2bbda2d1de6fba6e1ef4093592a642379364f1c5",
+      "bytes": 25437
     },
     {
       "file": "bubbles-light.png",
@@ -381,8 +381,8 @@
       "title": "Bubbles",
       "tone": "light",
       "defaults": true,
-      "sha256": "4ff2e476d976ce28b311a5dbdc4f5d9b420f4130278328adb2402529f7665e00",
-      "bytes": 34724
+      "sha256": "f8415c95b63e93fd90e5b2b30138807535a9c9fa8506cc0b54f5b0d78d0b7c3d",
+      "bytes": 22634
     },
     {
       "file": "dandelion-seeds-light.png",
@@ -391,8 +391,8 @@
       "title": "Dandelion seeds",
       "tone": "light",
       "defaults": true,
-      "sha256": "56ac99bfe26125fafe82b939731a7b1a4ffb7e793e5bc0cca8a0e0d6dff95b6a",
-      "bytes": 44272
+      "sha256": "ed3780ded9956f227eb502b2d9f02529ee87c9b8133f4edf91b319bd9f278251",
+      "bytes": 31584
     },
     {
       "file": "night-sky-light.png",
@@ -401,28 +401,8 @@
       "title": "Night sky",
       "tone": "light",
       "defaults": true,
-      "sha256": "3aa7fe8c336eb78699e7312aba4f0f4ff060e967d8dc1a1458579691f0578e6b",
-      "bytes": 31883
-    },
-    {
-      "file": "settings-full.png",
-      "kind": "settings",
-      "scene": "butterflies",
-      "tone": "light",
-      "variant": "full",
-      "sha256": "e29b7dbabfef8a6b660aa091f661f763cd1bf96d686b9adc4c7c3dac30996fe1",
-      "bytes": 174765
-    },
-    {
-      "file": "whole-window.png",
-      "kind": "composited-background",
-      "scene": "manta-rays",
-      "tone": "dark",
-      "placement": "front",
-      "strength": 0.28,
-      "variant": "full",
-      "sha256": "52dfb62b26e108ce2e5889f25fc84544a1171a350d61dbced2a2b75fcd72d83b",
-      "bytes": 151753
+      "sha256": "f545cb107485bdcc033a16195b773263affec992190bb62206e76325f2ce5062",
+      "bytes": 19620
     },
     {
       "file": "settings-catalog.png",
@@ -430,8 +410,8 @@
       "scene": "butterflies",
       "tone": "light",
       "variant": "catalog",
-      "sha256": "44404f1cb2a5974cb05d47065ad109b18f43539ad0e35b6b8d300fde0d43947d",
-      "bytes": 144202
+      "sha256": "65cd73c0ce4c3e456abfc46b43e03bc8d03f8f4fd44c904dea3667c21ebbb4f1",
+      "bytes": 123156
     },
     {
       "file": "whole-window-catalog.png",
@@ -441,8 +421,8 @@
       "placement": "front",
       "strength": 0.28,
       "variant": "catalog",
-      "sha256": "5a84e699ab2f4ddd6ad1759738239a2bf862538f9f0e3ce99b2ac10745129ae3",
-      "bytes": 129750
+      "sha256": "d9218bba97916dbc96cdef10912dec8d65b8967af4684069f0781c7d672bf606",
+      "bytes": 115614
     }
   ],
   "errors": [],

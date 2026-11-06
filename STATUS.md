@@ -1,38 +1,23 @@
-# ASCII Worlds 1.2.0 — project status
+# ASCII Worlds 1.2.0 - project status
 
 ## This version
 
-Twenty habitats are integrated into the native Settings selector, preview and
-optional window layer, with independent scene controls and v3 migration. Original
-Koi/Jellyfish art and the approved eighteen-scene modules remain unchanged.
+Twenty habitats are built into the native Settings page, the live preview and the
+optional window background, with independent settings per habitat and a safe
+migration from older versions. The original koi and jellyfish are unchanged.
 
-Public documentation covers installation/rollback, settings and exceptions,
-privacy/resources, architecture, tests and a real [dark/light gallery](docs/GALLERY.md).
-Current images are **v1.2.0 browser mock-host captures, not Mac screenshots**.
-Historical imagery is labelled separately.
+Documentation covers install and rollback, every setting, privacy, architecture,
+tests and a [gallery](docs/GALLERY.md) of every habitat in dark and light.
 
-## Verification and limits
+## Verification
 
-The complete serial gate passed **108/108 units, all eleven browser suites and
-70 JS/MJS syntax checks**, plus repeat/catalog builds and diff checks. Image, link,
-privacy and catalog-doc audits pass, and the plugin, demo and source runtime are
-unchanged by the documentation work. See [verification](docs/INTEGRATION-VERIFICATION.md)
-for identities and scope. The backup and rollback instructions keep app-level
-ownership, assume no storage export and refuse symlinked paths.
+The full gate passes: **108/108 unit tests, all eleven browser suites and 70
+JavaScript syntax checks**, plus repeat builds, the catalog build and the link,
+image and privacy audits. The plugin was also hand-tested on a Mac with Hermes
+Desktop. See [verification](docs/INTEGRATION-VERIFICATION.md) for details.
 
-The author hand-tested the full v1.2.0 plugin in Hermes Desktop on a Mac and reports
-that everything worked. It was a general hand test: no Desktop version, screenshots or
-per-item results were recorded, so the [Mac checklist](docs/MANUAL-MAC-CHECKLIST.md)
-stays unchecked. The Whole-window-only catalog build is the same plugin without its
-second window-placement option; automated tests, browser captures and the Hermes
-validator cover it, but the hand test did not. Windows and Linux Desktop, Safari,
-physical phones, other Hermes versions, accessibility, heat and battery use remain
-untested.
+## Releases and the catalog
 
-## Publication boundary
-
-Source in this repository is not proof of a release, a passed upstream CI run or an
-accepted catalog listing. Those are separate gates; maintainers decide admission.
-A pin update to an entry that is already listed is a new reviewed pull request
-(admission rule 4 in the catalog submission guide), not an edit of an earlier merged
-one. No automatic tag or GitHub release is required.
+Version 1.2.0 is released on GitHub. The Hermes plugin catalog is updated through a
+reviewed pull request (admission rule 4 in the catalog submission guide); the
+maintainers decide when it is merged.

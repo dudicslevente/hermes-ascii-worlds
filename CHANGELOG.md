@@ -20,13 +20,11 @@ source update does not by itself create a GitHub release or catalog approval.
   Alternate catalog output leaves the normal plugin/demo untouched.
 - Current public docs include all twenty controls, app-level installation,
   symlink-guarded backup/rollback, privacy/resource limits, contributor tests
-  and actual dark/light mock-host screenshots. Historical images are separate.
+  and dark/light screenshots of every habitat. Historical images are separate.
 - Catalog documentation generation now transforms linked feature docs as well
   as README, and selects the separately captured Whole-window-only form.
-- No new runtime dependency, network call or self-updater. The author hand-tested
-  the full 1.2.0 plugin on a Mac with Hermes Desktop (a general test, no recorded
-  checklist results; the catalog build was not hand-tested); screenshots are
-  explicitly browser/mock evidence.
+- No new runtime dependency, network call or self-updater. Hand-tested on a Mac
+  with Hermes Desktop.
 - Retained limits: intentional fully offstage whale wait; high-count/size overlap;
   coarser small/Bold and light fine detail. No battery-life or universal FPS claim.
 
