@@ -1,4 +1,4 @@
-# Habitats and controls — 1.2.0
+# Habitats and controls
 
 All twenty habitats share the native Habitat selector, independent saved scene
 preferences, preview/window settings, automatic theme, glyph density,
@@ -80,6 +80,4 @@ host wrapper backgrounds/theme internals. The catalog removes that placement.
 <!-- chat-area:end -->
 <!-- catalog: Catalog distribution: Whole window only, without a placement selector or host-background restyling. -->
 
-See [storage/migration/reset](SETTINGS-MIGRATION.md), [background internals](HOW-BACKGROUND-WORKS.md)
-and the [dark/light gallery](GALLERY.md). The original standalone Lab ledger in
-[LAB-FEATURE-PARITY.md](LAB-FEATURE-PARITY.md) is historical, not a claim about plugin UI.
+See [settings and storage](SETTINGS.md), [window background](BACKGROUND.md) and the [gallery](GALLERY.md).

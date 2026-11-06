@@ -1,20 +1,16 @@
-// Generate matching catalog documentation, not just a catalog README.
+// Generate the catalog edition of the documentation: sections between
+// chat-area markers are dropped and <!-- catalog: ... --> text is shown instead.
 // Run on a separate copy with --root, or deliberately on the catalog branch.
-// The original storyboard and standalone Lab ledger are retained as historical
-// source documents; they are not catalog feature documentation.
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 export const CATALOG_DOCS = [
-  'README.md', 'INSTALL.md', 'CHANGELOG.md', 'CONTRIBUTING.md', 'STATUS.md',
+  'README.md', 'INSTALL.md', 'CHANGELOG.md', 'CONTRIBUTING.md', 'SECURITY.md',
   '.github/ISSUE_TEMPLATE/bug_report.md',
-  'docs/ARCHITECTURE.md', 'docs/CATALOG.md', 'docs/COMPATIBILITY.md',
-  'docs/DEVELOPMENT.md', 'docs/FEATURE-CONTROLS.md', 'docs/GALLERY.md',
-  'docs/HISTORY.md', 'docs/HOW-BACKGROUND-WORKS.md',
-  'docs/INTEGRATION-REVIEW.md', 'docs/FINAL-INTEGRATION-REVIEW.md',
-  'docs/INTEGRATION-VERIFICATION.md', 'docs/LOCAL-TEST-CANDIDATE.md',
-  'docs/MANUAL-MAC-CHECKLIST.md', 'docs/SETTINGS-MIGRATION.md',
+  'docs/ARCHITECTURE.md', 'docs/BACKGROUND.md', 'docs/COMPATIBILITY.md',
+  'docs/CONTROLS.md', 'docs/DEVELOPMENT.md', 'docs/GALLERY.md',
+  'docs/RELEASING.md', 'docs/SETTINGS.md',
 ];
 
 export function catalogMarkdown(source) {
@@ -35,9 +31,6 @@ export function generateCatalogDocs(root) {
     const result = catalogMarkdown(source);
     if (/Chat area|Chat-area|data-chat-surface|aui_thread-viewport|--ui-chat-surface-background/.test(result)) {
       throw Error(`Unmarked full-only claim in ${relative}`);
-    }
-    if (relative === 'README.md' || relative === 'docs/GALLERY.md') {
-      if (/images\/v1\.2\/(?:settings-full|whole-window)\.png/.test(result)) throw Error(`Full-only screenshot in ${relative}`);
     }
     if (source !== result) { writeFileSync(file, result); changes.push(relative); }
   }

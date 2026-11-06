@@ -5,4 +5,4 @@
 - [ ] The plugin still imports only `react`, `react/jsx-runtime` and `@hermes/plugin-sdk`
 - [ ] No network access, telemetry or new stored data
 - [ ] Anything new the plugin adds to the page is removed again when turned off
-- [ ] I did not claim anything was tested in the real app unless it was
+- [ ] Documentation and the changelog are updated

@@ -1,86 +1,63 @@
 # Architecture
 
-Version 1.2.0 extends the existing native Settings page, preview
-and optional background; it is not a gallery/iframe replacement.
+ASCII Worlds is a single-file Hermes Desktop plugin. Habitats are pure scene functions; a shared
+sampler turns them into coloured glyphs on a canvas, used by both the Settings preview and the
+optional window background.
 
-| Boundary | Responsibility |
+## Source layout
+
+| Path | Responsibility |
 | --- | --- |
-| `src/art.js` | Original koi+jelly geometry, byte-identical to baseline |
-| `src/settings.js` | Explicit legacy v2 compatibility API; shared background validation/stores/version |
-| `src/settings-v3.js` | Exact twenty IDs, additive per-scene envelope, migration, aliases, patches, scoped reset, clocks |
-| `src/lab/scenes/` | Eighteen approved corrected pure scene modules, unchanged |
-| `src/lab/core/` | Approved utilities, five-material palettes, scene validation and corrected glyph sampler |
-| `src/engine.js` | Original renderer plus one integrated scheduler / active sampler per canvas |
-| `src/world.js` | Native controls / preview, explicit `makeThemeReader` import |
-| `src/background.js` | Shared settings and persistence-warning hub; optional window layer, diagnostics and cleanup |
-| `src/plugin.js` | React/SDK registration/fallbacks, titlebar/palette, host disposal |
-| `scripts/bundle.mjs` | Dependency-free scoped ESM subset, relative IDs, explicit exports |
+| `src/art.js` | Koi and jellyfish geometry |
+| `src/lab/scenes/` | The eighteen other habitats, one pure module each, plus the registry |
+| `src/lab/core/` | Palettes, scene validation, utilities and the glyph sampler for those habitats |
+| `src/settings-v3.js` | The twenty habitat IDs, the per-habitat settings record, migration, patches and reset |
+| `src/settings.js` | Background preferences and stores, the plugin version, and the 1.1 settings helpers |
+| `src/engine.js` | Canvas lifecycle: one scheduler and sampler per canvas, observers and cleanup |
+| `src/world.js` | The Settings page: controls, preview and instance ownership |
+| `src/background.js` | The optional window layer, shared settings hub, save warnings and the diagnostic report |
+| `src/plugin.js` | The React and SDK boundary: Settings registration, title-bar toggle, palette commands, disposal |
+| `src/styles.js` | Scoped styling that uses the host's theme variables |
+| `scripts/build.mjs`, `scripts/bundle.mjs` | The dependency-free bundler that writes `desktop/plugin.js` and `demo.html` |
 
-## Rendering and time
+React appears only in `src/plugin.js`. The rest is plain ES modules with no dependencies.
 
-The original `createRenderer` function and original art path remain unchanged.
-Lab uses the approved corrected sampler: light monotonic material exposure,
-contrast-preserving subpixel choice and glyph weights remain. Only copied Lab
-sampler changes are `options.transparent` support and clear instead of backdrop
-fill for background mode. All eighteen scene modules remain byte-identical to
-the approved export. No Lab UI/reference directory is copied.
+## Rendering
 
-The integrated engine instantiates one active sampler per canvas. Switching
-families releases the old field. Only it schedules RAF; the retained standalone
-Lab engine export is never instantiated. Preview plus optional background have
-one scheduler each, not one per scene.
+A habitat is a pure function of the canvas size and time. It paints transparent shapes into a hidden
+canvas at two samples per glyph cell. The sampler picks a glyph and colour for each cell from the
+painted pixels, with a stable per-cell hash so glyphs do not flicker. The visible layer is only
+glyphs; nothing is a pre-rendered image.
 
-Legacy time remains speed-scaled travel time. Lab travel rate is Speed and local
-articulation rate is Speed^0.6, integrated independently without retroactive
-jumps on edits. A scene change involving Lab resets both clocks; koi/jelly
-switches keep the old time behavior. `renderAt(t,b)` freezes time; omitted `b`
-is derived from Speed. Cat/Owl pace breathing, blinks and gestures, not travel.
-Night sky retains stationary stars with optional meteors.
+Two clocks drive each habitat: travel time (scaled by Speed) and articulation time for wings, fins
+and limbs. Cat, Owl and Night sky use Pace for local motion only. Hidden time is never caught up.
 
-Preview and background share the same normalized model. Theme follows the
-host's original `options.isDark` reader, falling back to OS; no theme picker.
-Canvas allocation limits remain 1800x1400 logical, DPR<=2 / ~4 million backing
-pixels and 220x150 glyph cells. These are bounds, not performance guarantees.
-Lab count zero bypasses every ornament; legacy faint decorative dots remain.
+Limits: canvas backing size 1800 x 1400 logical pixels, device pixel ratio up to 2, about four million
+backing pixels and a 220 x 150 glyph grid. Each habitat has a population cap.
 
-## Ownership and lifecycle
+## Lifecycle
 
-The original capped scheduler owns RAF, resize/intersection observers, hidden
-and colour-scheme listeners. Hidden time is not caught up. Moving edits coalesce
-into capped frames; paused/manual views repaint once. Hosted backgrounds skip
-intersection observation. Destroy is idempotent and removes observers/listeners,
-canvas state and DOM. Mutators after disposal are inert, including reset.
+`createEngine` owns the animation frame, the resize and intersection observers, and the visibility
+and colour-scheme listeners. It stops drawing when the document or the canvas is hidden. The preview
+runs only while visible; the window layer is independent of the Settings page. A paused canvas checks
+the host theme about once a second and repaints only when it changed.
 
-The Settings page owns its DOM only. React is only the SDK adapter boundary.
-The existing titlebar, palette, Settings registration/fallbacks and host-disposal
-paths remain. Rendering failures show a fallback or restore/disable background.
-Persistence health is tracked separately for settings.v3 and background.v1; a
-successful save clears only that record's warning. Reduced-motion Resume grants
-both paths a session-only opt-in that survives Settings close/reopen; a new OS
-hold or plugin reload revokes it. No preference is silently written at startup.
-Visible paused/manual canvases check their own theme probe every 1.1 seconds
-and repaint only on a theme change. These bounded checks stop when hidden,
-offscreen or disposed; they never resume the animation clock.
-No plugin state is attached to window; only the offline demo has an inspection API.
+The Settings page owns only its own DOM. Destroying a world or the background removes every observer,
+listener, frame, canvas, layer, style and attribute it added, and further calls do nothing. The plugin
+also registers cleanup with `ctx.onDispose`, so disabling the plugin does not depend on React timing.
 
-## Persistence and build
+## Settings
 
-See [SETTINGS-MIGRATION.md](SETTINGS-MIGRATION.md). V3 is the integrated writer;
-old v2 helper exports remain explicit compatibility APIs. The UI derives Lab
-controls from definitions, retaining original named koi/jelly controls.
+See [Settings and storage](SETTINGS.md). The preview and the background share one settings hub, so a
+change shows up in both immediately.
 
-Bundling wraps each source module in lexical scope with explicit exports,
-relative `src/...` IDs, no absolute paths/timestamps/eval/runtime loader. The
-checked-in ESM subset rejects cycles, unsupported syntax, path escapes and
-external imports other than react, react/jsx-runtime, @hermes/plugin-sdk.
-The catalog transform strips `@chat-area` blocks before wrapping. `--out` emits
-only the requested JS bundle, not the ordinary plugin/demo.
+## Build
 
-## Add a scene
+The bundler wraps each module in its own scope and emits a deterministic ES module. It supports only the
+syntax this project uses, rejects import cycles and external imports other than `react`,
+`react/jsx-runtime` and `@hermes/plugin-sdk`, and embeds no absolute paths or timestamps. The catalog
+build (`npm run build:catalog`) removes the blocks between `@chat-area` markers first.
 
-Add a pure Lab-contract module, register its ID in the integrated order and add
-count-zero, deterministic/non-rigid geometry, colour, controls, clocks and
-persistence tests. Do not alter legacy art for a new habitat. Rebuild generated
-files, inspect actual light/dark articulated/travelling output, update the
-control matrix, and complete the native Mac checklist before claiming native acceptance. Nonempty
-pixels are not proof of natural anatomy or beauty.
+## Adding a habitat
+
+See [Development](DEVELOPMENT.md#add-a-habitat).

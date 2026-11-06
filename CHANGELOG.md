@@ -1,63 +1,61 @@
 # Changelog
 
-Notable source changes. This project follows semantic versioning; a versioned
-source update does not by itself create a GitHub release or catalog approval.
+All notable changes to this project are listed here. The project follows
+[semantic versioning](https://semver.org/).
 
 ## 1.2.0
 
-- Added eighteen habitats to the native Settings selector, preview and optional
-  window background: mantas, turtles, seahorses, schooling fish, whale, octopus,
-  butterflies, moths, dragonflies, swallows, cat, owl, leaves, petals, fireflies,
-  bubbles, seeds and stars. Original Koi/Jellyfish geometry remains unchanged.
-- Independent per-scene count/colour/settings; Size, Scene strength, useful
-  flow/extras; local Pace for stationary subjects. Night sky omits Individual.
-- Additive `settings.v3` migration from read-only v2/v1, retained aliases/hidden
-  colour slots, no startup writes and memory-only failure warnings.
-- Added Reset this scene while preserving global Reset to defaults/return to Koi.
-- Corrected per-record warning recovery, shared explicit reduced-motion Resume
-  and bounded host-theme refresh of visible paused stills; added regressions.
-- Scoped, deterministic dependency-free bundling with portable module IDs.
-  Alternate catalog output leaves the normal plugin/demo untouched.
-- Current public docs include all twenty controls, app-level installation,
-  symlink-guarded backup/rollback, privacy/resource limits, contributor tests
-  and dark/light screenshots of every habitat. Historical images are separate.
-- Catalog documentation generation now transforms linked feature docs as well
-  as README, and selects the separately captured Whole-window-only form.
-- No new runtime dependency, network call or self-updater. Hand-tested on a Mac
-  with Hermes Desktop.
-- Retained limits: intentional fully offstage whale wait; high-count/size overlap;
-  coarser small/Bold and light fine detail. No battery-life or universal FPS claim.
+### Added
+
+- Eighteen new habitats, bringing the total to twenty: manta rays, sea turtles, seahorses,
+  a school of tiny fish, a solitary whale, an octopus, butterflies, luna moths, dragonflies,
+  swallows, a sleeping cat, an owl, ginkgo leaves, cherry blossom petals, fireflies, bubbles,
+  dandelion seeds and a night sky. They work in the Settings preview and the window background.
+- Every habitat keeps its own settings: count, colours, speed, size, density and scene strength,
+  plus current, breeze or wind and scene-specific extras where they make sense.
+  Cat, Owl and Night sky use a local Pace instead of travel speed.
+- A **Reset this scene** button next to **Reset to defaults**.
+- Documentation: install guide, controls reference, gallery with every habitat in dark and light,
+  architecture, development and release guides.
+
+### Changed
+
+- Settings are saved in a new `settings.v3` record. Records saved by 1.0 and 1.1 are read and
+  never rewritten, so going back to an older version keeps working.
+- Reduced motion starts still. **Resume motion** switches both the preview and the window
+  background to moving art for the session.
+- Paused art follows a light or dark theme change within about a second, without resuming motion.
+- The build is now a small deterministic bundler with relative module IDs.
+- The catalog branch script extends the existing history instead of rewriting it.
+
+### Fixed
+
+- A "preferences could not be saved" warning now clears once saving works again, and
+  tracks the settings and the background record separately.
 
 ## 1.1.0
 
-- Koi gained a travelling body wave, spine-following tail and rowing pectoral
-  fins. Jellyfish gained pulsing bells and lagged trailing tentacles, with calmer motion.
-- Window animation now follows the preview's density, speed, palettes and saver.
-- Removed Appearance: preview and background automatically follow the host theme;
-  old saved appearance is ignored. Renamed Eco to Battery saver with plain-language help.
-- Koi golden fixture was deliberately regenerated for that artwork change.
+- Koi gained a travelling body wave, a spine-following tail and rowing fins. Jellyfish gained
+  pulsing bells and trailing tentacles, with calmer motion.
+- The window animation follows the preview's density, speed, palettes and Battery saver.
+- Removed the Appearance picker: the art always follows the Hermes theme.
+  Renamed Eco to **Battery saver**.
 
 ## 1.0.1
 
-- Friendlier documentation, installation instructions, historical Desktop
-  screenshots and contributor guidance.
+- Friendlier documentation, installation instructions and contributor guidance.
 <!-- chat-area:begin -->
-- Added Whole-window-only catalog build, omitting the full distribution's Chat
-  area restyling. The full plugin's behaviour did not change in that patch.
+- Added a Whole-window-only build for the Hermes plugin catalog.
 <!-- chat-area:end -->
-<!-- catalog: - Added the Whole-window-only catalog build. No runtime behaviour change in that patch. -->
+<!-- catalog: - Added the Whole-window-only build. -->
 
 ## 1.0.0
 
-First public release: Koi and Jellyfish, procedural glyph shading and routes,
-0–10 populations, per-creature colours, named/custom palettes, native Settings,
-title-bar/palette controls, pause/saver/reduced motion, bounds and cleanup.
+First public release: koi and jellyfish with procedural glyph shading and routes, 0 to 10
+creatures, per-creature colours, named and custom palettes, a native Settings page,
+title-bar and palette controls, pause, battery saver and reduced motion.
 
 <!-- chat-area:begin -->
-The full release offered Chat area (through chat wrapper backgrounds) and Whole
-window (transparent overlay above all content) placements.
+It offered a Chat area placement (through the chat's background layers) and a Whole window placement.
 <!-- chat-area:end -->
-<!-- catalog: The catalog distribution uses a transparent Whole-window overlay. -->
-
-The original appearance picker was superseded by automatic theme-following in
-1.1.0. Runtime operation is offline, without telemetry.
+<!-- catalog: It draws a transparent Whole window overlay. -->

@@ -1,4 +1,4 @@
-# Background implementation and troubleshooting
+# Window background
 
 Background is optional and off by default. It renders the selected scene using
 the same settings as the preview, on a separate transparent full-window canvas.
@@ -23,10 +23,6 @@ order. Its stylesheet is empty: it does not clear host backgrounds or rewrite
 core UI. It can pass faintly over text, panels and controls, so lower strength
 helps readability. Click-through does not make an overlay visually invisible.
 This is the **only placement in the catalog build**, which has no placement selector.
-
-![The Whole window background at default 28 percent strength over a simple workspace page](images/v1.2/whole-window-catalog.png)
-
-The Whole window layer at its default strength.
 
 <!-- chat-area:begin -->
 ## Chat area — full distribution only
@@ -61,7 +57,7 @@ opts both into motion for that plugin session. Closing Settings retains consent;
 a new OS hold or reload revokes it. Battery saver caps at 12 instead of 30 fps.
 Bounds include 1800x1400 logical canvas dimensions, DPR <=2, approximately four
 million backing pixels and a 220x150 glyph grid. These are allocation limits,
-not measured Mac performance, heat or battery guarantees.
+not performance, heat or battery guarantees.
 
 ## Check background
 
@@ -84,5 +80,4 @@ that can obscure Chat area. Switch to Whole window rather than guessing new sele
 - Missing background control: the host may lack the guarded title-bar SDK surface;
   the standalone preview can remain usable.
 
-No automated mock-host check proves native placement. Follow the
-[Mac checklist](MANUAL-MAC-CHECKLIST.md) and [compatibility checks](COMPATIBILITY.md).
+See [Compatibility](COMPATIBILITY.md) for the host surfaces the background relies on.

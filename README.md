@@ -4,7 +4,7 @@ Twenty living habitats for Hermes Desktop, drawn entirely out of text characters
 Koi and jellyfish, sea turtles and moths, a sleeping cat, drifting petals, a quiet
 night sky. Pick one in Settings, or let it drift across your whole window.
 
-![A solitary whale drawn in glyphs](docs/images/v1.2/banner.png)
+![A solitary whale drawn in glyphs](docs/images/banner.png)
 
 - **20 habitats**, from a lone whale to a sky full of stars.
 - **Make it yours:** colours, speed, size and density. Every habitat remembers its own settings.
@@ -14,20 +14,20 @@ night sky. Pick one in Settings, or let it drift across your whole window.
 
 ## All twenty habitats
 
-![All twenty habitats in ASCII Worlds](docs/images/v1.2/overview.png)
+![All twenty habitats in ASCII Worlds](docs/images/overview.png)
 
 | | |
 | --- | --- |
-| ![Koi pond, a glyph habitat in Hermes Desktop](docs/images/v1.2/koi-dark.png)<br>**Koi pond**<br>Patterned koi with tails that ripple as they turn | ![Jellyfish drift, a glyph habitat in Hermes Desktop](docs/images/v1.2/jellyfish-dark.png)<br>**Jellyfish drift**<br>Pulsing bells with long trailing strands |
-| ![Manta rays, a glyph habitat in Hermes Desktop](docs/images/v1.2/manta-rays-dark.png)<br>**Manta rays**<br>Slow gliding turns and rippling fins | ![Sea turtles, a glyph habitat in Hermes Desktop](docs/images/v1.2/sea-turtles-light.png)<br>**Sea turtles**<br>Patterned shells and alternating flippers |
-| ![Seahorses, a glyph habitat in Hermes Desktop](docs/images/v1.2/seahorses-light.png)<br>**Seahorses**<br>Upright drifters with curled tails | ![Tiny fish school, a glyph habitat in Hermes Desktop](docs/images/v1.2/tiny-fish-school-light.png)<br>**Tiny fish school**<br>A little school that moves as one |
-| ![Solitary whale, a glyph habitat in Hermes Desktop](docs/images/v1.2/solitary-whale-dark.png)<br>**Solitary whale**<br>One big, calm crossing at a time | ![Octopus, a glyph habitat in Hermes Desktop](docs/images/v1.2/octopus-dark.png)<br>**Octopus**<br>Eight arms that curl on their own |
-| ![Butterflies, a glyph habitat in Hermes Desktop](docs/images/v1.2/butterflies-light.png)<br>**Butterflies**<br>Patterned wings that open and close | ![Luna moths, a glyph habitat in Hermes Desktop](docs/images/v1.2/luna-moths-dark.png)<br>**Luna moths**<br>Pale wings with eyespots and long tails |
-| ![Dragonflies, a glyph habitat in Hermes Desktop](docs/images/v1.2/dragonflies-light.png)<br>**Dragonflies**<br>Hovering, gliding and a blur of wings | ![Swallows, a glyph habitat in Hermes Desktop](docs/images/v1.2/swallows-light.png)<br>**Swallows**<br>Swooping flaps and glides |
-| ![Sleeping cat, a glyph habitat in Hermes Desktop](docs/images/v1.2/sleeping-cat-dark.png)<br>**Sleeping cat**<br>A curled-up cat that breathes quietly | ![Owl, a glyph habitat in Hermes Desktop](docs/images/v1.2/owl-dark.png)<br>**Owl**<br>A watchful owl on its perch |
-| ![Ginkgo leaves, a glyph habitat in Hermes Desktop](docs/images/v1.2/ginkgo-leaves-light.png)<br>**Ginkgo leaves**<br>Fan-shaped leaves tumbling down | ![Cherry blossom petals, a glyph habitat in Hermes Desktop](docs/images/v1.2/cherry-blossom-petals-light.png)<br>**Cherry blossom petals**<br>Petals fluttering in shared gusts |
-| ![Fireflies, a glyph habitat in Hermes Desktop](docs/images/v1.2/fireflies-dark.png)<br>**Fireflies**<br>Soft lights that glow on their own rhythm | ![Bubbles, a glyph habitat in Hermes Desktop](docs/images/v1.2/bubbles-light.png)<br>**Bubbles**<br>Wobbling rings rising upward |
-| ![Dandelion seeds, a glyph habitat in Hermes Desktop](docs/images/v1.2/dandelion-seeds-light.png)<br>**Dandelion seeds**<br>Tiny parachutes drifting on the breeze | ![Night sky, a glyph habitat in Hermes Desktop](docs/images/v1.2/night-sky-dark.png)<br>**Night sky**<br>Twinkling stars and the odd shooting star |
+| ![Koi pond, a glyph habitat in Hermes Desktop](docs/images/habitats/koi-dark.png)<br>**Koi pond**<br>Patterned koi with tails that ripple as they turn | ![Jellyfish drift, a glyph habitat in Hermes Desktop](docs/images/habitats/jellyfish-dark.png)<br>**Jellyfish drift**<br>Pulsing bells with long trailing strands |
+| ![Manta rays, a glyph habitat in Hermes Desktop](docs/images/habitats/manta-rays-dark.png)<br>**Manta rays**<br>Slow gliding turns and rippling fins | ![Sea turtles, a glyph habitat in Hermes Desktop](docs/images/habitats/sea-turtles-light.png)<br>**Sea turtles**<br>Patterned shells and alternating flippers |
+| ![Seahorses, a glyph habitat in Hermes Desktop](docs/images/habitats/seahorses-light.png)<br>**Seahorses**<br>Upright drifters with curled tails | ![Tiny fish school, a glyph habitat in Hermes Desktop](docs/images/habitats/tiny-fish-school-light.png)<br>**Tiny fish school**<br>A little school that moves as one |
+| ![Solitary whale, a glyph habitat in Hermes Desktop](docs/images/habitats/solitary-whale-dark.png)<br>**Solitary whale**<br>One big, calm crossing at a time | ![Octopus, a glyph habitat in Hermes Desktop](docs/images/habitats/octopus-dark.png)<br>**Octopus**<br>Eight arms that curl on their own |
+| ![Butterflies, a glyph habitat in Hermes Desktop](docs/images/habitats/butterflies-light.png)<br>**Butterflies**<br>Patterned wings that open and close | ![Luna moths, a glyph habitat in Hermes Desktop](docs/images/habitats/luna-moths-dark.png)<br>**Luna moths**<br>Pale wings with eyespots and long tails |
+| ![Dragonflies, a glyph habitat in Hermes Desktop](docs/images/habitats/dragonflies-light.png)<br>**Dragonflies**<br>Hovering, gliding and a blur of wings | ![Swallows, a glyph habitat in Hermes Desktop](docs/images/habitats/swallows-light.png)<br>**Swallows**<br>Swooping flaps and glides |
+| ![Sleeping cat, a glyph habitat in Hermes Desktop](docs/images/habitats/sleeping-cat-dark.png)<br>**Sleeping cat**<br>A curled-up cat that breathes quietly | ![Owl, a glyph habitat in Hermes Desktop](docs/images/habitats/owl-dark.png)<br>**Owl**<br>A watchful owl on its perch |
+| ![Ginkgo leaves, a glyph habitat in Hermes Desktop](docs/images/habitats/ginkgo-leaves-light.png)<br>**Ginkgo leaves**<br>Fan-shaped leaves tumbling down | ![Cherry blossom petals, a glyph habitat in Hermes Desktop](docs/images/habitats/cherry-blossom-petals-light.png)<br>**Cherry blossom petals**<br>Petals fluttering in shared gusts |
+| ![Fireflies, a glyph habitat in Hermes Desktop](docs/images/habitats/fireflies-dark.png)<br>**Fireflies**<br>Soft lights that glow on their own rhythm | ![Bubbles, a glyph habitat in Hermes Desktop](docs/images/habitats/bubbles-light.png)<br>**Bubbles**<br>Wobbling rings rising upward |
+| ![Dandelion seeds, a glyph habitat in Hermes Desktop](docs/images/habitats/dandelion-seeds-light.png)<br>**Dandelion seeds**<br>Tiny parachutes drifting on the breeze | ![Night sky, a glyph habitat in Hermes Desktop](docs/images/habitats/night-sky-dark.png)<br>**Night sky**<br>Twinkling stars and the odd shooting star |
 
 More frames in the [full gallery](docs/GALLERY.md).
 
@@ -35,7 +35,7 @@ More frames in the [full gallery](docs/GALLERY.md).
 
 Everything lives in one place: **Settings -> Plugins -> ASCII Worlds**.
 
-![The ASCII Worlds settings page with a live preview and controls](docs/images/v1.2/settings-catalog.png)
+![The ASCII Worlds settings page with a live preview and controls](docs/images/settings.png)
 
 - Choose a **habitat** and watch it in the live preview.
 - Set **how many** creatures there are, from none to the maximum.
@@ -67,12 +67,30 @@ Want a peek first? Open [`demo.html`](demo.html) in any browser. It works offlin
 
 ASCII Worlds makes no network calls and sends nothing anywhere. It never reads your conversations. Your preferences stay in the plugin's own local storage on your computer.
 
-## More
+## Requirements
 
-[Install and rollback](INSTALL.md) · [Gallery](docs/GALLERY.md) · [All controls](docs/FEATURE-CONTROLS.md) ·
-[How the background works](docs/HOW-BACKGROUND-WORKS.md) · [Architecture](docs/ARCHITECTURE.md) ·
-[Development and testing](docs/DEVELOPMENT.md) · [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md)
+Hermes Desktop 0.21.6 or newer. Plugins live on the computer that runs the Desktop app.
 
-Ideas for new habitats, bug fixes and docs are very welcome: open an [issue](https://github.com/dudicslevente/hermes-ascii-worlds/issues) or send a pull request.
+## Documentation
 
-MIT licence. See [LICENSE](LICENSE) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+| | |
+| --- | --- |
+| [Install, update and roll back](INSTALL.md) | Step-by-step instructions |
+| [Habitats and controls](docs/CONTROLS.md) | Every setting, range and default |
+| [Gallery](docs/GALLERY.md) | Every habitat in dark and light |
+| [Window background](docs/BACKGROUND.md) | How the optional overlay works |
+| [Settings and storage](docs/SETTINGS.md) | What is saved, migration and reset |
+| [Compatibility](docs/COMPATIBILITY.md) | Supported Hermes versions and host surfaces |
+| [Architecture](docs/ARCHITECTURE.md) | How the plugin is built |
+| [Development](docs/DEVELOPMENT.md) | Build, test and add a habitat |
+| [Releasing](docs/RELEASING.md) | Release and catalog builds |
+| [Changelog](CHANGELOG.md) | What changed in each version |
+
+## Contributing
+
+Ideas for new habitats, bug reports and pull requests are welcome. Start with
+[CONTRIBUTING.md](CONTRIBUTING.md). To report a security issue, see [SECURITY.md](SECURITY.md).
+
+## Licence
+
+MIT. See [LICENSE](LICENSE) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

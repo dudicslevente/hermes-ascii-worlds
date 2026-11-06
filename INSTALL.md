@@ -1,106 +1,59 @@
-# Install, update and roll back — ASCII Worlds 1.2.0
+# Install, update and roll back
 
-This version has twenty habitats. This page covers the manual install and how to
-roll back. A GitHub release or the Hermes catalog are other ways to get the plugin.
+ASCII Worlds is a Hermes Desktop plugin. It needs **Hermes Desktop 0.21.6 or newer**.
 
-## Scope and verified official contract
+Desktop plugins belong to the Desktop app, not to a profile or a remote gateway. Install
+the plugin on the computer that runs Hermes Desktop; it is then shared by every profile
+and connection that app uses.
 
-[Official Desktop SDK documentation](https://hermes-agent.nousresearch.com/docs/developer-guide/desktop-plugin-sdk)
-("Quick start" and "Settings, enable state, and storage", checked during this
-local verification) says Desktop plugins are **app-level**: one root across all
-profiles, gateways and remote connections. A different Hermes profile does
-**not** isolate replacement or prove storage isolation. Installation belongs on
-the computer running Desktop, not a remote gateway. The automated tests did not
-install the plugin on a Mac.
+## Install
 
-The SDK documents plugin-namespaced `ctx.storage.get/set/remove`, not a universal
-storage-export UI. Do not assume such an export exists. If your actual app has
-a documented export, verify it before relying on it; otherwise record old
-settings with screenshots. Screenshots are not a complete storage backup.
-Record **Background enabled, placement and strength before turning it off**.
-Old settings.v1/v2 remain read-only in this candidate, but background.v1 is shared.
-Do not copy whole app profiles or inspect/edit undocumented databases or secrets.
+<!-- catalog: **From the Hermes catalog:** run `hermes plugins install ascii-worlds`, then run **Reload desktop plugins** in Hermes Desktop. Or install it by hand: -->
+1. Download `ascii-worlds-<version>-plugin.zip` from the
+   [latest release](https://github.com/dudicslevente/hermes-ascii-worlds/releases/latest) and unzip it.
+2. In Hermes Desktop open **Settings -> Plugins** and reveal the plugin folder.
+   It is usually `~/.hermes/desktop-plugins/`.
+3. Copy the inner **`ascii-worlds`** folder into that plugin folder. The result must be
+   `desktop-plugins/ascii-worlds/plugin.js`, and the folder name has to stay `ascii-worlds`.
+4. Open the command palette, run **Reload desktop plugins** and make sure ASCII Worlds is switched on.
+5. Open **Settings -> Plugins -> ASCII Worlds** and pick a habitat. The About section shows the installed version.
 
-## Manual installation — on the Mac running Desktop
+To install from a clone of this repository instead, run `npm run build` and copy
+`desktop/plugin.js` to `desktop-plugins/ascii-worlds/plugin.js`.
 
-1. From a reviewed source checkout, use **`desktop/plugin.js`**, which is already
-   built. From a versioned plugin ZIP, use the inner **`ascii-worlds/plugin.js`**,
-   not its outer versioned folder. A source push does not create that ZIP.
-   `demo.html` is an offline preview, never the installed plugin.
-2. In the app's plugin-management page (Capabilities -> Plugins in current docs;
-   some builds label this Settings -> Plugins), reveal the actual plugin folder.
-   It is commonly `~/.hermes/desktop-plugins/`, but use the revealed path.
-3. Record old settings as above. Turn Background off, disable ASCII Worlds and
-   quit Desktop before copying. Do not switch profiles as a substitute for backup.
-4. For an existing installation, use **Mac Terminal** below. Replace the two
-   example paths with the actual revealed root and reviewed folder containing
-   `plugin.js` (the checkout's `desktop` folder or the ZIP's inner `ascii-worlds`).
-   The block refuses missing files and backs up the entire old plugin folder
-   outside the watched root before replacing only plugin.js. It never deletes data.
+## Update
 
-```sh
-(
-  set -eu
-  PLUGIN_ROOT="/paste/the/revealed/desktop-plugins"
-  CANDIDATE="/paste/the/reviewed/desktop"
-  test ! -L "$PLUGIN_ROOT/ascii-worlds"
-  test ! -L "$PLUGIN_ROOT/ascii-worlds/plugin.js"
-  test ! -L "$CANDIDATE"
-  test ! -L "$CANDIDATE/plugin.js"
-  test -f "$PLUGIN_ROOT/ascii-worlds/plugin.js"
-  test -f "$CANDIDATE/plugin.js"
-  BACKUP=$(mktemp -d "$HOME/ascii-worlds-backup.XXXXXX")
-  cp -R "$PLUGIN_ROOT/ascii-worlds" "$BACKUP/ascii-worlds"
-  cmp "$PLUGIN_ROOT/ascii-worlds/plugin.js" "$BACKUP/ascii-worlds/plugin.js"
-  printf 'KEEP THIS BACKUP PATH: %s\n' "$BACKUP"
-  cp "$CANDIDATE/plugin.js" "$PLUGIN_ROOT/ascii-worlds/plugin.js"
-  cmp "$CANDIDATE/plugin.js" "$PLUGIN_ROOT/ascii-worlds/plugin.js"
-)
-```
+1. In the plugin settings, switch **Show the animation in Hermes** off.
+2. Replace `desktop-plugins/ascii-worlds/plugin.js` with the new file.
+3. Quit and reopen Hermes Desktop once, so an old copy cannot keep running.
 
-**Stop if any command fails.** Keep the printed backup path; the subshell does
-not preserve its variables. For a first installation with no old plugin, use
-Finder to copy the inner `ascii-worlds` folder into the revealed root; no prior
-plugin-file rollback exists in that case. Never create a duplicate ID in another
-plugin root or modify a gateway's configuration.
+Your settings are kept. Version 1.2 reads the settings saved by 1.0 and 1.1 and does not change them.
 
-5. Reopen Desktop, run **Reload desktop plugins** from the command palette,
-   then enable ASCII Worlds. Files can also hot-reload automatically.
-6. Open Settings -> Plugins -> ASCII Worlds, confirm About **1.2.0**, then, if you
-   want to record your own results, follow `docs/MANUAL-MAC-CHECKLIST.md`
-   (its boxes are intentionally left unchecked).
+## Uninstall
 
-## Manual rollback — Mac Terminal
+Switch ASCII Worlds off in **Settings -> Plugins** and delete the `ascii-worlds` folder from the plugin folder.
 
-First turn the candidate background off, disable the plugin and quit Desktop.
-Use the exact backup path printed above and the actual revealed plugin root:
+## Go back to an older version
+
+Keep a copy of the old `plugin.js` before updating, for example:
 
 ```sh
-(
-  set -eu
-  PLUGIN_ROOT="/paste/the/revealed/desktop-plugins"
-  BACKUP="/paste/the/printed/ascii-worlds-backup.path"
-  test ! -L "$BACKUP/ascii-worlds"
-  test ! -L "$BACKUP/ascii-worlds/plugin.js"
-  test ! -L "$PLUGIN_ROOT/ascii-worlds"
-  test ! -L "$PLUGIN_ROOT/ascii-worlds/plugin.js"
-  test -f "$BACKUP/ascii-worlds/plugin.js"
-  test -f "$PLUGIN_ROOT/ascii-worlds/plugin.js"
-  cp "$BACKUP/ascii-worlds/plugin.js" "$PLUGIN_ROOT/ascii-worlds/plugin.js"
-  cmp "$BACKUP/ascii-worlds/plugin.js" "$PLUGIN_ROOT/ascii-worlds/plugin.js"
-)
+cp ~/.hermes/desktop-plugins/ascii-worlds/plugin.js ~/ascii-worlds-plugin.js.backup
 ```
 
-Stop on failure. Reopen/reload and enable the prior plugin. It reads its untouched
-v1/v2 preferences, not v3. Manually restore the old Background placement/strength
-and enabled state from your recorded values, or from an actually verified
-app-specific export. Merely restoring plugin.js does **not** restore background.v1.
-Do not delete all plugin data. See `docs/SETTINGS-MIGRATION.md` for scope.
+To go back, switch the animation off, quit Hermes Desktop, copy the backup over
+`desktop-plugins/ascii-worlds/plugin.js` and reopen the app. Older versions read the
+settings they saved themselves, so nothing is lost. The window background settings
+(on/off, placement and strength) are shared between versions; check them after going back.
 
-These file-copy commands are simple reversible operations, synthetic-fixture
-checked on Linux; they are **not** claimed executed on your Mac. Strong isolation
-would require a separately verified app-data environment, not just a Hermes profile.
+## Troubleshooting
 
-`demo.html` opens directly offline without installing. `?chat=1` is a labelled
-mock chat. Nothing in packaging automatically installs, commits, pushes, tags,
-publishes or submits anything, and testing does not authorise those actions.
+- **The plugin is not listed.** Check the folder path and name, then run **Reload desktop plugins**.
+  Also check that ASCII Worlds is switched on in **Settings -> Plugins**.
+- **Nothing shows in the window.** Switch on **Show the animation in Hermes**, raise **Strength**,
+  and make sure Count is not zero. Pressing **Check background** in the settings shows a short
+  local report you can include in a bug report.
+- **It uses too much power.** Switch on **Battery saver**, use a bolder glyph density or fewer creatures.
+- **No preview without installing:** open [`demo.html`](demo.html) in any browser. It runs offline.
+
+If something else goes wrong, please [open an issue](https://github.com/dudicslevente/hermes-ascii-worlds/issues).
