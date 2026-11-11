@@ -184,8 +184,10 @@ export default {
     for (let o = 0; o < n; o++) {
       const i = order[o];
       const d = hash01(i, 1);
-      const L = sz * lerp(0.07, 0.1, d); // petal length 0.07-0.10 of min x size
-      const v = S.min * lerp(0.028, 0.046, clamp01(0.5 * d + 0.5 * hash01(i, 2)));
+      const D = S.depthOf ? S.depthOf(i) : null,
+        dc = (D && S.layer(D.layer)) || ctx;
+      const L = sz * lerp(0.07, 0.1, d) * (D ? D.scale : 1); // petal length 0.07-0.10 of min x size
+      const v = S.min * lerp(0.028, 0.046, clamp01(0.5 * d + 0.5 * hash01(i, 2))) * (D ? D.pace : 1);
       const p = fract(0.5 + i * 0.5698402909980532) + (S.t * v) / Hh;
       const cyc = Math.floor(p),
         q = p - cyc;
@@ -231,7 +233,7 @@ export default {
         0.5 * env;
       const M = rotation(alpha, beta, psi);
       drawPetal(
-        ctx,
+        dc,
         S.kit(i),
         x,
         y,

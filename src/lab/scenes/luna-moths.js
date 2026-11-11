@@ -3,6 +3,7 @@
 // edge, one eyespot per wing, hindwings drawn into long twisting tails that trail
 // and sway with a phase lag, comb antennae, thick furry body. Soft wingbeats with
 // long open-wing glides. Positions use S.t, every shape change uses S.b.
+import { placeAtDepth } from "../core/depth.js";
 import { makeKit, TAU, clamp, lerp, smoothstep, mod, angleDiff, mixHex, shadeHex, rgba, noise1, roam, curve, ribbon, ellipse } from "../core/util.js";
 
 const D2R = Math.PI / 180;
@@ -274,6 +275,9 @@ export default {
   flow: { label: "Breeze", help: "How strongly a gentle breeze pushes the moths about.", default: 1, min: 0, max: 1.5 },
   backdrop: { dark: "#0c130f", light: "#ecefe5" },
   draw(ctx, w, h, S) {
-    for (let i = 0; i < S.count; i++) paintMoth(ctx, w, h, S, i);
+    for (let i = 0; i < S.count; i++) {
+      const d = placeAtDepth(ctx, S, i);
+      paintMoth(d.ctx, w, h, d.S, i);
+    }
   },
 };

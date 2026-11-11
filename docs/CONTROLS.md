@@ -1,6 +1,6 @@
 # Habitats and controls
 
-All twenty habitats share the native Habitat selector, independent saved scene
+All twenty-three habitats share the native Habitat selector, independent saved scene
 preferences, preview/window settings, automatic theme, glyph density,
 Pause/Resume, Battery saver, reduced-motion handling and lifecycle cleanup.
 Background is optional and off by default; its Strength is separate from scene opacity.
@@ -9,12 +9,14 @@ Background is optional and off by default; its Strength is separate from scene o
 
 | Control | Scope and limits |
 | --- | --- |
-| Habitat | Exactly the twenty IDs below; switching restores that scene's saved values |
+| Habitat | Exactly the twenty-three IDs below; switching restores that scene's saved values |
 | Count | Integer 0 through the scene's cap; default/cap in the table |
-| Size | New habitats only, 0.5–1.6; changes subject size, not the window |
+| Size | Every habitat, 0.5–1.6; changes subject size, not the window |
 | Speed / Pace | Koi/jellyfish 0.1–1.5; new habitats 0.1–2.0. Cat, Owl and Night sky use Pace for local motion |
-| Scene strength | New habitats only, 0.2–1.0; rendered glyph opacity, independent of Background Strength |
-| Flow | Only meaningful scenes expose Current, Drift, Breeze or Wind; 0–1.5 |
+| Scene strength | Every habitat, 0.2–1.0; rendered glyph opacity, independent of Background Strength |
+| Flow | Only meaningful scenes expose Current, Drift, Breeze or Wind; 0–1.5. Koi and jellyfish: Current |
+| Depth | Every habitat except Night sky, 0–1, default 0.6. Spreads creatures over far, mid and near, with a faint far atmosphere (marine snow, pollen, dust or pond silt; none for Fireflies). 0 draws exactly as 1.2.0 |
+| Moon | Show / Hide, and Today's real phase (default) or one of seven fixed phases. Only on open-air scenes, the owl and the night sky; hidden elsewhere. Uses the computer's date only |
 | Glyph density | Fine / Balanced / Bold; coarser density simplifies small features |
 | Colour | Named palette, Custom tint, or Individual where applicable |
 | Tint | A six-digit hex colour; changing it selects Custom tint |
@@ -35,19 +37,22 @@ meaningful creature identities. Tint and per-item colours retain material shadin
 
 | Exact ID / name | Default / cap | Motion / flow | Scene-specific control or exception |
 | --- | ---: | --- | --- |
-| `koi` — Koi pond | 3 / 10 | Speed | Original named koi count/colour editors and artwork |
-| `jellyfish` — Jellyfish drift | 5 / 10 | Speed | Original named jellyfish count/colour editors and artwork |
+| `koi` — Koi pond | 3 / 10 | Speed / Current | Original named koi count/colour editors and artwork |
+| `jellyfish` — Jellyfish drift | 5 / 10 | Speed / Current | Original named jellyfish count/colour editors and artwork |
 | `manta-rays` — Manta rays | 1 / 6 | Speed / Current | Travelling fin waves, trailing tail |
 | `sea-turtles` — Sea turtles | 2 / 6 | Speed / Current | Shell and phase-offset flippers |
 | `seahorses` — Seahorses | 3 / 8 | Speed / Drift | Upright drift, curled tail, dorsal fin |
-| `tiny-fish-school` — Tiny fish school | 12 / 40 | Speed / Current | Cohesion 0.3–1.5 |
+| `tiny-fish-school` — Tiny fish school | 12 / 40 | Speed / Current | Cohesion 0.3–1.5; Free schooling on/off |
 | `solitary-whale` — Solitary whale | 1 / 3 | Speed / Current | A fully offstage interval before return is intentional |
 | `octopus` — Octopus | 2 / 4 | Speed / Current | Eight independently curling arms |
+| `hammerhead` — Hammerhead and bait ball | 2 / 4 | Speed / Current | Bait ball on/off; Bait fish 12–90 (default 40); Scatter 0–1.5 |
+| `anglerfish` — Anglerfish | 1 / 3 | Speed / Current | Lure glow 0.3–1.5; Curious prey on/off |
 | `butterflies` — Butterflies | 2 / 12 | Speed / Breeze | Hinged patterned wings |
 | `luna-moths` — Luna moths | 1 / 8 | Speed / Breeze | Eyespots and hindwing tails |
 | `dragonflies` — Dragonflies | 3 / 8 | Speed / Breeze | Wing blur 0–1.5 |
 | `swallows` — Swallows | 3 / 10 | Speed / Wind | Flap/glide and forked tail |
 | `sleeping-cat` — Sleeping cat | 1 / 4 | Pace; no flow or roaming | Count-adaptive placed layout; breathing/ear/tail gestures |
+| `axolotl` — Axolotls | 2 / 4 | Speed; no flow | Pond plants on/off; Activity 0–1.5 (0 keeps them resting) |
 | `owl` — Owl | 1 / 3 | Pace; no flow or roaming | Perch toggle; count-adaptive placed layout |
 | `ginkgo-leaves` — Ginkgo leaves | 14 / 60 | Speed / Wind | Tumble 0–1.5 |
 | `cherry-blossom-petals` — Cherry blossom petals | 18 / 80 | Speed / Breeze | Flutter 0–1.5 |

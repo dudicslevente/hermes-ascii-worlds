@@ -19,7 +19,7 @@ try {
  mount(pages[0].render(),q('#root'));
  const title=contributions.find(c=>c.area==='titlebar.right');assert(title,'titlebar registration');mount(title.render(),q('#titlebar'));flush();await wait();
  assert(JSON.stringify(data)===before,'startup must not write');
- assert(q('[name=scene]').options.length===20,'native selector has exactly 20 entries');
+ assert(q('[name=scene]').options.length===23,'native selector has exactly 23 entries');
  assert(!q('.aw-fallback')?.textContent,'no renderer error');
  change('bgEnabled',true);await wait();assert(document.querySelectorAll('canvas').length===2,'preview plus optional background only');
  const front=q('[name=bgPlacement][value=front]');front.checked=true;front.dispatchEvent(new Event('change',{bubbles:true}));await wait();

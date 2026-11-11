@@ -272,6 +272,15 @@ export const WORLD_CSS = `
   align-items: center;
   gap: 12px 16px;
 }
+.aw-sky-h {
+  grid-column: 1/-1;
+  margin: 10px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+}
+.aw-sky-status, .aw-sky-help {
+  grid-column: 1/-1;
+}
 .aw-eco {
   display: flex;
   gap: 6px;

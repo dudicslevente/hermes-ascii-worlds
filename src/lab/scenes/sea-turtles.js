@@ -1,3 +1,4 @@
+import { placeAtDepth } from "../core/depth.js";
 import { makeKit, TAU, clamp, lerp, roam, at, poly, curve, ribbon, ellipse, hash01, rgba, mixHex } from "../core/util.js";
 
 // Sea turtles, seen from above. Local frame: +x is the nose, +y the animal's right.
@@ -295,6 +296,9 @@ export default {
   flow: { label: "Current", help: "How strongly the current nudges turtles off their line.", default: 1, min: 0, max: 1.5 },
   backdrop: { dark: "#091a1c", light: "#e4efec" },
   draw(ctx, w, h, S) {
-    for (let i = 0; i < S.count; i++) turtleOne(ctx, w, h, S, i);
+    for (let i = 0; i < S.count; i++) {
+      const d = placeAtDepth(ctx, S, i);
+      turtleOne(d.ctx, w, h, d.S, i);
+    }
   },
 };

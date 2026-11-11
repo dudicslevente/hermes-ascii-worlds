@@ -1,0 +1,95 @@
+{
+ "source": "generated from the untouched v1.2.0 tree (commit 8f5cd18) with tests/lab-golden.helper.mjs",
+ "goldens": {
+  "manta-rays": [
+   "df01492fc51b34a46729",
+   "d4c62813abecdd93b618",
+   "7b9f6bd7791cc8ff89d5"
+  ],
+  "sea-turtles": [
+   "9198ebc4861a77471f49",
+   "b2072679d6938dd10f50",
+   "5a9379ab4feb370fdf7c"
+  ],
+  "seahorses": [
+   "43d833c886047dac9839",
+   "5db719c86b628f36a1b7",
+   "4a7afe1e4d5056c5f736"
+  ],
+  "tiny-fish-school": [
+   "d552cd615604bc08183b",
+   "9428174e2933004d75b1",
+   "460ccdcb13396f50c6f8"
+  ],
+  "solitary-whale": [
+   "13bb7b70014ff9595769",
+   "d2b3328b4bae35627670",
+   "48b002aecae586257e75"
+  ],
+  "octopus": [
+   "4dd47b6f58e01b6c3fd1",
+   "d38868d9c23b020298be",
+   "171292a4da7b41cd9e73"
+  ],
+  "bubbles": [
+   "d08486bbee208c447717",
+   "6bd5be14695a52aeacf0",
+   "b9085c49b1b029cb2708"
+  ],
+  "butterflies": [
+   "92d3e539a38d3f8c053b",
+   "bdd35fae7dc4b4455625",
+   "a7850313c271499738a6"
+  ],
+  "luna-moths": [
+   "0957da773f68d7f7a8fe",
+   "b4d27ebdc738427823f1",
+   "dcb2546bc5e9b31099e2"
+  ],
+  "dragonflies": [
+   "6ee0fae7d6fbebb8e9ec",
+   "3a7d9711b3f0b7ca4414",
+   "e5128da5133ad4243e8f"
+  ],
+  "swallows": [
+   "c974a6629aaf0f06be4f",
+   "238455eb8243d3901976",
+   "b6998f3325cffc7617ef"
+  ],
+  "ginkgo-leaves": [
+   "d9012fb8e1909170892f",
+   "70bd728c80ffa5fe81c6",
+   "62b1ec02a7478f6288bf"
+  ],
+  "cherry-blossom-petals": [
+   "254b05411392c1da42a7",
+   "963bbbb8149a636dc693",
+   "182b403f555db54a5b56"
+  ],
+  "dandelion-seeds": [
+   "b073ae9762bc91b04ce9",
+   "4959bbc261dbbfedc01f",
+   "a9466ee77cb652451784"
+  ],
+  "fireflies": [
+   "fbf1c875899f2db07204",
+   "7d2f14cead2f2a3babf6",
+   "b73af28dd1c8fdf5c0ba"
+  ],
+  "sleeping-cat": [
+   "77fb6f8ab4c84aeb52c3",
+   "b12fe72c0cdcf6d27f19",
+   "15dde89895ecda66b67c"
+  ],
+  "owl": [
+   "dcad6b23bb0796064d24",
+   "6a11e53f31cc56cf3778",
+   "88fb6f7513dbd1d641fc"
+  ],
+  "night-sky": [
+   "fc047e73c952985450f8",
+   "bfdf46412c7ee891056a",
+   "08ec9492aad5abf59cdb"
+  ]
+ }
+}

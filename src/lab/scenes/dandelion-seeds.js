@@ -183,12 +183,15 @@ export default {
       for (let i = 0; i < S.count; i++) {
         const u = hash01(i, 3);
         if (u >= 0.5 !== (pass === 1)) continue;
-        const R = 0.5 * unit * (0.125 + 0.055 * u);
+        const D = S.depthOf ? S.depthOf(i) : null,
+          dc = (D && S.layer(D.layer)) || ctx,
+          dPace = D ? D.pace : 1;
+        const R = 0.5 * unit * (0.125 + 0.055 * u) * (D ? D.scale : 1);
         const alpha = 0.78 + 0.22 * u;
         const m = 2.6 * R;
         const P = w + 2 * m;
         const tt = S.t + 3.1 * hash01(i, 9);
-        const vmean = 0.03 * w * (0.72 + 0.56 * u) * S.flow;
+        const vmean = 0.03 * w * (0.72 + 0.56 * u) * S.flow * dPace;
         const x = -m + mod(fract(0.37 + i * 0.6180339887) * P + vmean * windDist(tt), P);
         const yb = h * (0.15 + 0.58 * fract(0.21 + i * 0.7548776662));
         const y =
@@ -205,7 +208,7 @@ export default {
         const spin =
           hash01(i, 8) * TAU +
           TAU * 0.04 * (0.7 + 0.6 * hash01(i, 17)) * (hash01(i, 18) < 0.5 ? 1 : -1) * S.b;
-        drawSeed(ctx, S, i, x, y, R, phi, e, spin, alpha);
+        drawSeed(dc, S, i, x, y, R, phi, e, spin, alpha);
       }
     }
   },

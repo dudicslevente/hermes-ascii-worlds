@@ -214,8 +214,10 @@ export default {
     for (let o = 0; o < n; o++) {
       const i = order[o];
       const d = hash01(i, 1); // 0 far .. 1 near
-      const R = sz * lerp(0.09, 0.146, d);
-      const v = S.min * lerp(0.04, 0.066, clamp01(0.6 * d + 0.4 * hash01(i, 2)));
+      const D = S.depthOf ? S.depthOf(i) : null,
+        dc = (D && S.layer(D.layer)) || ctx;
+      const R = sz * lerp(0.09, 0.146, d) * (D ? D.scale : 1);
+      const v = S.min * lerp(0.04, 0.066, clamp01(0.6 * d + 0.4 * hash01(i, 2))) * (D ? D.pace : 1);
       const p = fract(0.5 + i * 0.5698402909980532) + (S.t * v) / Hh;
       const cyc = Math.floor(p),
         q = p - cyc;
@@ -243,7 +245,7 @@ export default {
       const psi =
         (hash01(i, 7) - 0.5) * 2.2 + (hash01(i, 8) - 0.5) * 0.3 * S.b + 0.5 * (0.3 + 0.7 * tum) * Math.cos(thb);
       const M = rotation(alpha, beta, psi);
-      drawLeaf(ctx, S.kit(i), x, y, R, M, lerp(0.14, 0.26, hash01(i, 17)), lerp(0.05, 0.14, hash01(i, 18)));
+      drawLeaf(dc, S.kit(i), x, y, R, M, lerp(0.14, 0.26, hash01(i, 17)), lerp(0.05, 0.14, hash01(i, 18)));
     }
   },
 };

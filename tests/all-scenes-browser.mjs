@@ -6,6 +6,7 @@ import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 import {WORLD_IDS,colourModes} from '../src/settings-v3.js';
 import {sceneById} from '../src/lab/scenes/registry.js';
+import {showsMoon} from '../src/lab/core/sky.js';
 const root=fileURLToPath(new URL('../',import.meta.url));
 const out=root+'evidence/integration/all20/';await mkdir(out,{recursive:true});
 const {chromium}=await import(pathToFileURL(process.env.PLAYWRIGHT_MODULE));
@@ -54,7 +55,10 @@ try{
   await native('speed',0.35);await native('eco',true);
   const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('mock-ascii:settings.v3')));
   assert.equal(saved.scenes[id].speed,0.35);assert.equal(saved.eco,true);
-  assert.equal(!!(await page.locator('[name=flow]').count()),!!def?.flow,id+' no meaningless flow');
+  // Koi and jellyfish have a Current since 1.3.0; other scenes only when meaningful.
+  assert.equal(!!(await page.locator('[name=flow]').count()),!!def?.flow||!def,id+' no meaningless flow');
+  // The Moon settings are shown exactly on the scenes that can show a moon.
+  assert.equal(await page.locator('[name=moon]').isVisible(),showsMoon(def),id+' moon settings visibility');
   for(const e of def?.extras||[]){const value=e.type==='toggle'?!e.default:e.max;await native('extra-'+e.key,value);assert.equal((await page.evaluate(()=>JSON.parse(localStorage.getItem('mock-ascii:settings.v3')))).scenes[id].extras[e.key],value);tested.push('extra '+e.key);}
   report.controls.push({id,tested});
  }

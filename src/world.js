@@ -12,6 +12,8 @@ import { createEngine } from "./engine.js";
 import { diagnose, makeThemeReader } from "./background.js";
 import { readWorldSettings, writeWorldSettings, normalizeWorldSettings, patchWorldSettings, resetWorldScene, WORLD_SCENES, colourModes } from './settings-v3.js';
 import { sceneById } from './lab/scenes/registry.js';
+import { depthSupported } from './lab/core/depth.js';
+import { describeSky, showsMoon } from './lab/core/sky.js';
 import { WORLD_CSS } from "./styles.js";
 
 export function mountWorld(root, storage = browserStorage(), hub = null) {
@@ -64,6 +66,11 @@ export function mountWorld(root, storage = browserStorage(), hub = null) {
         <label class="aw-field"><span>Current</span><span class="aw-speed"><input type="range" name="speed" min="0.1" max="1.5" step="0.05" aria-label="Animation speed"><output class="aw-speed-out"></output></span></label>
         <div class="aw-actions"><button type="button" class="aw-pause">Pause motion</button><label class="aw-eco"><input type="checkbox" name="eco"> <span>Battery saver</span></label></div>
         <p class="aw-help">Battery saver draws 12 frames a second instead of 30. It is lighter on your processor and battery, but the motion looks a little less smooth.</p>
+        <h4 class="aw-sky-h">Moon</h4>
+        <label class="aw-field"><span>Moon</span><select name="moon"><option value="on">Show the moon</option><option value="off">Hide the moon</option></select></label>
+        <label class="aw-field"><span>Moon phase</span><select name="moonPhase"><option value="date">Today's real phase</option><option value="waxing-crescent">Waxing crescent</option><option value="first-quarter">First quarter</option><option value="waxing-gibbous">Waxing gibbous</option><option value="full">Full moon</option><option value="waning-gibbous">Waning gibbous</option><option value="last-quarter">Last quarter</option><option value="waning-crescent">Waning crescent</option></select></label>
+        <p class="aw-help aw-sky-status" role="status" aria-live="polite"></p>
+        <p class="aw-help aw-sky-help">The moon appears in the open-air scenes, the owl and the night scenes, never under water or indoors. Today's real phase is worked out from your computer's date: no location and no internet.</p>
         <div class="aw-note" role="status" aria-live="polite"></div>
       </div>
     </section>
@@ -75,7 +82,7 @@ export function mountWorld(root, storage = browserStorage(), hub = null) {
     </section>
     <section class="aw-section aw-about" aria-labelledby="aw-h-about">
       <h3 class="aw-h aw-h-small" id="aw-h-about">About ASCII Worlds</h3>
-      <p class="aw-help aw-about-lead">A small aquarium for your chats. Twenty procedural glyph habitats now extend the original koi and jellyfish with wings, drifting leaves and quiet companions. Preview and background share the same settings.</p>
+      <p class="aw-help aw-about-lead">A small aquarium for your chats. Twenty-three procedural glyph habitats extend the original koi and jellyfish with sharks, deep-sea anglers, wings, drifting leaves and quiet companions. Preview and background share the same settings.</p>
       <p class="aw-help aw-about-small">Version ${PLUGIN_VERSION}. Free and open source under the MIT licence.</p>
     </section>`;
   root.replaceChildren(style, world);
@@ -94,9 +101,8 @@ export function mountWorld(root, storage = browserStorage(), hub = null) {
   function renderNote() {
     note.textContent=[(hub?.persistence ? hub.persistence.get().settings===false : saveFailed)?'Preferences could not be saved. Edits are memory-only for this session.':'',motionHold&&settings.paused?'Motion paused to follow your reduced-motion preference. Resume only when you want motion.':'',sceneById(settings.scene)&&settings.count===0?'Count is zero: this scene is intentionally empty.':''].filter(Boolean).join(' ');
   }
-  function buildLabControls(def) {
+  function buildLabControls(def,id) {
     labControls.replaceChildren();
-    if(!def)return;
     const add=(key,label,type='range',min=0,max=1,step=0.05)=>{
       const field=document.createElement('label');field.className='aw-field';
       const span=document.createElement('span');span.textContent=label;
@@ -104,8 +110,17 @@ export function mountWorld(root, storage = browserStorage(), hub = null) {
       if(type==='range'||type==='number'){input.min=min;input.max=max;input.step=step;}
       field.append(span,input);labControls.append(field);return input;
     };
+    // Koi and jellyfish keep their own count and colour editors, and get the
+    // same Size, Scene strength, Depth and Current as every other scene.
+    if(!def){
+      if(id!=='koi'&&id!=='jellyfish')return;
+      add('size','Size','range',0.5,1.6,0.05);add('strength','Scene strength','range',0.2,1,0.05);
+      add('depth','Depth','range',0,1,0.05);add('flow','Current','range',0,1.5,0.05);
+      return;
+    }
     add('count',`${def.count.noun} count (0–${def.count.max})`,'number',0,def.count.max,1);
     add('size','Size','range',0.5,1.6,0.05);add('strength','Scene strength','range',0.2,1,0.05);
+    if(depthSupported(def))add('depth','Depth','range',0,1,0.05);
     if(def.flow)add('flow',def.flow.label,'range',def.flow.min??0,def.flow.max??1.5,0.05);
     for(const extra of def.extras||[])add(`extra-${extra.key}`,extra.label,extra.type==='toggle'?'checkbox':'range',extra.min,extra.max,extra.step??0.05);
     if(def.individual!==false) {
@@ -143,10 +158,10 @@ export function mountWorld(root, storage = browserStorage(), hub = null) {
           return option;
         }),
       );
-      buildLabControls(def);
+      buildLabControls(def,settings.scene);
       reflectedScene = settings.scene;
     }
-    if(def)for(const input of labControls.querySelectorAll('input')) {
+    for(const input of labControls.querySelectorAll('input')) {
       const key=input.dataset.lab;
       const value=key.startsWith('extra-')?settings.extras[key.slice(6)]:key.startsWith('color-')?settings.colors[Number(key.slice(6))]:settings[key];
       if(input.type==='checkbox')input.checked=value;else input.value=value;
@@ -181,6 +196,12 @@ export function mountWorld(root, storage = browserStorage(), hub = null) {
     ])
       find(`[name="${name}"]`).value = settings[name];
     find('[name="eco"]').checked = settings.eco;
+    for (const name of ["moon", "moonPhase"]) find(`[name="${name}"]`).value = settings[name];
+    find('[name="moonPhase"]').disabled = settings.moon === "off";
+    // The Moon section only shows on scenes that can show a moon.
+    const moonHere = showsMoon(def);
+    for (const el of [find(".aw-sky-h"), find('[name="moon"]').closest("label"), find('[name="moonPhase"]').closest("label"), find(".aw-sky-status"), find(".aw-sky-help")]) el.hidden = !moonHere;
+    reflectSky();
     find(".aw-speed-out").value = `${settings.speed.toFixed(2)}×`;
     find(".aw-pause").textContent = settings.paused
       ? "Resume motion"
@@ -199,6 +220,17 @@ export function mountWorld(root, storage = browserStorage(), hub = null) {
     if(def) {find('.aw-specimen').textContent=def.name.toUpperCase();canvas.setAttribute('aria-label',`${settings.count} ${def.name}, rendered entirely as coloured glyphs. ${def.blurb}`);}
     renderNote();
   }
+  // The status line names the sky the scene is showing. The engine reports
+  // sky changes on frames it draws anyway (onSky), so no timer is needed and
+  // nothing runs while Settings is hidden, offscreen or closed.
+  function reflectSky(sky) {
+    if (disposed) return;
+    const line = find(".aw-sky-status");
+    if (!line) return;
+    let text = "";
+    try { if (sky !== undefined) text = describeSky(sky); else if (engine) text = describeSky(engine.sky); } catch { text = ""; }
+    if (line.textContent !== text) line.textContent = text;
+  }
   function update(patch, persist = true) {
     if (disposed) return;
     settings=patchWorldSettings(settings,patch);
@@ -208,6 +240,8 @@ export function mountWorld(root, storage = browserStorage(), hub = null) {
     }
     reflect();
     engine?.update(settings);
+    // The status line reads the engine's sky, so refresh it after the update.
+    reflectSky();
     hub?.settings.set(settings);
     if (persist) {
       saveFailed=!writeWorldSettings(storage, settings);
@@ -254,7 +288,8 @@ export function mountWorld(root, storage = browserStorage(), hub = null) {
   }
   try {
     const theme = makeThemeReader(world, document.defaultView);
-    engine = createEngine(canvas, settings, fail, { isDark: theme.isDark });
+    engine = createEngine(canvas, settings, fail, { isDark: theme.isDark, onSky: (sky) => reflectSky(sky) });
+    reflectSky();
   } catch (error) {
     fail(error);
   }
@@ -298,6 +333,8 @@ export function mountWorld(root, storage = browserStorage(), hub = null) {
   listen(find('[name="eco"]'), "change", (e) =>
     update({ eco: e.target.checked }),
   );
+  for (const name of ["moon", "moonPhase"])
+    listen(find(`[name="${name}"]`), "change", (e) => update({ [name]: e.target.value }));
   listen(find(".aw-pause"), "click", () => {
     update({ paused: !settings.paused });
     engine?.resume();

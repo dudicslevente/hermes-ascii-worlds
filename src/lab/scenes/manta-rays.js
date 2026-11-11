@@ -1,3 +1,4 @@
+import { placeAtDepth } from "../core/depth.js";
 import { makeKit, TAU, clamp, clamp01, lerp, roam, at, poly, curve, ribbon, ellipse, glow, hash01, rgba, mixHex } from "../core/util.js";
 
 // Manta rays, seen from above. Local frame: +x is the nose, +y the animal's right.
@@ -198,6 +199,9 @@ export default {
   flow: { label: "Current", help: "How strongly the current drifts the rays sideways.", default: 1, min: 0, max: 1.5 },
   backdrop: { dark: "#08161f", light: "#e2edf0" },
   draw(ctx, w, h, S) {
-    for (let i = 0; i < S.count; i++) mantaOne(ctx, w, h, S, i);
+    for (let i = 0; i < S.count; i++) {
+      const d = placeAtDepth(ctx, S, i);
+      mantaOne(d.ctx, w, h, d.S, i);
+    }
   },
 };

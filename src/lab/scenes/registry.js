@@ -5,6 +5,9 @@ import seahorses from "./seahorses.js";
 import tinyFishSchool from "./tiny-fish-school.js";
 import solitaryWhale from "./solitary-whale.js";
 import octopus from "./octopus.js";
+import hammerhead from "./hammerhead.js";
+import anglerfish from "./anglerfish.js";
+import axolotl from "./axolotl.js";
 import bubbles from "./bubbles.js";
 import butterflies from "./butterflies.js";
 import lunaMoths from "./luna-moths.js";
@@ -31,6 +34,8 @@ export const SCENES = Object.freeze([
   tinyFishSchool,
   solitaryWhale,
   octopus,
+  hammerhead,
+  anglerfish,
   bubbles,
   butterflies,
   lunaMoths,
@@ -41,6 +46,7 @@ export const SCENES = Object.freeze([
   dandelionSeeds,
   fireflies,
   sleepingCat,
+  axolotl,
   owl,
   nightSky,
 ]);
