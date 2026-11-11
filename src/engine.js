@@ -10,6 +10,8 @@ import { normalizeWorldSettings, advanceClocks } from './settings-v3.js';
 import { sceneById } from './lab/scenes/registry.js';
 import { createRenderer as createLabRenderer } from './lab/core/engine.js';
 import { beatFromTravel } from './lab/core/settings.js';
+import { skyState } from './lab/core/sky.js';
+import { atmosphereFlecks, atmosphereInk, atmosphereGlyphs } from './lab/core/depth.js';
 
 // A single active sampler per canvas. The original renderer below is kept
 // unchanged; switching renderer families releases the previous field canvas.
@@ -19,11 +21,11 @@ export function createSceneRenderer(canvas, initial, options = {}) {
   return {
     stats,
     resize(w,h,p=1) { if(disposed)return; width=w;height=h;dpr=p;current?.resize(w,h,p); },
-    render(t,raw,dark=true,b) {
+    render(t,raw,dark=true,b,sky=null) {
       if(disposed)return;
       const s=normalizeWorldSettings(raw), def=sceneById(s.scene), next=def?'lab':'legacy';
       if(family!==next) { current?.destroy();current=def?createLabRenderer(canvas,options):createRenderer(canvas,options);family=next;current.resize(width,height,dpr); }
-      if(def) current.render(def,s.scenes[s.scene],t,b??beatFromTravel(t,s.speed),dark);
+      if(def) current.render(def,s.scenes[s.scene],t,b??beatFromTravel(t,s.speed),dark,sky);
       else current.render(t,s,dark);
       Object.assign(stats,current.stats,{frames:stats.frames+1,scene:s.scene,creatures:def?s.count:(s.scene==='koi'?s.koiCount:s.jellyCount),palette:dark?'dark':'light'});
     },
@@ -68,6 +70,12 @@ export function createRenderer(canvas, options = {}) {
   function render(time, rawSettings, dark = true) {
     const settings = normalizeSettings(rawSettings),
       palette = resolvePalette(settings.palette, dark);
+    // 1.3.0 scene controls. Missing values are the 1.2.0 drawing exactly.
+    const raw = rawSettings && typeof rawSettings === "object" ? rawSettings : {};
+    const num = (v, lo, hi, d) => (typeof v === "number" && Number.isFinite(v) ? Math.max(lo, Math.min(hi, v)) : d);
+    const strength = num(raw.strength, 0.2, 1, 1),
+      depth = num(raw.depth, 0, 1, 0);
+    const look = { ...settings, size: num(raw.size, 0.5, 1.6, 1), flow: num(raw.flow, 0, 1.5, 1), depth };
     const { cols, rows } = gridSize(width, height, settings.density);
     const cellW = width / cols,
       cellH = height / rows,
@@ -79,7 +87,25 @@ export function createRenderer(canvas, options = {}) {
     sample.setTransform(1, 0, 0, 1, 0, 0);
     sample.clearRect(0, 0, field.width, field.height);
     sample.setTransform(field.width / width, 0, 0, field.height / height, 0, 0);
-    drawField(sample, width, height, settings.scene, time, settings);
+    drawField(sample, width, height, settings.scene, time, look);
+    // Atmosphere behind the creatures with Depth above zero: pond silt for
+    // the koi, marine snow for the jellyfish. One fleck per cell at most.
+    let flecks = null;
+    const creatures = settings.scene === "koi" ? settings.koiCount : settings.jellyCount;
+    if (depth > 0 && creatures > 0) {
+      const kind = settings.scene === "koi" ? "silt" : "snow";
+      for (const f of atmosphereFlecks(width, height, time, kind, depth)) {
+        const at = Math.min(rows - 1, Math.floor(f.y / cellH)) * cols + Math.min(cols - 1, Math.floor(f.x / cellW));
+        flecks ||= new Map();
+        const prev = flecks.get(at);
+        if (!prev || prev.a < f.a) flecks.set(at, f);
+      }
+      if (flecks) {
+        const hex = atmosphereInk(kind, palette === "dark");
+        flecks.ink = `rgb(${[1, 3, 5].map((n) => parseInt(hex.slice(n, n + 2), 16)).join(",")})`;
+        flecks.glyphs = atmosphereGlyphs(kind);
+      }
+    }
     const pixels = sample.getImageData(0, 0, field.width, field.height).data;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     const bg =
@@ -176,7 +202,7 @@ export function createRenderer(canvas, options = {}) {
             pigmentStyles.set(key, ink);
           }
           ctx.fillStyle = ink;
-          ctx.globalAlpha = alpha * 0.18;
+          ctx.globalAlpha = alpha * 0.18 * strength;
           ctx.fillRect(x + 0.3, y + 0.3, cellW - 0.6, cellH - 0.6);
           // Density follows illumination and coverage. A tiny stable variation
           // avoids posterized bands without frame-randomized sparkle.
@@ -190,9 +216,16 @@ export function createRenderer(canvas, options = {}) {
                 (hash % 2),
             ),
           );
-          ctx.globalAlpha = Math.min(1, alpha * 1.5 + 0.18);
+          ctx.globalAlpha = Math.min(1, (alpha * 1.5 + 0.18) * strength);
           ctx.fillText(glyphs[level], x + cellW / 2, y + cellH / 2);
           count++;
+        } else if (flecks && flecks.has(row * cols + col)) {
+          const f = flecks.get(row * cols + col);
+          ctx.fillStyle = flecks.ink;
+          ctx.globalAlpha = Math.min(1, f.a * (f.deep ? 0.1 : 0.16) * strength);
+          ctx.fillRect(x + 0.3, y + 0.3, cellW - 0.6, cellH - 0.6);
+          ctx.globalAlpha = Math.min(1, f.a * (f.deep ? 0.5 : 0.78) * strength);
+          ctx.fillText(f.deep ? flecks.glyphs[0] : flecks.glyphs[1], x + cellW / 2, y + cellH / 2);
         } else if (hash % 29 === 0) {
           ctx.globalAlpha = 1;
           ctx.fillStyle =
@@ -238,6 +271,22 @@ export function createEngine(
   // dark (the background layer follows the Hermes theme). Without it the
   // operating system's colour scheme decides, as before.
   const isDark = () => (options.isDark ? options.isDark() : media.matches);
+  // Moon and season read only the local date. options.clock lets tests and
+  // the demo freeze time; nothing here touches the network or a location.
+  const clock = typeof options.clock === "function" ? options.clock : () => new Date();
+  const skyNow = () => skyState(clock(), settings);
+  const skyKey = (k) => `${k.season}|${k.moon ? `${k.moon.age}|${k.moon.illum}` : "hidden"}`;
+  let lastSky = null;
+  // Tell the page (Settings status line) when the quantised sky changes. It
+  // rides on frames that are drawn anyway, so it owns no timer of its own.
+  function noteSky(sky) {
+    const key = skyKey(sky);
+    if (key !== lastSky) {
+      lastSky = key;
+      try { options.onSky?.(sky); } catch { /* a status line must never stop drawing */ }
+    }
+    return sky;
+  }
   let settings = normalizeWorldSettings(initialSettings),
     disposed = false,
     visible = Boolean(options.hosted);
@@ -269,12 +318,13 @@ export function createEngine(
   // once per 1.1s for a visible still. Moving frames already read that probe.
   // Hidden/offscreen/disposed canvases own no timer; no host DOM observation.
   function watchTheme() {
-    if (themeTimer || !options.isDark || !allowed() || (!settings.paused && !manual)) return;
+    if (themeTimer || !allowed() || (!settings.paused && !manual)) return;
     themeTimer = setTimeout(() => {
       themeTimer = 0;
       if (!allowed()) return;
       try {
-        if (isDark() !== lastDark) {
+        // A paused still follows the theme and, slowly, the date's moon.
+        if (isDark() !== lastDark || skyKey(skyNow()) !== lastSky) {
           dirty = true;
           sync();
         } else watchTheme();
@@ -288,7 +338,8 @@ export function createEngine(
     if (!allowed()) return;
     renderer.resize(size.width, size.height, devicePixelRatio);
     lastDark = isDark();
-    renderer.render(time, settings, lastDark, beat);
+    const sky = noteSky(skyNow());
+    renderer.render(time, settings, lastDark, beat, sky);
     dirty = false;
     lastDraw = performance.now();
   }
@@ -309,7 +360,8 @@ export function createEngine(
         )
           renderer.resize(size.width, size.height, devicePixelRatio);
         lastDark = isDark();
-        renderer.render(time, settings, lastDark, beat);
+        const sky = noteSky(skyNow());
+        renderer.render(time, settings, lastDark, beat, sky);
         dirty = false;
         // Retain the frame phase. Resetting it to every RAF timestamp drops
         // a nominal 30 fps cap toward 20 fps when timestamps have small jitter.
@@ -364,6 +416,10 @@ export function createEngine(
   media.addEventListener("change", scheme);
   return {
     stats,
+    // Current moon and season for the Settings status line.
+    get sky() {
+      return skyNow();
+    },
     update(value) {
       if (disposed) return;
       const next=normalizeWorldSettings(value);

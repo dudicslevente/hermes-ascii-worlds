@@ -14,7 +14,7 @@ and `pointer-events: none`. It does not intercept clicks or keyboard input.
 Turning it off, unmounting its title-bar contribution, disabling the plugin or
 calling host disposal removes the layer, style and attribute. Startup removes
 stray layers from an earlier load. One active scene engine belongs to each
-canvas; preview and background never create twenty parallel scene loops.
+canvas; preview and background never create twenty-three parallel scene loops.
 
 ## Whole window
 

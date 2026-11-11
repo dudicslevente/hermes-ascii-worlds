@@ -2,7 +2,7 @@
 
 Every habitat in the dark and the light Hermes theme, as shown in the Settings preview.
 
-![All twenty habitats in ASCII Worlds](images/overview.png)
+![All twenty-three habitats in ASCII Worlds](images/overview.png)
 
 ## Settings
 
@@ -22,11 +22,14 @@ Open any picture at full size.
 | Tiny fish school | [Dark](images/habitats/tiny-fish-school-dark.png) | [Light](images/habitats/tiny-fish-school-light.png) |
 | Solitary whale | [Dark](images/habitats/solitary-whale-dark.png) | [Light](images/habitats/solitary-whale-light.png) |
 | Octopus | [Dark](images/habitats/octopus-dark.png) | [Light](images/habitats/octopus-light.png) |
+| Hammerhead and bait ball | [Dark](images/habitats/hammerhead-dark.png) | [Light](images/habitats/hammerhead-light.png) |
+| Anglerfish | [Dark](images/habitats/anglerfish-dark.png) | [Light](images/habitats/anglerfish-light.png) |
 | Butterflies | [Dark](images/habitats/butterflies-dark.png) | [Light](images/habitats/butterflies-light.png) |
 | Luna moths | [Dark](images/habitats/luna-moths-dark.png) | [Light](images/habitats/luna-moths-light.png) |
 | Dragonflies | [Dark](images/habitats/dragonflies-dark.png) | [Light](images/habitats/dragonflies-light.png) |
 | Swallows | [Dark](images/habitats/swallows-dark.png) | [Light](images/habitats/swallows-light.png) |
 | Sleeping cat | [Dark](images/habitats/sleeping-cat-dark.png) | [Light](images/habitats/sleeping-cat-light.png) |
+| Axolotls | [Dark](images/habitats/axolotl-dark.png) | [Light](images/habitats/axolotl-light.png) |
 | Owl | [Dark](images/habitats/owl-dark.png) | [Light](images/habitats/owl-light.png) |
 | Ginkgo leaves | [Dark](images/habitats/ginkgo-leaves-dark.png) | [Light](images/habitats/ginkgo-leaves-light.png) |
 | Cherry blossom petals | [Dark](images/habitats/cherry-blossom-petals-dark.png) | [Light](images/habitats/cherry-blossom-petals-light.png) |

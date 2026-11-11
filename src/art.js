@@ -1,4 +1,5 @@
 import { KOI_COLORS } from "./settings.js";
+import { depthOf } from "./lab/core/depth.js";
 // The vector field is never shown directly. It is sampled into glyph cells.
 const TAU = Math.PI * 2;
 function shape(ctx, points) {
@@ -312,16 +313,18 @@ function koi(
   ctx.restore();
 }
 // Full-domain closed routes, with pulse-integrated propulsion and tangent heading.
-export function scenePose(scene, index, time, width = 1, height = 1) {
+// flow (Current, default 1) scales the water's push: the surge in each stroke
+// and the side-to-side meander. At 1 the route is exactly the 1.2.0 route.
+export function scenePose(scene, index, time, width = 1, height = 1, flow = 1) {
   const phase = index * 2.19 + (scene === "jellyfish" ? 0.6 : 0);
   const rate = scene === "jellyfish" ? 0.14 : 0.155;
-  const clock = time + 0.22 * (Math.sin(time * 1.8 + phase) - Math.sin(phase));
+  const clock = time + 0.22 * flow * (Math.sin(time * 1.8 + phase) - Math.sin(phase));
   const u = clock * rate + phase;
-  const x = 0.5 + 0.37 * Math.sin(u) + 0.035 * Math.sin(u * 2 + phase);
+  const x = 0.5 + 0.37 * Math.sin(u) + 0.035 * flow * Math.sin(u * 2 + phase);
   const y = 0.5 + 0.36 * Math.sin(u + 1.15 + index * 0.29);
-  const dx = width * (0.37 * Math.cos(u) + 0.07 * Math.cos(2 * u + phase));
+  const dx = width * (0.37 * Math.cos(u) + 0.07 * flow * Math.cos(2 * u + phase));
   const dy = height * 0.36 * Math.cos(u + 1.15 + index * 0.29);
-  const ddx = width * (-0.37 * Math.sin(u) - 0.14 * Math.sin(2 * u + phase));
+  const ddx = width * (-0.37 * Math.sin(u) - 0.14 * flow * Math.sin(2 * u + phase));
   const ddy = -height * 0.36 * Math.sin(u + 1.15 + index * 0.29);
   const bend = Math.max(
     -0.13,
@@ -509,14 +512,38 @@ export function drawField(ctx, width, height, scene, time, settings = {}) {
     scene === "koi"
       ? clampCount(settings.koiCount, 3)
       : clampCount(settings.jellyCount, 5);
-  for (let i = count - 1; i >= 0; i--) {
-    const pose = scenePose(scene, i, time, width, height);
+  const num = (v, lo, hi, d) => (typeof v === "number" && Number.isFinite(v) ? Math.max(lo, Math.min(hi, v)) : d);
+  const size = num(settings.size, 0.5, 1.6, 1),
+    flow = num(settings.flow, 0, 1.5, 1),
+    depth = num(settings.depth, 0, 1, 0);
+  // Back to front: far ones first, then the rest in the original order (the
+  // first koi or jellyfish on top). With Depth 0 everyone is mid, so the order
+  // and every call are exactly 1.2.0's.
+  const order = [];
+  for (let i = count - 1; i >= 0; i--) order.push(i);
+  if (depth > 0) order.sort((a, b) => depthOf(a, depth).z - depthOf(b, depth).z || b - a);
+  let faded = false;
+  for (const i of order) {
+    const d = depthOf(i, depth);
+    // Far ones are faded once, together, as soon as the nearer ones start.
+    if (!faded && d.layer !== "far" && order.some((j) => depthOf(j, depth).layer === "far")) {
+      faded = true;
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.fillStyle = "rgba(0,0,0,0.5)";
+      ctx.fillRect(0, 0, ctx.canvas?.width ?? width * 4, ctx.canvas?.height ?? height * 4);
+      ctx.restore();
+    }
+    // Far ones travel more slowly; tails and bells keep their natural beat.
+    const pose = scenePose(scene, i, d.pace === 1 ? time : time * d.pace, width, height, flow);
+    const scale = d.scale * size;
     if (scene === "koi")
       koi(
         ctx,
         pose.x,
         pose.y,
-        min * (tall ? 0.57 : 0.48) * KOI_SIZES[i],
+        min * (tall ? 0.57 : 0.48) * KOI_SIZES[i] * scale,
         pose.angle,
         time * 1.65,
         pose.phase,
@@ -533,7 +560,8 @@ export function drawField(ctx, width, height, scene, time, settings = {}) {
         pose,
         min *
           0.19 *
-          ([1, 0.8, 0.6, 0.43, 0.34][i] ?? 0.38 + ((i * 7) % 5) * 0.065),
+          ([1, 0.8, 0.6, 0.43, 0.34][i] ?? 0.38 + ((i * 7) % 5) * 0.065) *
+          scale,
         time,
         i % 2 === 1,
         settings.colour === "individual" ? settings.jellyColors?.[i] : null,

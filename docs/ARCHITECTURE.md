@@ -9,9 +9,9 @@ optional window background.
 | Path | Responsibility |
 | --- | --- |
 | `src/art.js` | Koi and jellyfish geometry |
-| `src/lab/scenes/` | The eighteen other habitats, one pure module each, plus the registry |
+| `src/lab/scenes/` | The twenty-one other habitats, one pure module each, plus the registry |
 | `src/lab/core/` | Palettes, scene validation, utilities and the glyph sampler for those habitats |
-| `src/settings-v3.js` | The twenty habitat IDs, the per-habitat settings record, migration, patches and reset |
+| `src/settings-v3.js` | The twenty-three habitat IDs, the per-habitat settings record, migration, patches and reset |
 | `src/settings.js` | Background preferences and stores, the plugin version, and the 1.1 settings helpers |
 | `src/engine.js` | Canvas lifecycle: one scheduler and sampler per canvas, observers and cleanup |
 | `src/world.js` | The Settings page: controls, preview and instance ownership |
@@ -61,3 +61,13 @@ build (`npm run build:catalog`) removes the blocks between `@chat-area` markers 
 ## Adding a habitat
 
 See [Development](DEVELOPMENT.md#add-a-habitat).
+
+## Depth, moon and the 1.3.0 habitats
+
+`src/lab/core/depth.js` sorts creatures into far, mid and near layers and makes the
+atmosphere specks. `src/lab/core/flock.js` is the free-schooling simulation, stepped at a
+fixed 30 Hz so it looks the same at any frame rate. `src/lab/core/sky.js` works out the moon
+phase and season from the date. Hammerhead, anglerfish and axolotl are ordinary scene modules:
+pure functions of time. Koi and jellyfish get Size, Current and Depth in `src/art.js`; with the
+defaults and Depth 0 they draw exactly as before, which `tests/koi.test.mjs` and
+`tests/depth.test.mjs` check.

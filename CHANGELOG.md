@@ -3,6 +3,27 @@
 All notable changes to this project are listed here. The project follows
 [semantic versioning](https://semver.org/).
 
+## 1.3.0
+
+### Added
+
+- Three new habitats, twenty-three in total: **Hammerhead and bait ball** (sharks circle a
+  swirling ball of fish and cut through it now and then), **Anglerfish** (a glowing lure, curious
+  prey and a snap) and **Axolotls** (a pond floor with grass; they rest, walk, turn and float).
+  Each has its own extras: Bait ball, Bait fish and Scatter; Lure glow and Curious prey;
+  Pond plants and Activity.
+- **Depth** for every habitat except Night sky: creatures spread out near and far, with a faint
+  atmosphere behind them (marine snow, pollen, dust or pond silt). At 0 everything draws exactly
+  as in 1.2.0.
+- **Moon** for the open-air scenes, the owl and the night sky: show or hide it, and use today's
+  real phase or pick one. The settings only appear on those scenes. Seasons follow the date too.
+- **Free schooling** for the tiny fish school.
+- Koi and jellyfish now have Size, Scene strength, Current and Depth like the other habitats.
+
+### Changed
+
+- New README banner and an all-dark overview picture.
+
 ## 1.2.0
 
 ### Added

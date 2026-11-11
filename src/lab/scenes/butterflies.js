@@ -4,6 +4,7 @@
 // (flap swings about 14..80 degrees: slower upstroke, quicker downstroke, flutter
 // bursts separated by short open-wing glides), mirrored left/right, with a small
 // shear toward the hinge. Positions use S.t, every shape change uses S.b.
+import { placeAtDepth } from "../core/depth.js";
 import { makeKit, TAU, clamp, lerp, smoothstep, mod, angleDiff, mixHex, shadeHex, rgba, noise1, roam, curve, ellipse } from "../core/util.js";
 
 const D2R = Math.PI / 180;
@@ -237,6 +238,9 @@ export default {
   flow: { label: "Breeze", help: "How strongly a gentle breeze pushes the butterflies about.", default: 1, min: 0, max: 1.5 },
   backdrop: { dark: "#101512", light: "#eef0e6" },
   draw(ctx, w, h, S) {
-    for (let i = 0; i < S.count; i++) paintButterfly(ctx, w, h, S, i);
+    for (let i = 0; i < S.count; i++) {
+      const d = placeAtDepth(ctx, S, i);
+      paintButterfly(d.ctx, w, h, d.S, i);
+    }
   },
 };

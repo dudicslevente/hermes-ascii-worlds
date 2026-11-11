@@ -33,6 +33,8 @@ export default {
   id: "fireflies",
   name: "Fireflies",
   group: "drift",
+  // No atmosphere (the lights are the point), but fireflies spread in depth.
+  layered: true,
   blurb: "A few warm lights wander lazily and pulse, each on its own slow rhythm.",
   motion: "travel",
   count: { min: 0, max: 40, default: 9, noun: "Firefly" },
@@ -72,14 +74,22 @@ export default {
     const px = new Array(n),
       py = new Array(n),
       pl = new Array(n),
-      pt = new Array(n);
+      pt = new Array(n),
+      pc = new Array(n),
+      ps = new Array(n);
 
     for (let i = 0; i < n; i++) {
       // Home region: low-discrepancy sequence so any count is evenly spread
       // and firefly i keeps its home when the count changes.
       const hx = 0.1 + 0.8 * fract(0.5 + i * 0.7548776662 + 0.07 * (hash01(i, 11) - 0.5));
       const hy = 0.16 + 0.68 * fract(0.5 + i * 0.569840291 + 0.07 * (hash01(i, 12) - 0.5));
-      const p = roam(i, S.t, w, h, {
+      // Depth: far fireflies are smaller, drift more slowly and glow faintly
+      // behind the rest; near ones are larger and hide what is behind them.
+      const D = S.depthOf ? S.depthOf(i) : null;
+      pc[i] = (D && S.layer(D.layer)) || ctx;
+      ps[i] = D ? D.scale : 1;
+      const tD = D ? S.t * D.pace : S.t;
+      const p = roam(i, tD, w, h, {
         rate: 0.2 + 0.1 * hash01(i, 13),
         ax: 0.1 * amp,
         ay: 0.075 * amp,
@@ -91,8 +101,8 @@ export default {
       const q1 = hash01(i, 14) * TAU,
         q2 = hash01(i, 15) * TAU;
       const meander =
-        h * 0.018 * amp * Math.sin(TAU * 0.055 * S.t + q1) +
-        h * 0.009 * amp * Math.sin(TAU * 0.16 * S.t + q2);
+        h * 0.018 * amp * Math.sin(TAU * 0.055 * tD + q1) +
+        h * 0.009 * amp * Math.sin(TAU * 0.16 * tD + q2);
       px[i] = keepIn(p.x, w * 0.04, w * 0.96);
       py[i] = keepIn(p.y + meander, h * 0.06, h * 0.94);
       pt[i] = 0.3 * Math.tanh(p.vx / (0.02 * w)); // lean into the drift
@@ -109,18 +119,19 @@ export default {
     for (let i = 0; i < n; i++) {
       const k = S.kit(i),
         L = pl[i];
-      const R = u0 * 0.13 * halo * (0.5 + 0.5 * L);
-      softGlow(ctx, px[i], py[i], R, k.main, Math.min(0.9, (0.12 + 0.4 * L) * boost));
-      softGlow(ctx, px[i], py[i], R * 0.42, k.second, Math.min(0.95, (0.16 + 0.6 * L) * boost));
+      const R = u0 * ps[i] * 0.13 * halo * (0.5 + 0.5 * L);
+      softGlow(pc[i], px[i], py[i], R, k.main, Math.min(0.9, (0.12 + 0.4 * L) * boost));
+      softGlow(pc[i], px[i], py[i], R * 0.42, k.second, Math.min(0.95, (0.16 + 0.6 * L) * boost));
     }
 
     // Pass 2: core, small dark body and wing hints.
     for (let i = 0; i < n; i++) {
       const k = S.kit(i),
-        L = pl[i];
+        L = pl[i],
+        ctx = pc[i];
       const x = px[i],
         y = py[i];
-      const bs = Math.max(S.dark ? 3 : 4, u0 * (S.dark ? 0.0125 : 0.016));
+      const bs = Math.max(S.dark ? 3 : 4, u0 * ps[i] * (S.dark ? 0.0125 : 0.016));
       glow(ctx, x, y, bs * (1.8 + 1.3 * L), k.light, 0.5 + 0.5 * L);
       const hi = smoothstep(0.42, 0.85, L); // body and wings only while glowing
       at(ctx, x, y, pt[i], 1, 1, () => {

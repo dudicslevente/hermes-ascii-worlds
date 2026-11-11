@@ -3,6 +3,7 @@
 // non-finite numbers are rejected. Nothing here touches the DOM except
 // browserStorage(), which fails soft.
 import { SLOTS, DEFAULT_TINT, modesFor, slotDefaults } from "./palettes.js";
+import { DEPTH_DEFAULT, depthSupported } from "./depth.js";
 
 export const SCHEMA_VERSION = 1;
 export const STORAGE_NS = "ascii-lab.v1.";
@@ -11,6 +12,7 @@ export const LIMITS = Object.freeze({
   size: [0.5, 1.6],
   strength: [0.2, 1],
   flow: [0, 1.5],
+  depth: [0, 1],
 });
 export const DENSITIES = Object.freeze(["fine", "balanced", "bold"]);
 export const TONES = Object.freeze(["auto", "dark", "light"]);
@@ -33,6 +35,7 @@ export function supportsFor(def) {
     density: true,
     colour: true,
     flow: Boolean(def.flow),
+    depth: depthSupported(def),
   };
 }
 
@@ -46,6 +49,7 @@ export function defaultsFor(def) {
     size: 1,
     flow: def.flow ? (def.flow.default ?? 1) : 1,
     strength: 1,
+    depth: depthSupported(def) ? DEPTH_DEFAULT : 0,
     density: "fine",
     colour: "natural",
     tint: DEFAULT_TINT,
@@ -79,6 +83,9 @@ export function normalizeScene(def, value) {
     size: num(v.size, LIMITS.size, d.size),
     flow: def.flow ? num(v.flow, [def.flow.min ?? LIMITS.flow[0], def.flow.max ?? LIMITS.flow[1]], d.flow) : 1,
     strength: num(v.strength, LIMITS.strength, d.strength),
+    // Records from 1.2.0 have no depth and get the default. Scenes without
+    // depth support are pinned to 0 so a stale value can never leak in.
+    depth: depthSupported(def) ? num(v.depth, LIMITS.depth, d.depth) : 0,
     density: DENSITIES.includes(v.density) ? v.density : d.density,
     colour: modes.includes(v.colour) ? v.colour : d.colour,
     tint: validHex(v.tint, d.tint),

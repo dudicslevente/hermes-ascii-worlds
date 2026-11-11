@@ -85,10 +85,15 @@ export default {
 
     for (let i = 0; i < S.count; i++) {
       const k = S.kit(i);
+      // Far bubbles are smaller and rise more slowly behind the rest.
+      const D = S.depthOf ? S.depthOf(i) : null,
+        dc = (D && S.layer(D.layer)) || ctx,
+        dScale = D ? D.scale : 1,
+        dPace = D ? D.pace : 1;
       // identity: size class, speed, phase, wobble all depend on i only
       const sn = Math.pow(fract(0.72 + i * 0.6180339887), 1.35);
-      const rFrac = lerp(0.013, 0.05, sn);
-      const speed = h * lerp(0.04, 0.1, sn) * (0.9 + 0.2 * hash01(i, 2));
+      const rFrac = lerp(0.013, 0.05, sn) * dScale;
+      const speed = h * lerp(0.04, 0.1, sn) * (0.9 + 0.2 * hash01(i, 2)) * dPace;
       const P = dist / speed;
       const phase = i === 0 ? 0.24 : hash01(i, 3);
       const q = S.t / P + phase;
@@ -124,7 +129,7 @@ export default {
         0.5 * Math.sin(TAU * (S.b * fw * 0.37 + hash01(i, 9))) + 0.2 * Math.cos(TAU * (u * cyc) + ph);
       const lw = Math.min(2.6, Math.max(1.6, 1.3 + r * 0.045));
       const glint = 0.2 * Math.sin(TAU * (S.b * fw * 0.5 + hash01(i, 10)));
-      at(ctx, x, y, tilt, 1 + ew, 1 - ew, () => ring(ctx, k, r, lw, a, glint));
+      at(dc, x, y, tilt, 1 + ew, 1 - ew, () => ring(dc, k, r, lw, a, glint));
     }
   },
 };

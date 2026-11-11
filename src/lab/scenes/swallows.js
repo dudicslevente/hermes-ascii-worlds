@@ -1,3 +1,4 @@
+import { placeAtDepth } from "../core/depth.js";
 import { makeKit, TAU, clamp, lerp, smoothstep, hash01, rgba, mixHex, roam, at, poly, curve, ellipse } from "../core/util.js";
 
 // Swallows, seen from above. Body frame: origin at the shoulders, +x toward the
@@ -205,7 +206,12 @@ export default {
   draw(ctx, w, h, S) {
     const flow = S.flow == null ? 1 : S.flow;
     ctx.lineJoin = "round";
-    for (let i = 0; i < S.count; i++) {
+    const ctx0 = ctx,
+      S0 = S;
+    for (let i = 0; i < S0.count; i++) {
+      // Far swallows are smaller and slower; see placeAtDepth.
+      const { ctx, S } = placeAtDepth(ctx0, S0, i);
+      if (ctx !== ctx0) ctx.lineJoin = "round"; // a layer has its own state
       const kit = S.kit(i);
       // semi-span unit: full wingspan is 0.20-0.24 of S.min x size
       const s = S.min * S.size * (0.1 + 0.02 * hash01(i, 1));

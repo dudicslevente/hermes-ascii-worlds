@@ -4,6 +4,7 @@
 // staggered moments. Heading = tangent of the fish's own trajectory.
 // Wave 2: fish are about 1.5x longer and brighter (pale flanks, white back
 // highlight), with a longer forked tail whose lobes are drawn as bright lines.
+import { flockAt } from "../core/flock.js";
 import { makeKit, TAU, clamp, clamp01, fract, roam, noise1, hash01, angleDiff, rgba, mixHex, curve, poly } from "../core/util.js";
 
 const KP = 12; // spine points per fish (head = 0, tail tip = 11)
@@ -46,13 +47,22 @@ function bodyProfile(u) {
   return Math.max(Math.pow(Math.sin(Math.PI * Math.pow(u, 0.62)), 0.85), 0.17 * u);
 }
 
-function drawFish(ctx, kit, f, S, c) {
+// pose (optional): { x, y, heading, turn } from the flock. Without it the fish
+// follows the leader route, exactly as in 1.2.0.
+function drawFish(ctx, kit, f, S, c, pose) {
   const d = 0.14;
-  const a = fishPos(f, S.t - d, S.w, S.h, c),
-    m = fishPos(f, S.t, S.w, S.h, c),
-    e = fishPos(f, S.t + d, S.w, S.h, c);
-  const hd = Math.atan2(e[1] - a[1], e[0] - a[0]);
-  const turn = clamp(angleDiff(Math.atan2(m[1] - a[1], m[0] - a[0]), Math.atan2(e[1] - m[1], e[0] - m[0])) / d, -1.6, 1.6);
+  let m, hd, turn;
+  if (pose) {
+    m = [pose.x, pose.y];
+    hd = pose.heading;
+    turn = clamp(pose.turn, -1.6, 1.6);
+  } else {
+    const a = fishPos(f, S.t - d, S.w, S.h, c),
+      e = fishPos(f, S.t + d, S.w, S.h, c);
+    m = fishPos(f, S.t, S.w, S.h, c);
+    hd = Math.atan2(e[1] - a[1], e[0] - a[0]);
+    turn = clamp(angleDiff(Math.atan2(m[1] - a[1], m[0] - a[0]), Math.atan2(e[1] - m[1], e[0] - m[0])) / d, -1.6, 1.6);
+  }
   const cs = Math.cos(hd),
     sn = Math.sin(hd);
   const L = f.len,
@@ -205,6 +215,7 @@ export default {
   flow: { label: "Current", help: "How far the water drifts the school and how loose its edges are.", default: 1, min: 0, max: 1.5 },
   extras: [
     { key: "cohesion", type: "range", label: "Cohesion", min: 0.3, max: 1.5, step: 0.05, default: 1, help: "How tightly the fish hold together behind the leader." },
+    { key: "free", type: "toggle", label: "Free schooling", default: false, help: "Each fish steers by itself, keeping its space, matching its neighbours and staying with the group, instead of following one route." },
   ],
   backdrop: { dark: "#091821", light: "#e3edf0" },
   draw(ctx, w, h, S) {
@@ -222,6 +233,17 @@ export default {
     c.fitX = Math.min(1, Math.max(0.05, (w * 0.5 - margin) / ((0.34 + 0.05 * flow) * w + cloud)));
     c.fitY = Math.min(1, Math.max(0.05, (h * 0.5 - margin) / ((0.3 + 0.045 * flow) * h + cloud)));
     const lagSpan = 6.2 / Math.pow(coh, 0.6);
+    // Free schooling: boids instead of the leader route (see core/flock.js).
+    const poses =
+      S.extra && S.extra.free === true && S.count > 0
+        ? flockAt(S.memo, "school", S.count, S.t, w, h, {
+            space: (0.13 * S.size * S.min) / h / Math.sqrt(coh),
+            see: (0.3 * S.size * S.min) / h,
+            wander: 0.12,
+            cohesion: 0.3 * coh,
+            goal: 0.35 + 0.3 * flow,
+          })
+        : null;
     for (let i = 0; i < S.count; i++) {
       const back = clamp01(fract(0.5 + i * 0.7548776662) + 0.12 * (hash01(i, 2) - 0.5));
       const f = {
@@ -234,7 +256,7 @@ export default {
         seed: 100 + i * 3,
       };
       ctx.globalAlpha = 0.92 + 0.08 * hash01(i, 10);
-      drawFish(ctx, S.kit(i), f, S, c);
+      drawFish(ctx, S.kit(i), f, S, c, poses && poses[i]);
     }
     ctx.globalAlpha = 1;
   },
