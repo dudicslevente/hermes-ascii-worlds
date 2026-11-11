@@ -58,7 +58,7 @@ Before opening the pull request, check the exact commit you pin:
 hermes plugins validate /path/to/catalog-checkout --install-deps
 ```
 
-Use the banner (`docs/images/banner.png`, 2:1) and up to six screenshots, with raw GitHub URLs pinned to
+Use the 2:1 catalog banner (`docs/images/catalog-banner.png`, 1200x600; the README banner is 16:9) and up to six screenshots, with raw GitHub URLs pinned to
 that same commit.
 
 ### What the pull request should disclose
