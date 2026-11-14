@@ -19,7 +19,7 @@ try {
  mount(pages[0].render(),q('#root'));
  const title=contributions.find(c=>c.area==='titlebar.right');assert(title,'titlebar registration');mount(title.render(),q('#titlebar'));flush();await wait();
  assert(JSON.stringify(data)===before,'startup must not write');
- assert(q('[name=scene]').options.length===23,'native selector has exactly 23 entries');
+ assert(q('[name=scene]').options.length===37,'native selector has exactly 37 entries');
  assert(!q('.aw-fallback')?.textContent,'no renderer error');
  change('bgEnabled',true);await wait();assert(document.querySelectorAll('canvas').length===2,'preview plus optional background only');
  const front=q('[name=bgPlacement][value=front]');front.checked=true;front.dispatchEvent(new Event('change',{bubbles:true}));await wait();
@@ -38,8 +38,10 @@ try {
   const bg=q('body > [data-ascii-worlds-bg="layer"] canvas');assert(bg,'background stays mounted');
   if(def){const d=bg.getContext('2d').getImageData(0,0,bg.width,bg.height).data;assert(d.every(v=>v===0),'transparent count zero '+id);}
   change(countName,def?def.count.default:(id==='koi'?3:5),def?'input':'change');await wait();assert(pixelHash(canvas())!==pixelHashZero(d),'count restore visible '+id);
+  assert(!q('[name=strength]'),'no obsolete scene-strength control '+id);
+  assert(q('[name=bgStrength]')?.getAttribute('aria-label')==='Background opacity','one global opacity control '+id);
   if(def){
-   for(const name of ['size','strength','speed','density'])assert(q(`[name=${name}]`),'universal control '+id+' '+name);
+   for(const name of ['size','speed','density'])assert(q(`[name=${name}]`),'universal control '+id+' '+name);
    assert(!!q('[name=flow]')===!!def.flow,'flow applicability '+id);
    for(const e of def.extras||[])assert(q(`[name="extra-${e.key}"]`),'extra '+id+' '+e.key);
    assert(q('[name=colour]').options.length===(id==='night-sky'?9:10),'palette modes '+id);

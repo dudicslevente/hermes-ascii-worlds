@@ -20,6 +20,9 @@ export function mountWorld(root, storage = browserStorage(), hub = null) {
   let settings = hub ? normalizeWorldSettings(hub.settings.get()) : readWorldSettings(storage),
     disposed = false,
     engine;
+  // Retain a pending old attenuation even if Reset all runs while only the
+  // background key is unwritable. This is migration metadata, not scene state.
+  const legacyOpacityScale = settings.legacyOpacityScale;
   const reduced = matchMedia("(prefers-reduced-motion: reduce)");
   const initiallyHeld = reduced.matches && !hub?.motionOptIn?.get();
   if (initiallyHeld) settings.paused = true;
@@ -47,7 +50,7 @@ export function mountWorld(root, storage = browserStorage(), hub = null) {
       <p class="aw-help">Chat area relies on how Hermes Desktop lays out its window. If it stops showing after an app update, switch to Whole window.</p>
       <!-- @chat-area:end -->
       <p class="aw-help">The animation in Hermes uses the same habitat, colours, glyph density, speed and battery-saver choices as the preview below, and it always matches your Hermes theme, light or dark.</p>
-      <label class="aw-field aw-strength"><span>Strength</span><span class="aw-speed"><input type="range" name="bgStrength" min="8" max="60" step="1" aria-label="Strength"><output class="aw-bg-out"></output></span><small>Lower is calmer; 28% is a good start</small></label>
+      <label class="aw-field aw-strength"><span>Background opacity</span><span class="aw-speed"><input type="range" name="bgStrength" min="1" max="60" step="0.1" aria-label="Background opacity"><output class="aw-bg-out"></output></span><small>Lower is fainter; 28% is a good start. Applies to every habitat, not the preview.</small></label>
       <div class="aw-bg-status" role="status" aria-live="polite"></div>
     </section>
     <section class="aw-section aw-scene" aria-labelledby="aw-h-scene">
@@ -82,7 +85,7 @@ export function mountWorld(root, storage = browserStorage(), hub = null) {
     </section>
     <section class="aw-section aw-about" aria-labelledby="aw-h-about">
       <h3 class="aw-h aw-h-small" id="aw-h-about">About ASCII Worlds</h3>
-      <p class="aw-help aw-about-lead">A small aquarium for your chats. Twenty-three procedural glyph habitats extend the original koi and jellyfish with sharks, deep-sea anglers, wings, drifting leaves and quiet companions. Preview and background share the same settings.</p>
+      <p class="aw-help aw-about-lead">Thirty-seven living habitats for your chats: koi and jellyfish, quiet companions, pipes, little adventures and arcade favourites. Preview and background share the same settings.</p>
       <p class="aw-help aw-about-small">Version ${PLUGIN_VERSION}. Free and open source under the MIT licence.</p>
     </section>`;
   root.replaceChildren(style, world);
@@ -111,18 +114,18 @@ export function mountWorld(root, storage = browserStorage(), hub = null) {
       field.append(span,input);labControls.append(field);return input;
     };
     // Koi and jellyfish keep their own count and colour editors, and get the
-    // same Size, Scene strength, Depth and Current as every other scene.
+    // same Size, Depth and Current as every other scene.
     if(!def){
       if(id!=='koi'&&id!=='jellyfish')return;
-      add('size','Size','range',0.5,1.6,0.05);add('strength','Scene strength','range',0.2,1,0.05);
+      add('size','Size','range',0.5,1.6,0.05);
       add('depth','Depth','range',0,1,0.05);add('flow','Current','range',0,1.5,0.05);
       return;
     }
     add('count',`${def.count.noun} count (0–${def.count.max})`,'number',0,def.count.max,1);
-    add('size','Size','range',0.5,1.6,0.05);add('strength','Scene strength','range',0.2,1,0.05);
+    add('size','Size','range',0.5,1.6,0.05);
     if(depthSupported(def))add('depth','Depth','range',0,1,0.05);
-    if(def.flow)add('flow',def.flow.label,'range',def.flow.min??0,def.flow.max??1.5,0.05);
-    for(const extra of def.extras||[])add(`extra-${extra.key}`,extra.label,extra.type==='toggle'?'checkbox':'range',extra.min,extra.max,extra.step??0.05);
+    if(def.flow){const input=add('flow',def.flow.label,'range',def.flow.min??0,def.flow.max??1.5,0.05);if(def.flow.help){const help=document.createElement('small');help.textContent=def.flow.help;input.closest('label').append(help);}}
+    for(const extra of def.extras||[]){const input=add(`extra-${extra.key}`,extra.label,extra.type==='toggle'?'checkbox':'range',extra.min,extra.max,extra.step??0.05);if(extra.help){const help=document.createElement('small');help.textContent=extra.help;input.closest('label').append(help);}}
     if(def.individual!==false) {
       const details=document.createElement('details');details.className='aw-individual';
       const summary=document.createElement('summary');summary.textContent='Individual colours';details.append(summary);
@@ -169,7 +172,7 @@ export function mountWorld(root, storage = browserStorage(), hub = null) {
     }
     blurb.textContent=(def?.blurb||'Original procedural aquarium artwork.')+' Reset this scene preserves other scenes and global preferences. Reset to defaults resets all scenes and returns to the koi pond.';
     find('[name="speed"]').max=def?2:1.5;
-    find('[name="speed"]').closest('label').querySelector('span').textContent=def?.motion==='stationary'?'Pace (local motion)':'Speed';
+    find('[name="speed"]').closest('label').querySelector('span').textContent=def?.labels?.speed || (def?.motion==='stationary'?'Pace (local motion)':'Speed');
     if(def)find('[name="colour"] option[value="natural"]').textContent='Natural';
     find(".aw-population").hidden = settings.scene !== "jellyfish";
     find(".aw-jelly-individual").hidden = settings.scene !== "jellyfish";
@@ -233,7 +236,7 @@ export function mountWorld(root, storage = browserStorage(), hub = null) {
   }
   function update(patch, persist = true) {
     if (disposed) return;
-    settings=patchWorldSettings(settings,patch);
+    settings=patchWorldSettings({...settings,legacyOpacityScale},patch);
     if(Object.hasOwn(patch,'paused')) {
       if(!patch.paused)motionHold=false;
       hub?.motionOptIn?.set(!patch.paused && reduced.matches);
@@ -269,8 +272,8 @@ export function mountWorld(root, storage = browserStorage(), hub = null) {
       radio.checked = radio.value === bg.placement;
       radio.disabled = !status.available;
     }
-    find('[name="bgStrength"]').value = Math.round(bg.strength * 100);
-    find(".aw-bg-out").value = `${Math.round(bg.strength * 100)}%`;
+    find('[name="bgStrength"]').value = Math.round(bg.strength * 1000) / 10;
+    find(".aw-bg-out").value = `${Math.round(bg.strength * 1000) / 10}%`;
     find(".aw-bg-status").textContent = status.available
       ? status.message
       : status.message ||

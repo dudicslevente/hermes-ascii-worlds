@@ -126,10 +126,10 @@ try {
   assert.equal((await stored(page)).enabled, true);
   await page.locator('[name=bgStrength]').fill('60'); await page.waitForTimeout(100);
   assert.equal(await page.evaluate(() => getComputedStyle(document.querySelector('[data-ascii-worlds-bg="layer"] canvas')).opacity), '0.6');
-  await page.locator('[name=bgStrength]').fill('8'); await page.waitForTimeout(100);
-  assert.equal((await stored(page)).strength, 0.08);
+  await page.locator('[name=bgStrength]').fill('1'); await page.waitForTimeout(100);
+  assert.equal((await stored(page)).strength, 0.01);
   await page.locator('[name=bgStrength]').fill('28');
-  ok('(c) the ancestor-clearing rules are part of Background mode, art shows through opaque wrappers with no extra toggle; strength slider clamps 8-60 percent and persists');
+  ok('(c) the ancestor-clearing rules are part of Background mode, art shows through opaque wrappers with no extra toggle; Background opacity slider clamps 1-60 percent and persists');
 
   // live sync: pane scene edit reaches background engine
   const before = await page.evaluate(() => document.querySelector('[data-ascii-worlds-bg="layer"] canvas').width);
@@ -420,7 +420,7 @@ try {
   const about = await page.locator('.aw-about').innerText();
   assert.ok(about.includes('About ASCII Worlds'));
   assert.ok(about.includes(`Version ${version}.`));
-  assert.ok(about.includes('A small aquarium for your chats.'));
+  assert.ok(about.includes('Thirty-seven living habitats for your chats:'));
   assert.ok(!/It all happens|independent take|glyph-aquarium/i.test(about), 'the removed About sentences stay removed');
   assert.ok(about.includes('Free and open source under the MIT licence.'));
   // The old duplicate of the top switch is gone: the page has exactly one control that turns the background off.

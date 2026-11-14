@@ -30,8 +30,9 @@ try{
   const start=await pixels();assert.ok(start.every(x=>x&&x.alpha>0),id+' both paths render');
   await native(count,0);const zero=await pixels();if(def)assert.equal(zero[1].alpha,0,id+' zero transparent');
   await native(count,def?def.count.default:id==='koi'?3:5);const restore=await pixels();assert.ok(restore[0].hash!==zero[0].hash,id+' restore preview');assert.ok(restore[1].hash!==zero[1].hash,id+' restore background');
+  assert.equal(await page.locator('[name=strength]').count(),0,id+' has no scene opacity control');
   const tested=[];
-  for(const [name,value] of [['density','bold'],['colour','ember'],['colour','cyan'],['tint','#cf2040'],...(def?[['size',0.6],['strength',0.3]]:[])]){
+  for(const [name,value] of [['density','bold'],['colour','ember'],['colour','cyan'],['tint','#cf2040'],...(def?[['size',0.6]]:[])]){
    const before=await pixels();await native(name,value);const after=await pixels();assert.ok(before.every((p,i)=>p.hash!==after[i].hash),id+' '+name+' reaches BOTH canvases');tested.push(name+'='+value);
   }
   // Every named palette reaches both actual canvas paths, not only a kit

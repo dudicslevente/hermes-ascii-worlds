@@ -12,5 +12,5 @@ try {
  const report=await browser.evaluate('JSON.parse(document.querySelector("#result").textContent)');
  writeFileSync(new URL('plugin-probe-results.json',out),JSON.stringify(report,null,2)+'\n');
  writeFileSync(new URL('plugin-probe-dom.html',out),await browser.evaluate('document.documentElement.outerHTML'));
- console.log(JSON.stringify(report,null,2));assert.equal(report.ok,true,report.errors.join('\n'));assert.equal(report.scenes.length,23);
+ console.log(JSON.stringify(report,null,2));assert.equal(report.ok,true,report.errors.join('\n'));assert.equal(report.scenes.length,37);
 } finally {await browser.close();}

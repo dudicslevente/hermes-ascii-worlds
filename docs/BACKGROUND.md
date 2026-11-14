@@ -2,7 +2,11 @@
 
 Background is optional and off by default. It renders the selected scene using
 the same settings as the preview, on a separate transparent full-window canvas.
-Its own Strength defaults to 28% and ranges from 8–60%.
+Background opacity is the one global opacity control: 1–60%, default 28%.
+It affects the window layer only; the Settings preview stays at full strength.
+On upgrade, the previously selected habitat’s old strength is combined with the
+old background opacity once, so that background does not suddenly become brighter.
+Other habitats then follow the same global value.
 
 ## Owned elements and cleanup
 
@@ -14,13 +18,13 @@ and `pointer-events: none`. It does not intercept clicks or keyboard input.
 Turning it off, unmounting its title-bar contribution, disabling the plugin or
 calling host disposal removes the layer, style and attribute. Startup removes
 stray layers from an earlier load. One active scene engine belongs to each
-canvas; preview and background never create twenty-three parallel scene loops.
+canvas; preview and background never create thirty-seven parallel scene loops.
 
 ## Whole window
 
 Whole window is a transparent glyph overlay at the top of the window stacking
 order. Its stylesheet is empty: it does not clear host backgrounds or rewrite
-core UI. It can pass faintly over text, panels and controls, so lower strength
+core UI. It can pass faintly over text, panels and controls, so lower opacity
 helps readability. Click-through does not make an overlay visually invisible.
 This is the **only placement in the catalog build**, which has no placement selector.
 
@@ -52,7 +56,7 @@ so inspect it before attaching it to a public issue.
 - `LAYER: missing`: the background is not enabled or its title-bar mount is unavailable.
 - Different plugin/layer/style versions: an old copy may remain; disable and reload
   first, then quit/reopen Desktop if ordinary reload does not recover.
-- Empty scene: check Count, Pause, strength and the whale's deliberate offstage wait.
+- Empty scene: check Count, Pause, Background opacity and the whale's deliberate offstage wait.
 - Missing background control: the host may lack the guarded title-bar SDK surface;
   the standalone preview can remain usable.
 

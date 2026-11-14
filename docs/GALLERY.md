@@ -2,7 +2,7 @@
 
 Every habitat in the dark and the light Hermes theme, as shown in the Settings preview.
 
-![All twenty-three habitats in ASCII Worlds](images/overview.png)
+![All habitats in ASCII Worlds](images/overview.png)
 
 ## Settings
 
@@ -37,5 +37,19 @@ Open any picture at full size.
 | Bubbles | [Dark](images/habitats/bubbles-dark.png) | [Light](images/habitats/bubbles-light.png) |
 | Dandelion seeds | [Dark](images/habitats/dandelion-seeds-dark.png) | [Light](images/habitats/dandelion-seeds-light.png) |
 | Night sky | [Dark](images/habitats/night-sky-dark.png) | [Light](images/habitats/night-sky-light.png) |
+| Pipes | [Dark](images/habitats/pipes-dark.png) | [Light](images/habitats/pipes-light.png) |
+| Platypus creek | [Dark](images/habitats/platypus-creek-dark.png) | [Light](images/habitats/platypus-creek-light.png) |
+| Capybara onsen | [Dark](images/habitats/capybara-onsen-dark.png) | [Light](images/habitats/capybara-onsen-light.png) |
+| Penguin slide | [Dark](images/habitats/penguin-slide-dark.png) | [Light](images/habitats/penguin-slide-light.png) |
+| Rubber ducks | [Dark](images/habitats/rubber-ducks-dark.png) | [Light](images/habitats/rubber-ducks-light.png) |
+| Nyan Cat | [Dark](images/habitats/nyan-cat-dark.png) | [Light](images/habitats/nyan-cat-light.png) |
+| Dino runner | [Dark](images/habitats/dino-runner-dark.png) | [Light](images/habitats/dino-runner-light.png) |
+| Dragon's hoard | [Dark](images/habitats/dragon-hoard-dark.png) | [Light](images/habitats/dragon-hoard-light.png) |
+| Beehive | [Dark](images/habitats/beehive-dark.png) | [Light](images/habitats/beehive-light.png) |
+| Wizard's tower | [Dark](images/habitats/wizard-tower-dark.png) | [Light](images/habitats/wizard-tower-light.png) |
+| Retro arcade | [Dark](images/habitats/retro-arcade-dark.png) | [Light](images/habitats/retro-arcade-light.png) |
+| Snake | [Dark](images/habitats/snake-game-dark.png) | [Light](images/habitats/snake-game-light.png) |
+| Pirate ship | [Dark](images/habitats/pirate-ship-dark.png) | [Light](images/habitats/pirate-ship-light.png) |
+| Rooftop ninja | [Dark](images/habitats/rooftop-ninja-dark.png) | [Light](images/habitats/rooftop-ninja-light.png) |
 
 See [Habitats and controls](CONTROLS.md) for what you can change in each one.

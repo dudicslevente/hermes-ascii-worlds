@@ -1,7 +1,15 @@
 // Supplemental final-file tests: every live Speed control; native flow/extras
 // change both preview and background at held nonzero clocks.
 import assert from 'node:assert/strict';
-import {pathToFileURL} from 'node:url';
+import {pathToFileURL,fileURLToPath} from 'node:url';
+import path from 'node:path';
+const newIds=new Set(['platypus-creek','capybara-onsen','penguin-slide','rubber-ducks','nyan-cat','dino-runner','dragon-hoard','beehive','wizard-tower','retro-arcade','snake-game','pirate-ship','rooftop-ninja']);
+// Rare effects are deliberately absent during idle frames. Exercise them at
+// fixed clocks through BOTH production renderer paths, using settings read
+// back from the native controls. all-scenes-browser covers their live hosts.
+const tools=process.env.ASCII_WORLDS_TOOLS;
+const {build}=await import(pathToFileURL(path.join(tools,'node_modules/esbuild/lib/main.js')));
+const probe=(await build({stdin:{contents:`import {createSceneRenderer} from './src/engine.js';const renderers=[false,true].map(transparent=>{const c=document.createElement('canvas');return {c,r:createSceneRenderer(c,{}, {transparent})};});for(const p of renderers)p.r.resize(900,560,1);window.controlProbe=(s,t,b)=>renderers.map(p=>{p.r.render(t,s,true,b,null);return p.c.toDataURL();});`,resolveDir:fileURLToPath(new URL('../',import.meta.url))},bundle:true,write:false,format:'iife',logLevel:'silent'})).outputFiles[0].text;
 import {writeFile} from 'node:fs/promises';
 import {WORLD_IDS} from '../src/settings-v3.js';
 import {sceneById} from '../src/lab/scenes/registry.js';
@@ -13,7 +21,7 @@ page.on('pageerror',e=>report.errors.push(e.message));page.on('request',r=>{if(/
 const native=async(name,value)=>{await page.evaluate(({name,value})=>{const e=document.querySelector(`[name="${name}"]`);if(!e)throw Error('missing '+name);if(e.type==='checkbox')e.checked=value;else e.value=String(value);e.dispatchEvent(new Event(['range','number'].includes(e.type)?'input':'change',{bubbles:true}));},{name,value});await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));};
 const hashes=()=>page.evaluate(()=>[document.querySelector('.aw-canvas'),document.querySelector('body > [data-ascii-worlds-bg="layer"] canvas')].map(c=>c.toDataURL()));
 try{
- await page.goto(new URL('../demo.html',import.meta.url).href+'?chat=1&paused=true');await page.waitForFunction(()=>asciiWorlds?.stats?.glyphs>0);await native('bgEnabled',true);
+ await page.goto(new URL('../demo.html',import.meta.url).href+'?chat=1&paused=true');await page.waitForFunction(()=>asciiWorlds?.stats?.glyphs>0);await native('bgEnabled',true);await page.addScriptTag({content:probe});
  for(const id of WORLD_IDS){
   await page.evaluate(id=>{asciiWorlds.setSettings({scene:id,paused:true});asciiWorlds.resetScene();},id);await page.locator('.aw-canvas').scrollIntoViewIfNeeded();
   const deltas=[];
@@ -22,7 +30,18 @@ try{
   const def=sceneById(id);if(!def)continue;
   await page.evaluate(()=>asciiWorlds.renderAt(10,2));
   for(const [key,lo,hi] of [...(def.flow?[['flow',def.flow.min??0,def.flow.max??1.5]]:[]),...(def.extras||[]).filter(e=>e.key!=='shooting').map(e=>['extra-'+e.key,e.type==='toggle'?false:e.min,e.type==='toggle'?true:e.max])]){
-   await native(key,lo);const a=await hashes();await native(key,hi);const b=await hashes();assert.ok(a.every((v,i)=>v!==b[i]),id+' '+key+' actual BOTH path effect');report.flowExtras.push({id,key,both:true});
+   if(newIds.has(id)){
+    await native(key,lo);const low=await page.evaluate(()=>asciiWorlds.settings);
+    await native(key,hi);const high=await page.evaluate(()=>asciiWorlds.settings);
+    let changed=false,at=null;
+    for(const t of [0.1,3,6.4,7.1,9,12,19,22,31,61]){
+      const pair=await page.evaluate(({low,high,t})=>[controlProbe(low,t,t),controlProbe(high,t,t)],{low,high,t});
+      if(pair[0].every((v,i)=>v!==pair[1][i])){changed=true;at=t;break;}
+    }
+    assert.ok(changed,id+' '+key+' fixed-clock BOTH production paths');report.flowExtras.push({id,key,both:true,at});
+   }else{
+    await native(key,lo);const a=await hashes();await native(key,hi);const b=await hashes();assert.ok(a.every((v,i)=>v!==b[i]),id+' '+key+' actual BOTH path effect');report.flowExtras.push({id,key,both:true});
+   }
   }
  }
  // Keep background running until first deterministic high-frequency meteor.

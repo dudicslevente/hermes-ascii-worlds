@@ -202,15 +202,17 @@ export function frameCap(eco) {
 // Shown on the Background layer and in the Check background report so a console or a bug
 // report can tell exactly which build is running. Kept equal to package.json
 // by a unit test.
-export const PLUGIN_VERSION = "1.3.0";
+export const PLUGIN_VERSION = "1.4.0";
 export const BACKGROUND_KEY = "background.v1";
-export const BACKGROUND_MIN = 0.08;
+// Covers the old minimum background × minimum scene strength during migration.
+export const BACKGROUND_MIN = 0.01;
 // The catalog build (npm run build:catalog) rewrites this to false and removes
 // the code between @chat-area markers, leaving only the Whole window placement.
 const CHAT_AREA = true;
 export const BACKGROUND_MAX = 0.6;
 export const BACKGROUND_DEFAULTS = Object.freeze({
   schemaVersion: 1,
+  opacityVersion: 1,
   enabled: false,
   strength: 0.28,
   // "behind" draws under the chat and needs the host's opaque wrappers cleared;
@@ -227,6 +229,7 @@ export function normalizeBackground(value) {
     value && typeof value === "object" && !Array.isArray(value) ? value : {};
   return {
     schemaVersion: 1,
+    opacityVersion: 1,
     // Only a literal true turns the layer on; anything odd means off.
     enabled: v.enabled === true,
     strength:
@@ -237,12 +240,20 @@ export function normalizeBackground(value) {
     extraTransparency: v.extraTransparency === true,
   };
 }
-export function readBackground(storage) {
-  try {
-    return normalizeBackground(storage.get(BACKGROUND_KEY, null));
-  } catch {
-    return normalizeBackground(null);
-  }
+export function readBackground(storage, legacyOpacityScale = 1, onSave = () => {}) {
+  let raw, readable = true;
+  try { raw = storage.get(BACKGROUND_KEY, null); } catch { readable = false; }
+  const bg = normalizeBackground(raw);
+  if (raw?.opacityVersion === 1 || legacyOpacityScale === 1) return bg;
+  const scale = typeof legacyOpacityScale === 'number' && Number.isFinite(legacyOpacityScale)
+    ? Math.max(0.2, Math.min(1, legacyOpacityScale)) : 1;
+  // Clamp as the OLD UI did before combining its two opacity multipliers.
+  const strength = Math.max(0.08, bg.strength) * scale;
+  const next = normalizeBackground({ ...bg, strength });
+  let saved = false;
+  try { if (readable) { storage.set(BACKGROUND_KEY, next); saved = true; } } catch {}
+  onSave(saved);
+  return next;
 }
 export function writeBackground(storage, value) {
   try {
@@ -275,8 +286,8 @@ export function createStore(initial) {
     size: () => listeners.size,
   };
 }
-export function createBackgroundStore(storage, onSave = () => {}) {
-  const store = createStore(readBackground(storage));
+export function createBackgroundStore(storage, onSave = () => {}, legacyOpacityScale = 1) {
+  const store = createStore(readBackground(storage, legacyOpacityScale, onSave));
   return {
     get: store.get,
     subscribe: store.subscribe,

@@ -6,8 +6,8 @@ The plugin saves its settings through the Desktop plugin storage, which is priva
 
 | Key | Contents |
 | --- | --- |
-| `settings.v3` | The selected habitat, Pause, Battery saver and one record per habitat (count, speed, size, flow, strength, density, colour, tint, ten individual colours and scene extras) |
-| `background.v1` | Whether the window background is on, its placement and its Strength |
+| `settings.v3` | The selected habitat, Pause, Battery saver and one record per habitat (count, speed, size, flow, density, colour, tint, ten individual colours and scene extras) |
+| `background.v1` | Whether the window background is on, its placement, global Background opacity and one-time opacity migration marker |
 | `settings.v2`, `settings.v1` | Records written by versions 1.1 and 1.0. They are only read, never changed or removed |
 
 Values are validated on every read: numbers are clamped to their range, colours must be
@@ -20,6 +20,24 @@ The first time you open version 1.2 it reads your old koi and jellyfish settings
 speed, density, Pause and Battery saver) and shows them unchanged. Nothing is written until you
 change a setting, and then only to `settings.v3`. The new habitats start with their own defaults.
 Each habitat changes independently afterwards.
+
+## Upgrading to 1.4: one opacity control
+
+There is no per-habitat strength slider. Every habitat renders at full internal
+strength; **Background opacity** controls only the optional window layer.
+
+On the first load, the previously selected habitat’s saved strength is multiplied
+into the old background opacity. This prevents a sudden increase in brightness;
+some strong glyphs may become a little fainter because their old alpha was clamped
+inside the renderer. Other habitats now use that same global opacity rather than
+retaining different dimming values. The preview is deliberately full strength.
+The lower limit is now 1%, allowing the old lowest combined value to survive.
+
+The background record stores `opacityVersion: 1` when the migration is saved.
+The scene envelope retains a validated `legacyOpacityScale` scalar so a failed
+background write cannot lose that attenuation when scene edits or resets succeed.
+Reloading never applies the saved migration twice. The deprecated `strength`
+field remains fixed at 1 in scene records for compatibility; it is not a control.
 
 ## When saving fails
 
@@ -38,8 +56,10 @@ Individual colours survive lowering the count, and counts above ten repeat the t
 
 ## Going back to an older version
 
-Older versions read their own records, which 1.2 never modifies, so they keep working.
-Only the window background settings (`background.v1`) are shared. See [INSTALL.md](../INSTALL.md).
+Versions 1.0 and 1.1 read their untouched older records. Versions 1.2 and 1.3
+share the v3 scene records, and all versions share `background.v1`. Version 1.4
+removes the old scene dimming and can save a lower background opacity than older
+versions allowed. Check opacity after a rollback. See [INSTALL.md](../INSTALL.md).
 
 ## For developers
 
