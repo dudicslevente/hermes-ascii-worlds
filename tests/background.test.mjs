@@ -33,7 +33,7 @@ test("background defaults are off, 28 percent, no extra transparency", () => {
 
 test("background normalisation clamps strength and rejects non-boolean flags", () => {
   assert.equal(normalizeBackground({ strength: 5 }).strength, 0.6);
-  assert.equal(normalizeBackground({ strength: -1 }).strength, 0.08);
+  assert.equal(normalizeBackground({ strength: -1 }).strength, 0.01);
   assert.equal(normalizeBackground({ strength: "0.4" }).strength, 0.28);
   assert.equal(normalizeBackground({ strength: NaN }).strength, 0.28);
   assert.equal(normalizeBackground({ strength: Infinity }).strength, 0.28);
@@ -43,6 +43,7 @@ test("background normalisation clamps strength and rejects non-boolean flags", (
   assert.equal(normalizeBackground({ extraTransparency: "yes" }).extraTransparency, false);
   assert.deepEqual(Object.keys(normalizeBackground({ evil: 1, enabled: true })), [
     "schemaVersion",
+    "opacityVersion",
     "enabled",
     "strength",
     "placement",
@@ -78,6 +79,7 @@ test("background key is separate and settings.v2 is untouched", () => {
   assert.ok(!(STORAGE_KEY in storage.data));
   assert.deepEqual(storage.data[BACKGROUND_KEY], {
     schemaVersion: 1,
+    opacityVersion: 1,
     enabled: true,
     strength: 0.4,
     placement: "behind",

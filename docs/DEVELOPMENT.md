@@ -61,6 +61,14 @@ asciiWorlds.reset();          // everything; returns to koi
 asciiWorlds.destroy();
 ```
 
+## Gallery captures
+
+With the browser tools above installed, `node scripts/capture-gallery.mjs` captures all
+habitats at 1200 × 700 through the production renderer. Optional
+`ASCII_WORLDS_REFERENCE=/path/to/approved-preview` compares matching `core/` and
+`scenes/` modules pixel for pixel and saves the report under `evidence/1.4.0/`.
+The screenshot composition lives in `scripts/compose-gallery.py`.
+
 ## Further reading
 
 [Architecture](ARCHITECTURE.md) · [Controls](CONTROLS.md) · [Settings](SETTINGS.md) ·

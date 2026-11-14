@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 const api = await import('../src/settings-v3.js').catch(() => null);
-const required = ['koi','jellyfish','manta-rays','sea-turtles','seahorses','tiny-fish-school','solitary-whale','octopus','hammerhead','anglerfish','butterflies','luna-moths','dragonflies','swallows','sleeping-cat','axolotl','owl','ginkgo-leaves','cherry-blossom-petals','fireflies','bubbles','dandelion-seeds','night-sky'];
+const required = ['koi','jellyfish','manta-rays','sea-turtles','seahorses','tiny-fish-school','solitary-whale','octopus','hammerhead','anglerfish','butterflies','luna-moths','dragonflies','swallows','sleeping-cat','axolotl','owl','ginkgo-leaves','cherry-blossom-petals','fireflies','bubbles','dandelion-seeds','night-sky','pipes','platypus-creek','capybara-onsen','penguin-slide','rubber-ducks','nyan-cat','dino-runner','dragon-hoard','beehive','wizard-tower','retro-arcade','snake-game','pirate-ship','rooftop-ninja'];
 const memory = seed => { const data = structuredClone(seed || {}); return {data, get:(k,f)=>data[k] ?? f, set:(k,v)=>{data[k]=structuredClone(v);}}; };
-test('integrated registry exposes exactly 23 native habitats', () => {
+test('integrated registry exposes exactly 37 native habitats', () => {
   assert.ok(api, 'v3 integration API must exist');
   assert.deepEqual([...api.WORLD_IDS].sort(), [...required].sort());
 });

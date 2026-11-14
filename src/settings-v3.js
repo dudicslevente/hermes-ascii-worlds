@@ -6,7 +6,7 @@ import { defaultsFor, normalizeScene } from './lab/core/settings.js';
 import { modesFor } from './lab/core/palettes.js';
 import { MOON_MODES, MOON_PHASES } from './lab/core/sky.js';
 import { DEPTH_DEFAULT } from './lab/core/depth.js';
-export const WORLD_IDS = Object.freeze(['koi','jellyfish','manta-rays','sea-turtles','seahorses','tiny-fish-school','solitary-whale','octopus','hammerhead','anglerfish','butterflies','luna-moths','dragonflies','swallows','sleeping-cat','axolotl','owl','ginkgo-leaves','cherry-blossom-petals','fireflies','bubbles','dandelion-seeds','night-sky']);
+export const WORLD_IDS = Object.freeze(['koi','jellyfish','manta-rays','sea-turtles','seahorses','tiny-fish-school','solitary-whale','octopus','hammerhead','anglerfish','butterflies','luna-moths','dragonflies','swallows','sleeping-cat','axolotl','owl','ginkgo-leaves','cherry-blossom-petals','fireflies','bubbles','dandelion-seeds','night-sky','pipes','platypus-creek','capybara-onsen','penguin-slide','rubber-ducks','nyan-cat','dino-runner','dragon-hoard','beehive','wizard-tower','retro-arcade','snake-game','pirate-ship','rooftop-ninja']);
 export const WORLD_SCENES = Object.freeze(WORLD_IDS.map(id => sceneById(id) || {id, name:id==='koi'?'Koi pond':'Jellyfish drift', legacy:true}));
 export const WORLD_STORAGE_KEY = 'settings.v3';
 const object = v => v && typeof v==='object' && !Array.isArray(v) ? v : {};
@@ -18,7 +18,7 @@ function legacyScene(id, value={}) {
   // 1.3.0: the same Size, Scene strength, Current and Depth as the other
   // scenes. Records from 1.2.0 get these defaults.
   return {count:s[`${p}Count`], colour:s[`${p}Colour`], tint:s[`${p}Tint`], colors:[...s[`${p}Colors`]], speed:s.speed,density:s.density,
-    size:finite(value.size,0.5,1.6,1), strength:finite(value.strength,0.2,1,1), flow:finite(value.flow,0,1.5,1), depth:finite(value.depth,0,1,DEPTH_DEFAULT)};
+    size:finite(value.size,0.5,1.6,1), strength:1, flow:finite(value.flow,0,1.5,1), depth:finite(value.depth,0,1,DEPTH_DEFAULT)};
 }
 export const sceneDefaults = id => legacy(id) ? legacyScene(id) : defaultsFor(sceneById(id));
 const normalizeOne = (id,v) => legacy(id)?legacyScene(id,object(v)):normalizeScene(sceneById(id),v);
@@ -30,7 +30,10 @@ function expose(raw) {
   const k=scenes.koi,j=scenes.jellyfish;
   // Moon: shown or hidden, and today's real phase or a chosen one.
   const sky={moon:MOON_MODES.includes(v.moon)?v.moon:'on',moonPhase:Object.hasOwn(MOON_PHASES,v.moonPhase)?v.moonPhase:'date'};
-  return {schemaVersion:3,scene,palette:'auto',paused:v.paused===true,eco:v.eco===true,...sky,scenes,
+  // Keep the original active attenuation until background.v1 durably marks its
+  // one-time migration. This scalar survives independent storage write failures.
+  const legacyOpacityScale=finite(v.legacyOpacityScale,0.2,1,finite(object(object(v.scenes)[scene]).strength,0.2,1,1));
+  return {schemaVersion:3,legacyOpacityScale,scene,palette:'auto',paused:v.paused===true,eco:v.eco===true,...sky,scenes,
     koiCount:k.count,koiColour:k.colour,koiTint:k.tint,koiColors:[...k.colors],
     jellyCount:j.count,jellyColour:j.colour,jellyTint:j.tint,jellyColors:[...j.colors],
     ...scenes[scene],schemaVersion:3};
@@ -38,7 +41,7 @@ function expose(raw) {
 function fromLegacy(raw) {
   const s=normalizeSettings(raw), scenes={};
   for (const [id,p] of [['koi','koi'],['jellyfish','jelly']]) scenes[id]={count:s[`${p}Count`],colour:s[`${p}Colour`],tint:s[`${p}Tint`],colors:s[`${p}Colors`],speed:s.speed,density:s.density};
-  return expose({scene:s.scene,paused:s.paused,eco:s.eco,scenes});
+  return expose({scene:s.scene,paused:s.paused,eco:s.eco,scenes,legacyOpacityScale:object(raw).legacyOpacityScale});
 }
 export function normalizeWorldSettings(value) {
   return object(value).scenes ? expose(value) : fromLegacy(value);
@@ -63,7 +66,7 @@ export function patchWorldSettings(current, patch={}) {
   if(Object.hasOwn(p,'extras')) active.extras={...active.extras,...object(p.extras)};
   scenes[scene]=normalizeOne(scene,active);
   const skyPatch={};for(const key of ['moon','moonPhase'])skyPatch[key]=Object.hasOwn(p,key)?p[key]:s[key];
-  return expose({scene,scenes,paused:typeof p.paused==='boolean'?p.paused:s.paused,eco:typeof p.eco==='boolean'?p.eco:s.eco,...skyPatch});
+  return expose({scene,scenes,legacyOpacityScale:s.legacyOpacityScale,paused:typeof p.paused==='boolean'?p.paused:s.paused,eco:typeof p.eco==='boolean'?p.eco:s.eco,...skyPatch});
 }
 export function resetWorldScene(current) {
   const s=normalizeWorldSettings(current);
@@ -71,7 +74,7 @@ export function resetWorldScene(current) {
 }
 export function writeWorldSettings(storage, value) {
   const s=normalizeWorldSettings(value);
-  try { storage.set(WORLD_STORAGE_KEY,{schemaVersion:3,scene:s.scene,paused:s.paused,eco:s.eco,moon:s.moon,moonPhase:s.moonPhase,scenes:s.scenes}); return true; } catch { return false; }
+  try { storage.set(WORLD_STORAGE_KEY,{schemaVersion:3,legacyOpacityScale:s.legacyOpacityScale,scene:s.scene,paused:s.paused,eco:s.eco,moon:s.moon,moonPhase:s.moonPhase,scenes:s.scenes}); return true; } catch { return false; }
 }
 export function advanceClocks(time,beat,dt,speed) {
   const delta=finite(dt,0,0.1,0), rate=finite(speed,0.1,2,1);

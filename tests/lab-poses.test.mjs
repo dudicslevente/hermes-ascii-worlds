@@ -15,13 +15,13 @@ function trace(def, t, b, patch = {}, w = 900, h = 560) {
       if (/^create.*Gradient$/.test(key)) return (...a) => { calls.push([key, ...a]); return { addColorStop(...c) { calls.push(['colorStop', ...c]); } }; };
       return (...a) => {
         for (const v of a) if (typeof v === 'number') assert.ok(Number.isFinite(v), `${def.id} ${key} finite argument`);
-        if (!ignore.has(key)) { calls.push([key, ...a]); if (['scale', 'arc', 'ellipse', 'moveTo', 'lineTo', 'bezierCurveTo', 'quadraticCurveTo', 'fillRect'].includes(key)) geometry.push([key, ...a]); }
+        if (!ignore.has(key)) { calls.push([key, ...a]); if (['scale', 'arc', 'ellipse', 'rect', 'moveTo', 'lineTo', 'bezierCurveTo', 'quadraticCurveTo', 'fillRect'].includes(key)) geometry.push([key, ...a]); }
       };
     },
     set(obj, key, value) { obj[key] = value; calls.push(['set', key, typeof value === 'object' ? '[gradient]' : value]); return true; },
   });
   const settings = normalizeScene(def, { ...defaultsFor(def), ...patch });
-  def.draw(ctx, w, h, buildState(def, settings, t, b, w, h, true));
+  def.draw(ctx, w, h, buildState(def, settings, t, b, w, h, true, null, {}));
   return { calls, geometry };
 }
 for (const def of SCENES) {
@@ -30,8 +30,10 @@ for (const def of SCENES) {
     for (const [w, h] of [[320, 320], [375, 420], [1800, 1100]]) trace(def, 97.5, 34.1, { count: def.count.max, size: 1.6, flow: 1.5 }, w, h);
   });
   test(`${def.id}: articulation changes non-rigid geometry or appropriate glow`, () => {
-    const samples = [0, 0.4, 1, 2, 5, 9].map(b => trace(def, 3, b));
-    const role = ['fireflies', 'night-sky'].includes(def.id) ? 'calls' : 'geometry';
+    // Jump poses deliberately hold the legs still; exercise the run cycle without obstacles.
+    const patch = def.id === 'dino-runner' ? { count: 1, extras: { obstacles: false } } : {};
+    const samples = [0, 0.07, 0.19, 0.4, 1, 2, 5, 9].map(b => trace(def, 3, b, patch));
+    const role = ['fireflies', 'night-sky', 'beehive'].includes(def.id) ? 'calls' : 'geometry';
     assert.ok(new Set(samples.map(s => JSON.stringify(s[role]))).size > 1, 'not just a translated or rotated fixed drawing');
   });
 }

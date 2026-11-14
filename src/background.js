@@ -105,12 +105,13 @@ export function diagnose(doc = document) {
 export function createHub(storage) {
   // The scene envelope and background key can fail/recover independently.
   const persistence=createStore({settings:true,background:true});
+  const settings=readWorldSettings(storage);
   return {
     persistence,
     // Session-only explicit consent; never persisted across plugin reloads.
     motionOptIn: createStore(false),
-    settings: createStore(readWorldSettings(storage)),
-    bg: createBackgroundStore(storage, saved=>persistence.set({...persistence.get(),background:saved})),
+    settings: createStore(settings),
+    bg: createBackgroundStore(storage, saved=>persistence.set({...persistence.get(),background:saved}), settings.legacyOpacityScale),
     status: createStore({ available: true, message: "" }),
   };
 }

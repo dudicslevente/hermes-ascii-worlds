@@ -54,7 +54,7 @@ test('every local link and image in the Markdown docs exists and images have alt
 });
 
 test('the gallery shows every habitat in both themes', () => {
-  const ids = ['koi', 'jellyfish', 'manta-rays', 'sea-turtles', 'seahorses', 'tiny-fish-school', 'solitary-whale', 'octopus', 'hammerhead', 'anglerfish', 'butterflies', 'luna-moths', 'dragonflies', 'swallows', 'sleeping-cat', 'axolotl', 'owl', 'ginkgo-leaves', 'cherry-blossom-petals', 'fireflies', 'bubbles', 'dandelion-seeds', 'night-sky'];
+  const ids = ['koi', 'jellyfish', 'manta-rays', 'sea-turtles', 'seahorses', 'tiny-fish-school', 'solitary-whale', 'octopus', 'hammerhead', 'anglerfish', 'butterflies', 'luna-moths', 'dragonflies', 'swallows', 'sleeping-cat', 'axolotl', 'owl', 'ginkgo-leaves', 'cherry-blossom-petals', 'fireflies', 'bubbles', 'dandelion-seeds', 'night-sky', 'pipes', 'platypus-creek', 'capybara-onsen', 'penguin-slide', 'rubber-ducks', 'nyan-cat', 'dino-runner', 'dragon-hoard', 'beehive', 'wizard-tower', 'retro-arcade', 'snake-game', 'pirate-ship', 'rooftop-ninja'];
   for (const id of ids) for (const tone of ['dark', 'light'])
     assert.ok(existsSync(path.join(root, `docs/images/habitats/${id}-${tone}.png`)), `${id}-${tone}.png`);
 });

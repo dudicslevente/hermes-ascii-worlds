@@ -3,6 +3,39 @@
 All notable changes to this project are listed here. The project follows
 [semantic versioning](https://semver.org/).
 
+## 1.4.0 (2026-11-14)
+
+### Added
+
+- **Pipes**, a new habitat: two bolted metal pipes carry liquid and rings
+  of air to an outlet. One pipe falls into a pool, the other throws a jet into it, with spray,
+  ripples and drips. The liquid, the stream, the jet and the pool all follow the colour mode, so
+  choosing another palette or tint recolours the whole scene. Controls: Pipes (0–2), Pipe size,
+  Pressure, Bubbles and Valve and gauge. Works on the light and the dark page and as the window
+  background.
+
+- Thirteen more habitats, bringing the total to thirty-seven: **Platypus creek**, **Capybara
+  onsen**, **Penguin slide**, **Rubber ducks**, **Nyan Cat**, **Dino runner**, **Dragon’s hoard**,
+  **Beehive**, **Wizard’s tower**, **Retro arcade**, **Snake**, **Pirate ship** and **Rooftop ninja**.
+- Each remembers its own count, colours, size, speed, glyph density and extras.
+  New scenes keep their clean preview artwork, without an extra depth or atmosphere layer.
+- Nyan Cat’s head moves separately from its body. The runner has pixel sprites, jumping and
+  ducking poses, and an optional accent-coloured score. The arcade has no player figure.
+- Dark and light gallery frames for every new habitat, a new overview and a refreshed controls reference.
+
+### Fixed
+
+- Snake starts a fresh round with a short fade instead of replaying hours of moves
+  after a resize or settings change. Identical timestamps always draw the same state.
+
+### Changed
+
+- Scene-specific labels and help now appear in the native Settings page.
+- One **Background opacity** slider replaces Background Strength and Scene strength.
+  It applies across habitats without fading the Settings preview. The old active
+  scene’s strength is combined with the background opacity once on upgrade; the
+  range is now 1–60% so very faint saved combinations can be kept.
+
 ## 1.3.0
 
 ### Added

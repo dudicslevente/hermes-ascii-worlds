@@ -9,9 +9,9 @@ optional window background.
 | Path | Responsibility |
 | --- | --- |
 | `src/art.js` | Koi and jellyfish geometry |
-| `src/lab/scenes/` | The twenty-one other habitats, one pure module each, plus the registry |
+| `src/lab/scenes/` | The thirty-five other habitats, one pure module each, plus the registry |
 | `src/lab/core/` | Palettes, scene validation, utilities and the glyph sampler for those habitats |
-| `src/settings-v3.js` | The twenty-three habitat IDs, the per-habitat settings record, migration, patches and reset |
+| `src/settings-v3.js` | The thirty-seven habitat IDs, the per-habitat settings record, migration, patches and reset |
 | `src/settings.js` | Background preferences and stores, the plugin version, and the 1.1 settings helpers |
 | `src/engine.js` | Canvas lifecycle: one scheduler and sampler per canvas, observers and cleanup |
 | `src/world.js` | The Settings page: controls, preview and instance ownership |
@@ -30,10 +30,19 @@ painted pixels, with a stable per-cell hash so glyphs do not flicker. The visibl
 glyphs; nothing is a pre-rendered image.
 
 Two clocks drive each habitat: travel time (scaled by Speed) and articulation time for wings, fins
-and limbs. Cat, Owl and Night sky use Pace for local motion only. Hidden time is never caught up.
+and limbs. Cat, Owl and Night sky use Pace for local motion only. Hidden time is never caught up. Nyan Cat uses discrete poses rather than tweening.
+Snake keeps a deterministic fixed-step simulation in the renderer’s per-scene memo;
+seeking backwards replays from its seed, and switching scenes clears that memo.
+Snake rounds are bounded to 4096 moves with a short fade between rounds, so long
+runtimes and board changes never leave a partly replayed frame.
 
 Limits: canvas backing size 1800 x 1400 logical pixels, device pixel ratio up to 2, about four million
 backing pixels and a 220 x 150 glyph grid. Each habitat has a population cap.
+
+The glyph renderer runs at full internal strength. One global Background opacity
+is applied through the window canvas’s CSS opacity, not the Settings preview.
+The old active scene attenuation is migrated once; storage-failure handling is
+described in [Settings and storage](SETTINGS.md).
 
 ## Lifecycle
 

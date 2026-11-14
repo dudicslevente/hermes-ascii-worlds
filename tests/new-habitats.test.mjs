@@ -101,14 +101,14 @@ test('axolotls: activity 0 keeps them home, plants can be hidden, eyes are cut o
   assert.ok(bare.some((o) => o.comp === 'destination-out'));
 });
 
-test('koi and jellyfish keep Size, Scene strength, Current and Depth per scene', () => {
+test('koi and jellyfish keep Size, Current and Depth per scene; old strength is ignored', () => {
   let s = normalizeWorldSettings({ scene: 'koi', scenes: {} });
   assert.deepEqual([s.size, s.strength, s.flow, s.depth], [1, 1, 1, 0.6]);
   s = patchWorldSettings(s, { size: 1.4, strength: 0.5, flow: 0, depth: 0 });
-  assert.deepEqual([s.scenes.koi.size, s.scenes.koi.strength, s.scenes.koi.flow, s.scenes.koi.depth], [1.4, 0.5, 0, 0]);
+  assert.deepEqual([s.scenes.koi.size, s.scenes.koi.strength, s.scenes.koi.flow, s.scenes.koi.depth], [1.4, 1, 0, 0]);
   assert.equal(s.scenes.jellyfish.size, 1, 'the other scene is untouched');
   s = patchWorldSettings(s, { size: 99, strength: -1, flow: 9 });
-  assert.deepEqual([s.size, s.strength, s.flow], [1.6, 0.2, 1.5]);
+  assert.deepEqual([s.size, s.strength, s.flow], [1.6, 1, 1.5]);
   // A 1.2.0 record (no new fields) gets the defaults.
   const old = normalizeWorldSettings({ schemaVersion: 3, scene: 'jellyfish', scenes: { jellyfish: { count: 4 } } });
   assert.deepEqual([old.count, old.size, old.depth], [4, 1, 0.6]);

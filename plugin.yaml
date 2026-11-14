@@ -1,5 +1,5 @@
 name: ascii-worlds
-version: "1.3.0"
-description: Twenty procedural glyph habitats in a native Settings page, with an optional animated background for Hermes Desktop.
+version: "1.4.0"
+description: Thirty-seven living glyph habitats in a native Settings page, with an optional animated background for Hermes Desktop.
 author: dudicslevente
 requires_hermes: ">=0.21.6"

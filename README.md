@@ -1,13 +1,13 @@
 # ASCII Worlds
 
-Twenty-three living habitats for Hermes Desktop, drawn entirely out of text characters.
-Koi and jellyfish, hammerheads and an anglerfish, axolotls, moths, a sleeping cat,
-drifting petals, a night sky with the real moon. Pick one in Settings, or let it drift
+Thirty-seven living habitats for Hermes Desktop, drawn entirely out of text characters.
+Koi and jellyfish, axolotls and a capybara, pipes, a sleeping dragon, arcade games
+and Nyan Cat. Pick one in Settings, or let it drift
 across your whole window.
 
 ![ASCII Worlds: your agent, in its natural habitat](docs/images/banner.png)
 
-- **23 habitats**, from a lone whale to a sky full of stars.
+- **37 habitats**, from a lone whale to a tiny arcade.
 - **Make it yours:** colours, speed, size, depth and density. Every habitat remembers its own settings.
 - **Depth:** creatures spread out near and far, with marine snow, pollen or dust drifting behind them.
 - **The moon:** open-air scenes and the night sky can show today's real moon phase, worked out offline from your computer's date.
@@ -15,22 +15,24 @@ across your whole window.
 - **Gentle on your computer:** Pause, Battery saver and reduced-motion support are built in.
 - **Private and offline:** no network, no accounts, no tracking. It is one readable file.
 
-## New in 1.3
+## New in 1.4
 
-![Hammerheads circling a bait ball, an anglerfish with a glowing lure, and axolotls on a pond floor](docs/images/new-in-1.3.png)
+![Pipes, a capybara, Nyan Cat, a dragon, a wizard and a pirate ship](docs/images/new-in-1.4.png)
 
-- **Hammerhead and bait ball.** Hammerheads circle a swirling ball of silver fish. Every so
-  often one cuts straight through it, and the ball opens around it.
-- **Anglerfish.** Down in the dark, one waits under its glowing lure. Small fish wander up to
-  the light, and the jaw opens.
-- **Axolotls.** They rest on a pond floor, fan their gills, stroll off, turn round and
-  sometimes float up for a bit.
-- **Depth** for every habitat, the **moon**, seasons that follow the date, and free
-  schooling for the tiny fish.
+- **Pipes.** Liquid and bubbles run through bolted pipes, then spill into a pool.
+  Change the pressure, the liquid colour, or the valve and gauge.
+- **Quiet company.** A platypus in a tiny hat, a capybara in a warm pool, penguins
+  on an ice slide and rubber ducks bobbing among soap bubbles.
+- **A little magic.** A dragon sleeping on its hoard, bees around a honeycomb,
+  and a wizard with a bubbling cauldron and a floating spellbook.
+- **Pixels at play.** Nyan Cat's bobbing head and rainbow, a dinosaur runner,
+  arcade cabinets playing their own games, and a snake chasing an apple.
+- **Small adventures.** A pirate ship under billowing sails and a ninja leaping
+  between rooftops. Every new habitat has its own colours and controls.
 
-## All twenty-three habitats
+## All thirty-seven habitats
 
-![All twenty-three habitats in ASCII Worlds](docs/images/overview.png)
+![All habitats in ASCII Worlds](docs/images/overview.png)
 
 | | |
 | --- | --- |
@@ -46,6 +48,14 @@ across your whole window.
 | ![Ginkgo leaves, a glyph habitat in Hermes Desktop](docs/images/habitats/ginkgo-leaves-light.png)<br>**Ginkgo leaves**<br>Fan-shaped leaves tumbling down | ![Cherry blossom petals, a glyph habitat in Hermes Desktop](docs/images/habitats/cherry-blossom-petals-light.png)<br>**Cherry blossom petals**<br>Petals fluttering in shared gusts |
 | ![Fireflies, a glyph habitat in Hermes Desktop](docs/images/habitats/fireflies-dark.png)<br>**Fireflies**<br>Soft lights that glow on their own rhythm | ![Bubbles, a glyph habitat in Hermes Desktop](docs/images/habitats/bubbles-light.png)<br>**Bubbles**<br>Wobbling rings rising upward |
 | ![Dandelion seeds, a glyph habitat in Hermes Desktop](docs/images/habitats/dandelion-seeds-light.png)<br>**Dandelion seeds**<br>Tiny parachutes drifting on the breeze | ![Night sky, a glyph habitat in Hermes Desktop](docs/images/habitats/night-sky-dark.png)<br>**Night sky**<br>Twinkling stars and the odd shooting star |
+| ![Pipes, a glyph habitat in Hermes Desktop](docs/images/habitats/pipes-dark.png)<br>**Pipes**<br>Bolted pipes push liquid and bubbles into a pool | |
+| ![Platypus creek, a glyph habitat in Hermes Desktop](docs/images/habitats/platypus-creek-dark.png)<br>**Platypus creek**<br>A tiny hat, a paddle and a splash | ![Capybara onsen, a glyph habitat in Hermes Desktop](docs/images/habitats/capybara-onsen-dark.png)<br>**Capybara onsen**<br>A warm soak with a yuzu on its head |
+| ![Penguin slide, a glyph habitat in Hermes Desktop](docs/images/habitats/penguin-slide-dark.png)<br>**Penguin slide**<br>Waddle up, belly-slide down, splash | ![Rubber ducks, a glyph habitat in Hermes Desktop](docs/images/habitats/rubber-ducks-dark.png)<br>**Rubber ducks**<br>Bobbing ducks, foam and soap bubbles |
+| ![Nyan Cat, a glyph habitat in Hermes Desktop](docs/images/habitats/nyan-cat-dark.png)<br>**Nyan Cat**<br>A pastry cat and a stair-stepped rainbow | ![Dino runner, a glyph habitat in Hermes Desktop](docs/images/habitats/dino-runner-dark.png)<br>**Dino runner**<br>Pixel strides, cactus jumps and a score |
+| ![Dragon's hoard, a glyph habitat in Hermes Desktop](docs/images/habitats/dragon-hoard-dark.png)<br>**Dragon's hoard**<br>A sleeping dragon on a little hoard | ![Beehive, a glyph habitat in Hermes Desktop](docs/images/habitats/beehive-dark.png)<br>**Beehive**<br>A small comb and a waggle dance |
+| ![Wizard's tower, a glyph habitat in Hermes Desktop](docs/images/habitats/wizard-tower-dark.png)<br>**Wizard's tower**<br>A spellbook, a cauldron and a ring of sparks | ![Retro arcade, a glyph habitat in Hermes Desktop](docs/images/habitats/retro-arcade-dark.png)<br>**Retro arcade**<br>Attract-mode games in glowing cabinets |
+| ![Snake, a glyph habitat in Hermes Desktop](docs/images/habitats/snake-game-dark.png)<br>**Snake**<br>A little snake chasing an apple | ![Pirate ship, a glyph habitat in Hermes Desktop](docs/images/habitats/pirate-ship-dark.png)<br>**Pirate ship**<br>Billowing sails and a waving flag |
+| ![Rooftop ninja, a glyph habitat in Hermes Desktop](docs/images/habitats/rooftop-ninja-dark.png)<br>**Rooftop ninja**<br>A long scarf and a leap between rooftops |  |
 
 More frames in the [full gallery](docs/GALLERY.md).
 
@@ -58,7 +68,8 @@ Everything lives in one place: **Settings -> Plugins -> ASCII Worlds**.
 - Choose a **habitat** and watch it in the live preview.
 - Set **how many** creatures there are, from none to the maximum.
 - Pick a **colour palette**, one **tint**, or a different colour for each creature.
-- Adjust **speed**, **size**, **depth** and glyph **density**.
+- Adjust **speed**, **size** and glyph **density**, plus **depth** where it fits the scene.
+- Tune each habitat’s own extras, from steam and soap bubbles to sails and the runner’s score.
 - **Moon:** show or hide it, and pick today's real phase or a fixed one. It only appears on scenes with a sky.
 - **Show the animation in Hermes** to let it float across your window. The title-bar button and the command palette (**ASCII Worlds: toggle background**) switch it on and off too.
 - **Reset this scene** or **Reset to defaults** whenever you like.
@@ -67,12 +78,12 @@ Everything lives in one place: **Settings -> Plugins -> ASCII Worlds**.
 The full release can also show the animation through the chat area only, instead of the whole window.
 
 <!-- chat-area:end -->
-Prefer a calmer look? Lower **Strength**, use fewer creatures or switch on **Battery saver**.
+Prefer a calmer look? Lower **Background opacity**, use fewer creatures or switch on **Battery saver**.
 
 ## Install
 
 <!-- catalog: **From the Hermes catalog:** run `hermes plugins install ascii-worlds`, then run **Reload desktop plugins** in Hermes Desktop. Or install it by hand: -->
-1. Download `ascii-worlds-1.3.0-plugin.zip` from the [latest release](https://github.com/dudicslevente/hermes-ascii-worlds/releases/latest) and unzip it.
+1. Download `ascii-worlds-<version>-plugin.zip` from the [latest release](https://github.com/dudicslevente/hermes-ascii-worlds/releases/latest) and unzip it.
 2. In Hermes Desktop open **Settings -> Plugins** and reveal the plugin folder. On a Mac it is usually `~/.hermes/desktop-plugins/`.
 3. Copy the inner **`ascii-worlds`** folder into that plugin folder.
 4. Run **Reload desktop plugins** from the command palette and switch ASCII Worlds on.

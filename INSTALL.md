@@ -42,15 +42,16 @@ cp ~/.hermes/desktop-plugins/ascii-worlds/plugin.js ~/ascii-worlds-plugin.js.bac
 ```
 
 To go back, switch the animation off, quit Hermes Desktop, copy the backup over
-`desktop-plugins/ascii-worlds/plugin.js` and reopen the app. Older versions read the
-settings they saved themselves, so nothing is lost. The window background settings
-(on/off, placement and strength) are shared between versions; check them after going back.
+`desktop-plugins/ascii-worlds/plugin.js` and reopen the app. Versions 1.0 and 1.1 read their untouched old records; 1.2 and 1.3 share the
+current scene records. Window background preferences are shared too. Version 1.4
+combines the old two opacity controls, so check opacity after rolling back, especially
+if an older version clamps a very faint background to its higher minimum.
 
 ## Troubleshooting
 
 - **The plugin is not listed.** Check the folder path and name, then run **Reload desktop plugins**.
   Also check that ASCII Worlds is switched on in **Settings -> Plugins**.
-- **Nothing shows in the window.** Switch on **Show the animation in Hermes**, raise **Strength**,
+- **Nothing shows in the window.** Switch on **Show the animation in Hermes**, raise **Background opacity**,
   and make sure Count is not zero. Pressing **Check background** in the settings shows a short
   local report you can include in a bug report.
 - **It uses too much power.** Switch on **Battery saver**, use a bolder glyph density or fewer creatures.

@@ -31,7 +31,7 @@ export function supportsFor(def) {
     count: s.count !== false,
     speed: s.speed !== false,
     size: s.size !== false,
-    strength: true,
+    strength: false,
     density: true,
     colour: true,
     flow: Boolean(def.flow),
@@ -82,7 +82,8 @@ export function normalizeScene(def, value) {
     speed: num(v.speed, LIMITS.speed, d.speed),
     size: num(v.size, LIMITS.size, d.size),
     flow: def.flow ? num(v.flow, [def.flow.min ?? LIMITS.flow[0], def.flow.max ?? LIMITS.flow[1]], d.flow) : 1,
-    strength: num(v.strength, LIMITS.strength, d.strength),
+    // Compatibility field only: Background opacity is the single opacity control.
+    strength: 1,
     // Records from 1.2.0 have no depth and get the default. Scenes without
     // depth support are pinned to 0 so a stale value can never leak in.
     depth: depthSupported(def) ? num(v.depth, LIMITS.depth, d.depth) : 0,
